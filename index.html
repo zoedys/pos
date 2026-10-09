@@ -29,12 +29,25 @@
         .table-container::-webkit-scrollbar-thumb { background-color: #C0C0C0; border: 1px solid #FFFFFF; border-right-color: #808080; border-bottom-color: #808080; }
         .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
 
-        @media print {
+@media print {
+            /* Wajib: Menghilangkan margin bawaan browser */
+            @page { margin: 0; } 
+            
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; padding: 10px; background: white; font-family: monospace; font-size: 12px; color: black; }
-            #print-area.paper-80mm { width: 80mm; }
-            #print-area.paper-58mm { width: 58mm; font-size: 10px; padding: 5px; }
+            #print-area { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                background: white; 
+                /* Gunakan font standar yang sangat tajam untuk printer thermal */
+                font-family: 'Courier New', Courier, monospace; 
+                color: black; 
+                font-weight: bold;
+            }
+            /* Kurangi lebar sedikit dari kertas asli agar tidak mentok terpotong */
+            #print-area.paper-80mm { width: 74mm; padding: 4mm; font-size: 12px; }
+            #print-area.paper-58mm { width: 52mm; padding: 2mm; font-size: 10px; }
             .no-print { display: none !important; }
         }
     </style>
