@@ -343,18 +343,23 @@
 
     <!-- SCRIPT UTAMA KESELURUHAN -->
     <script>
-        // URL API dari gambar Anda sudah saya pasang!
+        // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxb26f_sGBEI_aoV4m7qh5SQ0J6nEiOT7mpezUOv-_ru99CibG7PvaZwJN6fPeQ44c/exec"; 
 
         // Fungsi Komunikasi API
         function apiGet(action, param = "") {
             return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json());
         }
+        
         function apiPost(action, data, type = null) {
             let payload = { action: action, data: data };
             if (type) payload.type = type;
+            
             return fetch(GAS_URL, {
-                method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload)
+                method: 'POST', 
+                redirect: 'follow', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                body: JSON.stringify(payload)
             }).then(res => res.json()).catch(err => console.error(err));
         }
 
