@@ -30,24 +30,28 @@
         .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
 
 @media print {
-            /* Wajib: Menghilangkan margin bawaan browser */
-            @page { margin: 0; } 
-            
+            @page { margin: 0; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area { 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
+                position: absolute; left: 0; top: 0; 
+                width: 100%; /* Memaksa konten mengisi penuh kertas */
                 background: white; 
-                /* Gunakan font standar yang sangat tajam untuk printer thermal */
-                font-family: 'Courier New', Courier, monospace; 
-                color: black; 
+                color: #000 !important; /* Paksa tinta hitam pekat */
+                font-family: Arial, Helvetica, sans-serif; /* Arial jauh lebih tebal & tajam di thermal */
                 font-weight: bold;
             }
-            /* Kurangi lebar sedikit dari kertas asli agar tidak mentok terpotong */
-            #print-area.paper-80mm { width: 74mm; padding: 4mm; font-size: 12px; }
-            #print-area.paper-58mm { width: 52mm; padding: 2mm; font-size: 10px; }
+            
+            /* Pengaturan 80mm */
+            #print-area.paper-80mm { max-width: 76mm; padding: 2mm; font-size: 14px; }
+            
+            /* Pengaturan 58mm - Ukuran diperbesar dan margin dirapatkan */
+            #print-area.paper-58mm { max-width: 55mm; padding: 0mm 2mm; font-size: 12px; }
+            
+            /* Paksa tabel agar mengikuti ukuran CSS ini */
+            #print-area table { width: 100% !important; font-size: inherit !important; }
+            #print-area td, #print-area th { font-size: inherit !important; color: #000 !important; }
+            
             .no-print { display: none !important; }
         }
     </style>
@@ -672,7 +676,7 @@
             const printTbody = document.getElementById('print-items'); printTbody.innerHTML = '';
             trxData.items.forEach(item => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="padding: 2px 0;">${item.name}<br><span style="font-size: 10px; color: #555;">${item.qty} x ${formatNumber(item.price)}</span></td>
+                tr.innerHTML = `<td style="padding: 2px 0;">${item.name}<br><span style="font-size: 11px; color: #000; font-weight: normal;">${item.qty} x ${formatNumber(item.price)}</span></td>
                     <td style="text-align: center; vertical-align: top; padding: 2px 0;">${item.qty}</td><td style="text-align: right; vertical-align: top; padding: 2px 0;">${formatNumber(item.qty * item.price)}</td>`;
                 printTbody.appendChild(tr);
             });
