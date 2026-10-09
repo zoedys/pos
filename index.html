@@ -1,150 +1,230 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwkEzvCC11dbjk8DK73cxr035iI1_ze4SuMAX26sAQI0fiEaUogHaAlic3PYVSTj6NV/exec"; // <-- Masukkan URL Web App Google Script Anda di dalam tanda kutip ini!
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Manager POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #F0F0F0; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .bg-cyan-light { background-color: #BFFFFF; }
+        .classic-input { border-top: 1px solid #808080; border-left: 1px solid #808080; border-right: 1px solid #FFFFFF; border-bottom: 1px solid #FFFFFF; background-color: #FFFFFF; padding: 2px 4px; font-size: 12px; }
+        .classic-input:focus { outline: none; border: 1px solid #000000; }
+        .win-border { border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #808080; border-bottom: 1px solid #808080; }
+        .win-border-inset { border-top: 1px solid #808080; border-left: 1px solid #808080; border-right: 1px solid #FFFFFF; border-bottom: 1px solid #FFFFFF; }
+        .menu-btn { padding: 2px 6px; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid transparent; }
+        .menu-btn:hover { border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #808080; border-bottom: 1px solid #808080; }
+        .transaction-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .transaction-table th { background-color: #E0E0E0; border: 1px solid #A0A0A0; padding: 4px 8px; text-align: left; font-weight: bold; white-space: nowrap; }
+        .transaction-table td { border: 1px solid #A0A0A0; padding: 4px 8px; height: 24px; }
+        .transaction-table tbody tr.active-row { background-color: #000080; color: white; }
+        .toolbar-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #E0E0E0; border: 1px solid #FFFFFF; border-right-color: #808080; border-bottom-color: #808080; padding: 4px 8px; cursor: pointer; font-size: 11px; min-width: 60px; }
+        .toolbar-btn:active { border: 1px solid #808080; border-right-color: #FFFFFF; border-bottom-color: #FFFFFF; background-color: #D0D0D0; }
+        .panel-label { font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .table-container::-webkit-scrollbar { width: 16px; height: 16px; }
+        .table-container::-webkit-scrollbar-track { background: #F0F0F0; border-left: 1px solid #A0A0A0; }
+        .table-container::-webkit-scrollbar-thumb { background-color: #C0C0C0; border: 1px solid #FFFFFF; border-right-color: #808080; border-bottom-color: #808080; }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
 
-    // --- Wrapper Komunikasi API ---
-    function apiGet(action, param = "") {
-        return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json());
-    }
-    function apiPost(action, data, type = null) {
-        let payload = { action: action, data: data };
-        if (type) payload.type = type;
-        return fetch(GAS_URL, {
-            method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload)
-        }).then(res => res.json()).catch(err => console.error(err));
-    }
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; padding: 10px; background: white; font-family: monospace; font-size: 12px; color: black; }
+            #print-area.paper-80mm { width: 80mm; }
+            #print-area.paper-58mm { width: 58mm; font-size: 10px; padding: 5px; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
 
-    let productsDb = []; let customersDb = []; let storeInfo = {}; let appUser = {}; let cart = [];
-    let totalAmount = 0; let totalQty = 0; let selectedRowIndex = -1; const emptyRowsToGenerate = 15;
+    <!-- Loading Screen -->
+    <div id="gas-loading" class="fixed inset-0 bg-[#C0C0C0] z-[999] flex flex-col items-center justify-center">
+        <div class="bg-[#F0F0F0] win-border p-6 shadow-xl w-80 text-center flex flex-col items-center gap-4">
+            <i class="fas fa-spinner fa-spin text-3xl text-blue-800"></i>
+            <h2 class="text-sm font-bold text-gray-800">Menghubungkan ke API Google Sheets...</h2>
+            <p class="text-xs text-gray-600">Mohon tunggu sebentar.</p>
+        </div>
+    </div>
 
-    const formatNumber = (num) => num.toLocaleString('id-ID');
-    const formatDecimal = (num) => num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-    // INIT DATA LEWAT API
-    window.onload = function() {
-        if (!GAS_URL.startsWith("http")) return alert("URL GAS belum dimasukkan di kode HTML!");
-        
-        apiGet('getInitialData')
-        .then(data => {
-            productsDb = data.products; customersDb = data.customers;
-            storeInfo = data.storeInfo; appUser = data.appUser;
+    <!-- Login -->
+    <div id="login-container" class="fixed inset-0 bg-gray-200 hidden items-center justify-center z-50">
+        <div class="bg-gray-100 p-6 border-2 border-white border-r-gray-500 border-b-gray-500 shadow-md w-80">
+            <div class="flex items-center mb-4 pb-2 border-b border-gray-300">
+                <i class="fas fa-desktop text-2xl text-blue-800 mr-3"></i>
+                <h2 class="text-lg font-bold">Login Sistem</h2>
+            </div>
             
-            document.getElementById('gas-loading').classList.add('hidden');
-            document.getElementById('login-container').classList.remove('hidden');
-            document.getElementById('login-container').classList.add('flex');
-            
-            updateStoreUI(); loadSelectPelanggan();
-        }).catch(err => {
-            document.querySelector('#gas-loading > div').innerHTML = `<div class="text-red-600 font-bold">Koneksi Error</div><p class="text-xs text-red-800">${err}</p>`;
-        });
-        
-        setInterval(updateClock, 1000); updateClock();
-    };
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="mb-3">
+                    <label class="block text-xs font-bold mb-1">User ID</label>
+                    <input type="text" id="username" class="classic-input w-full" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs font-bold mb-1">Password</label>
+                    <input type="password" id="password" class="classic-input w-full" required>
+                </div>
+                <div id="login-error" class="text-red-600 text-xs hidden mb-2 font-bold">User/Password Salah!</div>
+                <div class="flex justify-end gap-2">
+                    <button type="submit" class="bg-gray-300 border-2 border-white border-r-gray-600 border-b-gray-600 px-4 py-1 text-sm active:border-gray-600 active:border-r-white active:border-b-white">
+                        OK
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    function handleLogin(e) {
-        e.preventDefault();
-        if (document.getElementById('username').value === appUser.user && document.getElementById('password').value === appUser.pass) {
-            document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('app-container').classList.remove('hidden');
-            document.getElementById('app-container').classList.add('flex');
-            document.getElementById('op-name').textContent = "OPERATOR : " + appUser.user;
-            setTimeout(() => document.getElementById('barcode-input').focus(), 100);
-            renderCartTable();
-        } else {
-            document.getElementById('login-error').classList.remove('hidden');
-        }
-    }
+    <!-- Main App -->
+    <div id="app-container" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
+        <div class="flex justify-between items-center px-2 py-1 bg-white border-b border-gray-300 text-xs select-none">
+            <div class="flex items-center gap-2 font-semibold">
+                <i class="fas fa-shopping-cart text-green-600"></i>
+                <span id="app-title-text">RETAIL MANAGER - [TRANSAKSI PENJUALAN]</span>
+            </div>
+            <div class="flex gap-2 text-gray-600">
+                <span class="cursor-pointer hover:bg-gray-200 px-2 py-0.5"><i class="fas fa-minus"></i></span>
+                <span class="cursor-pointer hover:bg-gray-200 px-2 py-0.5"><i class="far fa-window-restore"></i></span>
+                <span class="cursor-pointer hover:bg-red-500 hover:text-white px-2 py-0.5" onclick="handleLogout()"><i class="fas fa-times"></i></span>
+            </div>
+        </div>
 
-    // SEMUA FUNGSI UI TETAP SAMA SEPERTI SEBELUMNYA... (Copy paste fungsi renderCartTable, hitung kembalian, dsb)
-    // [Note: Agar jawaban tidak terlalu panjang, Anda cukup menggunakan fungsi-fungsi tombol UI yang sama persis dengan HTML Anda sebelumnya]
+        <div class="flex justify-between items-center px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px]">
+            <div class="flex gap-1">
+                <div class="menu-btn" onclick="openMasterProduk()"><i class="fas fa-folder-open text-yellow-600"></i> BUKA (F5)</div>
+                <div class="menu-btn" onclick="clearCart()"><i class="fas fa-times text-red-500"></i> BATAL (F6)</div>
+                <div class="menu-btn" onclick="openPendapatan()"><i class="fas fa-dollar-sign text-gray-600 border rounded-full px-1"></i> PENDAPATAN (F7)</div>
+                <div class="menu-btn" onclick="openCetakUlang()"><i class="fas fa-print text-blue-300"></i> CETAK ULANG (F2)</div>
+            </div>
+            <div class="flex gap-1">
+                <div class="menu-btn" onclick="openAdministrasi()"><i class="fas fa-wrench text-red-500"></i> ADMINISTRASI</div>
+                <div class="menu-btn" onclick="openPengaturan()"><i class="fas fa-cog text-gray-500"></i> PENGATURAN</div>
+                <div class="menu-btn" onclick="handleLogout()"><i class="fas fa-door-open text-black"></i> TUTUP</div>
+            </div>
+        </div>
 
-    // GANTI BAGIAN SIMPAN DATA DENGAN FUNGSI API BARU INI:
-    function simpanProduk() {
-        const code = document.getElementById('prod-kode').value.trim(); const name = document.getElementById('prod-nama').value.trim().toUpperCase();
-        const cost = parseFloat(document.getElementById('prod-harga-beli').value); const price = parseFloat(document.getElementById('prod-harga').value);
-        const unit = document.getElementById('prod-satuan').value.trim().toUpperCase();
-        if(!code || !name || isNaN(cost) || isNaN(price) || !unit) return alert("Isi form dengan benar!");
+        <div class="flex justify-between items-center p-1 bg-[#F0F0F0] border-b border-gray-400 text-xs font-bold win-border">
+            <div class="flex gap-4 items-center pl-1">
+                <div class="flex items-center gap-1">
+                    <span>PELANGGAN :</span>
+                    <select id="pelanggan-select" class="classic-input w-48 bg-white"></select>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span>SALESMAN :</span>
+                    <select id="salesman-select" class="classic-input w-32 bg-white">
+                        <option>OFFICE</option>
+                        <option>SALES 1</option>
+                    </select>
+                </div>
+                <div class="text-blue-800 font-bold ml-2">BARCODE MODE : <span class="text-blue-600">OFF</span></div>
+            </div>
+            <div class="pr-2 flex items-center gap-4">
+                <div class="text-green-700">UNIT : <span class="text-blue-800">ONLINE</span></div>
+            </div>
+        </div>
 
-        if (editProdukKode) {
-            const idx = productsDb.findIndex(p => p.code === editProdukKode);
-            if (idx > -1) productsDb[idx] = { code, name, cost, price, unit };
-        } else {
-            if(productsDb.find(p => p.code === code)) return alert("Kode sudah ada!");
-            productsDb.push({ code, name, cost, price, unit });
-        }
-        
-        apiPost('syncProducts', productsDb); // <--- Kirim ke API Background
-        resetFormProduk(); renderMasterProduk();
-    }
+        <!-- Panel Input Tengah -->
+        <div class="flex border-b border-gray-400 h-24 bg-[#F0F0F0] p-1 gap-1">
+            <div class="flex-1 flex flex-col p-1 win-border-inset bg-[#F0F0F0]">
+                <div class="flex justify-between w-full pr-12">
+                    <span class="panel-label">KODE PRODUK (BARCODE)</span>
+                    <span class="panel-label mr-6">Q T Y</span>
+                </div>
+                <div class="flex gap-1 mt-1">
+                    <textarea id="barcode-input" class="classic-input flex-1 h-12 resize-none text-lg font-bold p-1" autofocus onkeypress="handleBarcodeEnter(event)"></textarea>
+                    <button onclick="openProductSearch()" class="bg-gray-200 win-border w-5 h-12 flex items-center justify-center text-[10px] hover:bg-gray-300">▶</button>
+                    <input type="number" id="qty-input" class="classic-input w-16 h-12 text-center text-3xl font-bold font-serif" value="1" min="1">
+                </div>
+            </div>
+            <div class="w-64 p-1 flex flex-col justify-center gap-0.5 win-border-inset bg-[#F0F0F0] text-xs">
+                <div class="flex justify-between items-center"><span class="font-normal text-[11px]">HARGA SATUAN :</span><input type="text" id="info-harga-satuan" class="classic-input w-28 text-right bg-white font-bold" value="0" readonly></div>
+                <div class="flex justify-between items-center"><span class="font-normal text-[11px]">SUB TOTAL :</span><input type="text" id="info-sub-total" class="classic-input w-28 text-right bg-white font-bold" value="0" readonly></div>
+                <div class="flex justify-between items-center"><span class="font-normal text-[11px]">DISKON (TOTAL) :</span><input type="text" class="classic-input w-28 text-right bg-white font-bold" value="0" readonly></div>
+                <div class="flex justify-between items-center"><span class="font-normal text-[11px]">TOTAL HARGA :</span><input type="text" id="info-total-harga" class="classic-input w-28 text-right bg-white font-bold" value="0" readonly></div>
+            </div>
+        </div>
 
-    function hapusProduk(code) {
-        if(confirm("Hapus produk ini?")) {
-            productsDb = productsDb.filter(p => p.code !== code);
-            apiPost('syncProducts', productsDb); // <--- Kirim ke API Background
-            renderMasterProduk();
-        }
-    }
+        <div class="flex-1 bg-cyan-light overflow-auto table-container border-b-2 border-gray-400 relative" id="table-scroll-area">
+            <table class="transaction-table" id="main-table">
+                <thead class="sticky top-0 z-10 shadow-sm bg-cyan-light">
+                    <tr class="border-b border-gray-400">
+                        <th class="w-10 text-center">NO</th><th class="w-32">KODE PRODUK</th><th>NAMA PRODUK</th><th class="w-28 text-right">HRG SATUAN</th>
+                        <th class="w-16 text-center">QTY</th><th class="w-20 text-center">SATUAN</th><th class="w-32 text-right">SUB TOTAL</th>
+                        <th class="w-24 text-right">DISKON</th><th class="w-32 text-right">T O T A L</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-body"></tbody>
+            </table>
+            <div class="absolute bottom-2 right-4 opacity-30 select-none pointer-events-none no-print" style="font-size: 2.5rem; font-weight: 900; color: transparent; -webkit-text-stroke: 1.5px #4B5563; text-shadow: 2px 2px 0px rgba(255,255,255,0.5); font-style: italic;">Retail Manager</div>
+        </div>
 
-    function simpanPelanggan() {
-        const id = document.getElementById('plg-id').value.trim().toUpperCase(); const name = document.getElementById('plg-nama').value.trim().toUpperCase();
-        if(!id || !name) return alert("Isi ID dan Nama!");
-        if(customersDb.find(c => c.id === id)) return alert("ID sudah ada!");
-        
-        customersDb.push({ id, name });
-        apiPost('syncCustomers', customersDb); // <--- Kirim ke API Background
-        resetFormPelanggan(); renderPelanggan();
-    }
+        <div class="h-16 bg-[#A0A0A0] flex justify-between border-b border-gray-400">
+            <div class="flex h-full border-r border-gray-600 bg-[#C0C0C0] p-1 gap-1">
+                <button class="toolbar-btn bg-[#E4E4E4] win-border w-[52px]" onclick="openProductSearch()"><i class="fas fa-plus-square text-red-600 text-[16px] mb-1"></i><span class="text-[9px]">Tambah</span></button>
+                <button class="toolbar-btn bg-[#E4E4E4] win-border w-[52px]"><i class="fas fa-check-square text-orange-500 text-[16px] mb-1"></i><span class="text-[9px]">Simpan</span></button>
+                <button class="toolbar-btn bg-[#E4E4E4] win-border w-[52px]" onclick="deleteSelectedItem()"><i class="fas fa-minus-square text-red-600 text-[16px] mb-1"></i><span class="text-[9px]">Hapus</span></button>
+                <button class="toolbar-btn bg-[#E4E4E4] win-border w-[52px]" onclick="openPaymentModal()"><i class="fas fa-calculator text-blue-500 text-[16px] mb-1"></i><span class="text-[9px]">Bayar</span></button>
+            </div>
+            <div class="flex text-[11px] bg-[#C0C0C0] font-bold">
+                <div class="flex items-center px-4">T O T A L :</div>
+                <div class="flex flex-col border-l border-white min-w-[80px]"><div class="text-center py-1 bg-[#A0A0A0] border-b border-gray-500 text-black">JML PRODUK</div><div class="text-center py-1 bg-[#C0C0C0] border-r border-gray-500" id="footer-jml-produk">0</div></div>
+                <div class="flex flex-col border-l border-white min-w-[80px]"><div class="text-center py-1 bg-[#A0A0A0] border-b border-gray-500 text-black">JML QTY</div><div class="text-center py-1 bg-[#C0C0C0] border-r border-gray-500" id="footer-jml-qty">0,00</div></div>
+                <div class="flex flex-col border-l border-white min-w-[100px]"><div class="text-center py-1 bg-[#A0A0A0] border-b border-gray-500 text-black">SUB TOTAL</div><div class="text-center py-1 bg-[#C0C0C0] border-r border-gray-500" id="footer-sub-total">0,00</div></div>
+                <div class="flex flex-col border-l border-white min-w-[120px]"><div class="text-center py-1 bg-[#A0A0A0] border-b border-gray-500 text-black">TOTAL HARGA</div><div class="text-center py-1 bg-[#C0C0C0]" id="footer-total-harga">0,00</div></div>
+            </div>
+        </div>
 
-    function simpanAkun() {
-        const u = document.getElementById('admin-user').value.trim(); const p = document.getElementById('admin-pass').value.trim();
-        if(u && p) {
-            appUser.user = u; appUser.pass = p;
-            apiPost('syncSettings', appUser, 'akun'); // <--- Kirim ke API Background
-            const msg = document.getElementById('admin-msg'); msg.classList.remove('hidden'); setTimeout(() => msg.classList.add('hidden'), 2000);
-        }
-    }
+        <div class="flex justify-between items-center h-6 bg-[#F0F0F0] text-[10px] px-2">
+            <div class="flex gap-4 items-center h-full">
+                <span class="border-r border-gray-400 pr-4 h-full flex items-center">SERVER</span>
+                <span class="border-r border-gray-400 pr-4 h-full flex items-center" id="op-name">OPERATOR : admin</span>
+                <span class="text-gray-600">Retail Manager Cloud GAS</span>
+            </div>
+            <div class="flex h-full">
+                <span class="border-l border-gray-400 px-4 h-full flex items-center" id="status-date"></span>
+                <span class="border-l border-gray-400 px-4 h-full flex items-center" id="status-time"></span>
+            </div>
+        </div>
+    </div>
 
-    function simpanInfoToko() {
-        const n = document.getElementById('admin-toko-nama').value.trim(); const a = document.getElementById('admin-toko-alamat').value.trim();
-        if(n && a) {
-            storeInfo.name = n; storeInfo.address = a;
-            apiPost('syncSettings', storeInfo, 'toko'); // <--- Kirim ke API Background
-            updateStoreUI();
-            const msg = document.getElementById('admin-toko-msg'); msg.classList.remove('hidden'); setTimeout(() => msg.classList.add('hidden'), 2000);
-        } else alert("Kosong!");
-    }
+    <!-- MODAL-MODAL -->
+    <div id="search-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="max-height: 80vh;">
+            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Pencarian Produk</span><button onclick="closeModal('search-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
+            <div class="p-2 flex gap-2 items-center bg-[#F0F0F0] border-b border-gray-400"><span class="text-xs font-bold">CARI NAMA:</span><input type="text" id="search-input" class="classic-input flex-1" oninput="filterProductSearch()"></div>
+            <div class="flex-1 overflow-auto bg-white" style="min-height: 300px;">
+                <table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-32">KODE</th><th>NAMA PRODUK</th><th class="w-24 text-center">SATUAN</th><th class="w-32 text-right">HARGA JUAL</th></tr></thead><tbody id="search-results"></tbody></table>
+            </div>
+        </div>
+    </div>
 
-    function loadPendapatan() {
-        const filterDate = document.getElementById('filter-date-pendapatan').value;
-        const tbody = document.getElementById('pendapatan-body');
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mengambil data dari server...</td></tr>';
-        
-        apiGet('getTransactionsByDate', '&date=' + filterDate).then(transactions => {
-            renderPendapatanTable(transactions, tbody);
-        });
-    }
+    <div id="edit-qty-modal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-72 shadow-lg">
+            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Ubah Quantity (QTY)</span><button onclick="closeModal('edit-qty-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
+            <div class="p-4 flex flex-col gap-3"><div class="text-xs font-bold text-center text-blue-800" id="qty-modal-product-name">-</div><div><label class="block text-xs font-bold mb-1 text-center">Masukkan QTY Baru:</label><input type="number" id="edit-qty-input" class="classic-input w-full text-center text-3xl font-bold p-2" min="1" onkeypress="handleEditQtyEnter(event)"></div><div class="mt-2 flex justify-center"><button onclick="saveEditQty()" class="bg-gray-300 win-border px-8 py-2 text-sm font-bold text-blue-800">OK</button></div></div>
+        </div>
+    </div>
 
-    function loadCetakUlang() {
-        const filterDate = document.getElementById('filter-date-cetak').value;
-        const tbody = document.getElementById('cetak-ulang-body');
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
-        
-        apiGet('getTransactionsByDate', '&date=' + filterDate).then(transactions => {
-            renderCetakUlangTable(transactions, tbody);
-        });
-    }
+    <div id="master-produk-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-11/12 max-w-4xl shadow-lg flex flex-col" style="height: 80vh;">
+            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Data Master Produk</span><button onclick="closeModal('master-produk-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
+            <div class="p-2 bg-[#F0F0F0] border-b border-gray-400 flex gap-2 items-end text-xs font-bold flex-wrap">
+                <div class="flex flex-col gap-1"><label>KODE/BARCODE</label><input type="text" id="prod-kode" class="classic-input w-28"></div>
+                <div class="flex flex-col gap-1 flex-1 min-w-[150px]"><label>NAMA PRODUK</label><input type="text" id="prod-nama" class="classic-input w-full"></div>
+                <div class="flex flex-col gap-1"><label>HARGA BELI</label><input type="number" id="prod-harga-beli" class="classic-input w-24 text-right" oninput="hitungProfitForm()"></div>
+                <div class="flex flex-col gap-1"><label>HARGA JUAL</label><input type="number" id="prod-harga" class="classic-input w-24 text-right" oninput="hitungProfitForm()"></div>
+                <div class="flex flex-col gap-1"><label>PROFIT</label><input type="text" id="prod-profit" class="classic-input w-24 text-right bg-gray-200" readonly></div>
+                <div class="flex flex-col gap-1"><label>SATUAN</label><input type="text" id="prod-satuan" class="classic-input w-16"></div>
+                <div class="flex gap-1 h-[26px]"><button onclick="simpanProduk()" class="bg-gray-300 win-border px-3 text-blue-800"><i class="fas fa-save"></i> Simpan</button><button onclick="resetFormProduk()" class="bg-gray-300 win-border px-3 text-red-600"><i class="fas fa-eraser"></i> Bersihkan</button></div>
+            </div>
+            <div class="flex-1 overflow-auto bg-white">
+                <table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10 text-center">NO</th><th class="w-32">KODE</th><th>NAMA PRODUK</th><th class="w-20 text-center">SATUAN</th><th class="w-28 text-right">HARGA BELI</th><th class="w-28 text-right">HARGA JUAL</th><th class="w-28 text-right">PROFIT</th><th class="w-24 text-center">AKSI</th></tr></thead><tbody id="master-produk-body"></tbody></table>
+            </div>
+        </div>
+    </div>
 
-    function handlePrintChoice(isPdf) {
-        document.getElementById('pdf-confirm-modal').classList.add('hidden');
-        if(pendingTransaction) {
-            apiPost('saveTransaction', pendingTransaction); // <--- Kirim Data Struk ke Google Sheets
-            executePrintReceipt(pendingTransaction, isPdf);
-            
-            setTimeout(() => {
-                cart = []; selectedRowIndex = -1; renderCartTable();
-                document.getElementById('info-harga-satuan').value = "0"; document.getElementById('info-sub-total').value = "0"; document.getElementById('info-total-harga').value = "0";
-                document.getElementById('barcode-input').focus();
-            }, 500);
-            pendingTransaction = null;
-        }
-    }
-
-    // Semua fungsi pendukung lainnya taruh di bawah sini (updateClock, format number, cart render, dsb).
+    <div id="pendapatan-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="height: 70vh;">
+            <div class="
