@@ -723,39 +723,49 @@
             });
         }
 
-function loadCetakUlang() {
-            const startDate = document.getElementById('filter-start-cetak').value; 
-            const endDate = document.getElementById('filter-end-cetak').value; 
-            const tbody = document.getElementById('cetak-ulang-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
-            
-            apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
-                tbody.innerHTML = ''; let counter = 1;
-                transactions.forEach(trx => {
-                    const d = new Date(trx.date); 
-                    const tr = document.createElement('tr');
-                    const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
-                    
-                    // Menambahkan div flex dan tombol PDF berwarna merah di kolom aksi
-                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${trx.id}</td><td class="text-right">${formatNumber(trx.total)}</td>
-                    <td class="text-center">
-                        <div class="flex justify-center gap-1">
-                            <button onclick='cetakStrukTertentu(${JSON.stringify(trx)}, false)' class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button>
-                            <button onclick='cetakStrukTertentu(${JSON.stringify(trx)}, true)' class="bg-red-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-red-300"><i class="fas fa-file-pdf"></i> PDF</button>
-                        </div>
-                    </td>`;
-                    
-                    tbody.appendChild(tr);
-                });
-                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan di rentang tanggal ini.</td></tr>';
-            });
-        }
+// Variabel penampung sementara
+    let fetchedTransactions = [];
+
+    function loadCetakUlang() {
+        const startDate = document.getElementById('filter-start-cetak').value; 
+        const endDate = document.getElementById('filter-end-cetak').value; 
+        const tbody = document.getElementById('cetak-ulang-body');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
         
-        // Memodifikasi fungsi ini agar bisa menerima perintah isPdf (true/false)
-        function cetakStrukTertentu(trxData, isPdf = false) { 
-            trxData.date = new Date(trxData.date); 
-            executePrintReceipt(trxData, isPdf); 
-        }
+        apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
+            // Simpan data ke variabel penampung
+            fetchedTransactions = transactions; 
+            
+            tbody.innerHTML = ''; let counter = 1;
+            transactions.forEach((trx, index) => {
+                const d = new Date(trx.date); 
+                const tr = document.createElement('tr');
+                const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+                
+                // Kita gunakan 'index' sebagai pemicu tombol, sehingga 100% aman dari bentrok karakter
+                tr.innerHTML = `<td class="text-center">${counter++}</td>
+                <td class="text-center">${dateStr}</td>
+                <td class="text-center font-bold">${trx.id}</td>
+                <td class="text-right">${formatNumber(trx.total)}</td>
+                <td class="text-center">
+                    <div class="flex justify-center gap-1">
+                        <button onclick="cetakStrukTertentu(${index}, false)" class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button>
+                        <button onclick="cetakStrukTertentu(${index}, true)" class="bg-red-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-red-300"><i class="fas fa-file-pdf"></i> PDF</button>
+                    </div>
+                </td>`;
+                
+                tbody.appendChild(tr);
+            });
+            if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan di rentang tanggal ini.</td></tr>';
+        });
+    }
+    
+    function cetakStrukTertentu(index, isPdf = false) { 
+        // Ambil data utuh dari variabel berdasarkan index yang diklik
+        let trxData = fetchedTransactions[index];
+        trxData.date = new Date(trxData.date); 
+        executePrintReceipt(trxData, isPdf); 
+    }
         
         function cetakStrukTertentu(trxData) { trxData.date = new Date(trxData.date); executePrintReceipt(trxData, false); }
 
