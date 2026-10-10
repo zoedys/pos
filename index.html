@@ -249,11 +249,15 @@
         </div>
     </div>
 
-    <div id="cetak-ulang-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
-        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="height: 70vh;">
+<div id="cetak-ulang-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 70vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Cetak Ulang Struk</span><button onclick="closeModal('cetak-ulang-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
-            <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold"><span>Tanggal:</span><input type="date" id="filter-date-cetak" class="classic-input" onchange="loadCetakUlang()"><button onclick="loadCetakUlang()" class="bg-gray-300 win-border px-3 py-1"><i class="fas fa-sync-alt text-blue-600"></i> Cari</button></div>
-            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-24">WAKTU</th><th class="w-32">NO TRX</th><th class="w-32 text-right">TOTAL (RP)</th><th class="w-24 text-center">AKSI</th></tr></thead><tbody id="cetak-ulang-body"></tbody></table></div>
+            <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold">
+                <span>Dari:</span><input type="date" id="filter-start-cetak" class="classic-input" onchange="loadCetakUlang()">
+                <span>Sampai:</span><input type="date" id="filter-end-cetak" class="classic-input" onchange="loadCetakUlang()">
+                <button onclick="loadCetakUlang()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Cari</button>
+            </div>
+            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-32">TGL & WAKTU</th><th class="w-32">NO TRX</th><th class="w-32 text-right">TOTAL (RP)</th><th class="w-24 text-center">AKSI</th></tr></thead><tbody id="cetak-ulang-body"></tbody></table></div>
         </div>
     </div>
 
@@ -719,20 +723,38 @@
             });
         }
 
-        function openCetakUlang() { document.getElementById('cetak-ulang-modal').classList.remove('hidden'); document.getElementById('filter-date-cetak').valueAsDate = new Date(); loadCetakUlang(); }
-        
-        function loadCetakUlang() {
-            const filterDate = document.getElementById('filter-date-cetak').value; const tbody = document.getElementById('cetak-ulang-body');
+function loadCetakUlang() {
+            const startDate = document.getElementById('filter-start-cetak').value; 
+            const endDate = document.getElementById('filter-end-cetak').value; 
+            const tbody = document.getElementById('cetak-ulang-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
-            apiGet('getTransactionsByDate', `&date=${filterDate}`).then(transactions => {
+            
+            apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
                 tbody.innerHTML = ''; let counter = 1;
                 transactions.forEach(trx => {
-                    const d = new Date(trx.date); const tr = document.createElement('tr');
-                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${d.toLocaleTimeString('id-ID')}</td><td class="text-center font-bold">${trx.id}</td><td class="text-right">${formatNumber(trx.total)}</td><td class="text-center"><button onclick='cetakStrukTertentu(${JSON.stringify(trx)})' class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button></td>`;
+                    const d = new Date(trx.date); 
+                    const tr = document.createElement('tr');
+                    const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+                    
+                    // Menambahkan div flex dan tombol PDF berwarna merah di kolom aksi
+                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${trx.id}</td><td class="text-right">${formatNumber(trx.total)}</td>
+                    <td class="text-center">
+                        <div class="flex justify-center gap-1">
+                            <button onclick='cetakStrukTertentu(${JSON.stringify(trx)}, false)' class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button>
+                            <button onclick='cetakStrukTertentu(${JSON.stringify(trx)}, true)' class="bg-red-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-red-300"><i class="fas fa-file-pdf"></i> PDF</button>
+                        </div>
+                    </td>`;
+                    
                     tbody.appendChild(tr);
                 });
-                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan.</td></tr>';
+                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan di rentang tanggal ini.</td></tr>';
             });
+        }
+        
+        // Memodifikasi fungsi ini agar bisa menerima perintah isPdf (true/false)
+        function cetakStrukTertentu(trxData, isPdf = false) { 
+            trxData.date = new Date(trxData.date); 
+            executePrintReceipt(trxData, isPdf); 
         }
         
         function cetakStrukTertentu(trxData) { trxData.date = new Date(trxData.date); executePrintReceipt(trxData, false); }
