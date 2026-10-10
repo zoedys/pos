@@ -55,7 +55,7 @@
     <div id="gas-loading" class="fixed inset-0 bg-[#C0C0C0] z-[999] flex flex-col items-center justify-center">
         <div class="bg-[#F0F0F0] win-border p-6 shadow-xl w-80 text-center flex flex-col items-center gap-4">
             <i class="fas fa-spinner fa-spin text-3xl text-blue-800"></i>
-            <h2 class="text-sm font-bold text-gray-800">Menghubungkan ke API Google Sheets...</h2>
+            <h2 class="text-sm font-bold text-gray-800">Menghubungkan ke Database...</h2>
             <p class="text-xs text-gray-600">Mohon tunggu sebentar.</p>
         </div>
     </div>
@@ -92,7 +92,7 @@
         <div class="flex justify-between items-center px-2 py-1 bg-white border-b border-gray-300 text-xs select-none">
             <div class="flex items-center gap-2 font-semibold">
                 <i class="fas fa-shopping-cart text-green-600"></i>
-                <span id="app-title-text">RETAIL MANAGER - [TRANSAKSI PENJUALAN]</span>
+                <span id="app-title-text">TRANSAKSI PENJUALAN</span>
             </div>
             <div class="flex gap-2 text-gray-600">
                 <span class="cursor-pointer hover:bg-gray-200 px-2 py-0.5"><i class="fas fa-minus"></i></span>
@@ -249,7 +249,8 @@
         </div>
     </div>
 
-<div id="cetak-ulang-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+    <!-- MODAL CETAK ULANG -->
+    <div id="cetak-ulang-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 70vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Cetak Ulang Struk</span><button onclick="closeModal('cetak-ulang-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
             <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold">
@@ -257,10 +258,11 @@
                 <span>Sampai:</span><input type="date" id="filter-end-cetak" class="classic-input" onchange="loadCetakUlang()">
                 <button onclick="loadCetakUlang()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Cari</button>
             </div>
-            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-32">TGL & WAKTU</th><th class="w-32">NO TRX</th><th class="w-32 text-right">TOTAL (RP)</th><th class="w-24 text-center">AKSI</th></tr></thead><tbody id="cetak-ulang-body"></tbody></table></div>
+            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-32">TGL & WAKTU</th><th class="w-32">NO TRX</th><th class="w-32 text-right">TOTAL (RP)</th><th class="w-32 text-center">AKSI</th></tr></thead><tbody id="cetak-ulang-body"></tbody></table></div>
         </div>
     </div>
 
+    <!-- MODAL ADMINISTRASI -->
     <div id="administrasi-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-11/12 max-w-4xl shadow-lg flex flex-col" style="height: 80vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Administrasi Sistem</span><button onclick="closeModal('administrasi-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
@@ -290,6 +292,7 @@
         </div>
     </div>
 
+    <!-- MODAL PENGATURAN PRINTER -->
     <div id="pengaturan-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-80 shadow-lg">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Pengaturan Printer</span><button onclick="closeModal('pengaturan-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
@@ -365,7 +368,6 @@
         // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxb26f_sGBEI_aoV4m7qh5SQ0J6nEiOT7mpezUOv-_ru99CibG7PvaZwJN6fPeQ44c/exec"; 
 
-        // Fungsi Komunikasi API
         function apiGet(action, param = "") {
             return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json());
         }
@@ -382,17 +384,16 @@
             }).then(res => res.json()).catch(err => console.error(err));
         }
 
-        // Variabel Penyimpanan Data
         let productsDb = []; let customersDb = []; let storeInfo = {}; let appUser = {};
         let cart = []; let totalAmount = 0; let totalQty = 0; let selectedRowIndex = -1;
         const emptyRowsToGenerate = 15;
         let pendingTransaction = null;
         let editProdukKode = null;
+        let fetchedTransactions = []; // Penampung untuk fitur cetak ulang
 
         const formatNumber = (num) => num.toLocaleString('id-ID');
         const formatDecimal = (num) => num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-        // INITIALISASI SAAT HALAMAN DIBUKA
         window.onload = function() {
             apiGet('getInitialData')
             .then(data => {
@@ -413,7 +414,6 @@
             setInterval(updateClock, 1000); updateClock();
         };
 
-        // LOGIN & LOGOUT
         function handleLogin(e) {
             e.preventDefault();
             if (document.getElementById('username').value === appUser.user && document.getElementById('password').value === appUser.pass) {
@@ -438,7 +438,6 @@
             }
         }
 
-        // KERANJANG BELANJA
         function clearCart() {
             if (cart.length === 0) return;
             if (confirm("Batalkan transaksi ini?")) {
@@ -492,7 +491,6 @@
             }
         }
 
-        // FUNGSI SHORTCUT & BARCODE
         document.addEventListener('keydown', function(e) {
             if (document.getElementById('login-container').classList.contains('hidden') === false) return;
             const isModalOpen = document.querySelectorAll('.modal-overlay:not(.hidden)').length > 0;
@@ -524,7 +522,6 @@
             } else alert('Produk tidak ditemukan!');
         }
 
-        // QTY & MODAL UMUM
         function closeModal(modalId) { 
             document.getElementById(modalId).classList.add('hidden'); 
             if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal') document.getElementById('barcode-input').focus();
@@ -542,7 +539,6 @@
         }
         function handleEditQtyEnter(e) { if (e.key === 'Enter') { e.preventDefault(); saveEditQty(); } }
 
-        // MASTER PRODUK
         function openMasterProduk() { document.getElementById('master-produk-modal').classList.remove('hidden'); resetFormProduk(); renderMasterProduk(); }
         function renderMasterProduk() {
             const tbody = document.getElementById('master-produk-body'); tbody.innerHTML = '';
@@ -584,7 +580,6 @@
             if(confirm("Hapus produk ini?")) { productsDb = productsDb.filter(p => p.code !== code); apiPost('syncProducts', productsDb); renderMasterProduk(); }
         }
 
-        // PENCARIAN PRODUK POPUP
         function openProductSearch() { document.getElementById('search-modal').classList.remove('hidden'); document.getElementById('search-input').value = ''; document.getElementById('search-input').focus(); filterProductSearch(); }
         function filterProductSearch() {
             const term = document.getElementById('search-input').value.toLowerCase();
@@ -598,7 +593,6 @@
             });
         }
 
-        // ADMINISTRASI (PELANGGAN & TOKO)
         function openAdministrasi() {
             document.getElementById('administrasi-modal').classList.remove('hidden');
             document.getElementById('admin-user').value = appUser.user; document.getElementById('admin-pass').value = appUser.pass;
@@ -636,11 +630,9 @@
         }
         function hapusPelanggan(id) { if(id === 'RETAIL') return alert("Tidak bisa dihapus!"); if(confirm("Hapus pelanggan?")) { customersDb = customersDb.filter(c => c.id !== id); apiPost('syncCustomers', customersDb); renderPelanggan(); } }
 
-        // PENGATURAN PRINTER
         function openPengaturan() { document.getElementById('pengaturan-modal').classList.remove('hidden'); document.getElementById('setting-paper').value = document.getElementById('print-area').classList.contains('paper-58mm') ? 'paper-58mm' : 'paper-80mm'; }
         function simpanPengaturan() { const paperClass = document.getElementById('setting-paper').value; const printArea = document.getElementById('print-area'); printArea.classList.remove('paper-80mm', 'paper-58mm'); printArea.classList.add(paperClass); alert("Tersimpan!"); closeModal('pengaturan-modal'); }
 
-        // PEMBAYARAN & CETAK STRUK
         function openPaymentModal() { if (cart.length === 0) return alert("Belum ada transaksi."); document.getElementById('payment-modal').classList.remove('hidden'); document.getElementById('pay-cash').value = ''; document.getElementById('pay-change').value = ''; document.getElementById('pay-cash').focus(); }
         function calculateChange() {
             const cash = parseFloat(document.getElementById('pay-cash').value) || 0; const change = cash - totalAmount; const el = document.getElementById('pay-change');
@@ -663,7 +655,7 @@
         function handlePrintChoice(isPdf) {
             document.getElementById('pdf-confirm-modal').classList.add('hidden');
             if(pendingTransaction) {
-                apiPost('saveTransaction', pendingTransaction); // Kirim ke Backend
+                apiPost('saveTransaction', pendingTransaction); 
                 executePrintReceipt(pendingTransaction, isPdf);
                 setTimeout(() => { cart = []; selectedRowIndex = -1; renderCartTable(); document.getElementById('info-harga-satuan').value = "0"; document.getElementById('info-sub-total').value = "0"; document.getElementById('info-total-harga').value = "0"; document.getElementById('barcode-input').focus(); }, 500);
                 pendingTransaction = null;
@@ -692,7 +684,7 @@
             } else { window.print(); printArea.classList.add('hidden'); }
         }
 
-        // LAPORAN PENDAPATAN (RENTANG TANGGAL) & CETAK ULANG
+        // LAPORAN PENDAPATAN (RENTANG TANGGAL)
         function openPendapatan() { 
             document.getElementById('pendapatan-modal').classList.remove('hidden'); 
             const today = new Date();
@@ -713,7 +705,6 @@
                     totalSehari += trx.total; 
                     const d = new Date(trx.date); 
                     const tr = document.createElement('tr');
-                    // Tampilkan format DD/MM/YYYY agar lebih jelas
                     const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
                     tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center">${trx.id}</td><td>${trx.pelanggan || '-'}</td><td class="text-right font-bold text-blue-800">Rp ${formatNumber(trx.total)}</td>`;
                     tbody.appendChild(tr);
@@ -723,51 +714,54 @@
             });
         }
 
-// Variabel penampung sementara
-    let fetchedTransactions = [];
-
-    function loadCetakUlang() {
-        const startDate = document.getElementById('filter-start-cetak').value; 
-        const endDate = document.getElementById('filter-end-cetak').value; 
-        const tbody = document.getElementById('cetak-ulang-body');
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
+        // CETAK ULANG STRUK (RENTANG TANGGAL & PDF)
+        function openCetakUlang() { 
+            document.getElementById('cetak-ulang-modal').classList.remove('hidden'); 
+            const today = new Date();
+            document.getElementById('filter-start-cetak').valueAsDate = today; 
+            document.getElementById('filter-end-cetak').valueAsDate = today; 
+            loadCetakUlang(); 
+        }
         
-        apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
-            // Simpan data ke variabel penampung
-            fetchedTransactions = transactions; 
+        function loadCetakUlang() {
+            const startDate = document.getElementById('filter-start-cetak').value; 
+            const endDate = document.getElementById('filter-end-cetak').value; 
+            const tbody = document.getElementById('cetak-ulang-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
             
-            tbody.innerHTML = ''; let counter = 1;
-            transactions.forEach((trx, index) => {
-                const d = new Date(trx.date); 
-                const tr = document.createElement('tr');
-                const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+            apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
+                fetchedTransactions = transactions; 
+                tbody.innerHTML = ''; let counter = 1;
                 
-                // Kita gunakan 'index' sebagai pemicu tombol, sehingga 100% aman dari bentrok karakter
-                tr.innerHTML = `<td class="text-center">${counter++}</td>
-                <td class="text-center">${dateStr}</td>
-                <td class="text-center font-bold">${trx.id}</td>
-                <td class="text-right">${formatNumber(trx.total)}</td>
-                <td class="text-center">
-                    <div class="flex justify-center gap-1">
-                        <button onclick="cetakStrukTertentu(${index}, false)" class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button>
-                        <button onclick="cetakStrukTertentu(${index}, true)" class="bg-red-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-red-300"><i class="fas fa-file-pdf"></i> PDF</button>
-                    </div>
-                </td>`;
+                transactions.forEach((trx, index) => {
+                    const d = new Date(trx.date); 
+                    const tr = document.createElement('tr');
+                    const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+                    
+                    tr.innerHTML = `<td class="text-center">${counter++}</td>
+                    <td class="text-center">${dateStr}</td>
+                    <td class="text-center font-bold">${trx.id}</td>
+                    <td class="text-right">${formatNumber(trx.total)}</td>
+                    <td class="text-center">
+                        <div class="flex justify-center gap-1">
+                            <button onclick="cetakStrukTertentu(${index}, false)" class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button>
+                            <button onclick="cetakStrukTertentu(${index}, true)" class="bg-red-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-red-300"><i class="fas fa-file-pdf"></i> PDF</button>
+                        </div>
+                    </td>`;
+                    
+                    tbody.appendChild(tr);
+                });
                 
-                tbody.appendChild(tr);
+                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan di rentang tanggal ini.</td></tr>';
             });
-            if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan di rentang tanggal ini.</td></tr>';
-        });
-    }
-    
-    function cetakStrukTertentu(index, isPdf = false) { 
-        // Ambil data utuh dari variabel berdasarkan index yang diklik
-        let trxData = fetchedTransactions[index];
-        trxData.date = new Date(trxData.date); 
-        executePrintReceipt(trxData, isPdf); 
-    }
+        }
         
-        function cetakStrukTertentu(trxData) { trxData.date = new Date(trxData.date); executePrintReceipt(trxData, false); }
+        // FUNGSI INI HANYA BOLEH ADA SATU KALI
+        function cetakStrukTertentu(index, isPdf = false) { 
+            let trxData = fetchedTransactions[index]; 
+            trxData.date = new Date(trxData.date); 
+            executePrintReceipt(trxData, isPdf); 
+        }
 
         // JAM
         function updateClock() {
