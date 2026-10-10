@@ -29,29 +29,22 @@
         .table-container::-webkit-scrollbar-thumb { background-color: #C0C0C0; border: 1px solid #FFFFFF; border-right-color: #808080; border-bottom-color: #808080; }
         .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
 
-@media print {
+        @media print {
             @page { margin: 0; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area { 
                 position: absolute; left: 0; top: 0; 
-                width: 100%; /* Memaksa konten mengisi penuh kertas */
+                width: 100%; 
                 background: white; 
-                color: #000 !important; /* Paksa tinta hitam pekat */
-                font-family: Arial, Helvetica, sans-serif; /* Arial jauh lebih tebal & tajam di thermal */
+                color: #000 !important; 
+                font-family: Arial, Helvetica, sans-serif; 
                 font-weight: bold;
             }
-            
-            /* Pengaturan 80mm */
             #print-area.paper-80mm { max-width: 76mm; padding: 2mm; font-size: 14px; }
-            
-            /* Pengaturan 58mm - Ukuran diperbesar dan margin dirapatkan */
             #print-area.paper-58mm { max-width: 55mm; padding: 0mm 2mm; font-size: 12px; }
-            
-            /* Paksa tabel agar mengikuti ukuran CSS ini */
             #print-area table { width: 100% !important; font-size: inherit !important; }
             #print-area td, #print-area th { font-size: inherit !important; color: #000 !important; }
-            
             .no-print { display: none !important; }
         }
     </style>
@@ -242,11 +235,16 @@
         </div>
     </div>
 
+    <!-- MODAL PENDAPATAN DENGAN RENTANG TANGGAL -->
     <div id="pendapatan-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
-        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="height: 70vh;">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 70vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Laporan Pendapatan Penjualan</span><button onclick="closeModal('pendapatan-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
-            <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold"><span>Tanggal:</span><input type="date" id="filter-date-pendapatan" class="classic-input" onchange="loadPendapatan()"><button onclick="loadPendapatan()" class="bg-gray-300 win-border px-3 py-1"><i class="fas fa-sync-alt text-blue-600"></i> Refresh</button></div>
-            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-32">WAKTU</th><th class="w-32">NO TRX</th><th>PELANGGAN</th><th class="w-32 text-right">TOTAL PENDAPATAN</th></tr></thead><tbody id="pendapatan-body"></tbody></table></div>
+            <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold">
+                <span>Dari:</span><input type="date" id="filter-start-date" class="classic-input" onchange="loadPendapatan()">
+                <span>Sampai:</span><input type="date" id="filter-end-date" class="classic-input" onchange="loadPendapatan()">
+                <button onclick="loadPendapatan()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Cari</button>
+            </div>
+            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-32">TGL & WAKTU</th><th class="w-32">NO TRX</th><th>PELANGGAN</th><th class="w-32 text-right">TOTAL PENDAPATAN</th></tr></thead><tbody id="pendapatan-body"></tbody></table></div>
             <div class="p-2 bg-[#C0C0C0] border-t flex justify-end gap-4 text-sm font-bold"><span>TOTAL: </span><span id="total-pendapatan-hari-ini" class="text-blue-800 text-lg">0</span></div>
         </div>
     </div>
@@ -690,27 +688,43 @@
             } else { window.print(); printArea.classList.add('hidden'); }
         }
 
-        // LAPORAN PENDAPATAN & CETAK ULANG
-        function openPendapatan() { document.getElementById('pendapatan-modal').classList.remove('hidden'); document.getElementById('filter-date-pendapatan').valueAsDate = new Date(); loadPendapatan(); }
+        // LAPORAN PENDAPATAN (RENTANG TANGGAL) & CETAK ULANG
+        function openPendapatan() { 
+            document.getElementById('pendapatan-modal').classList.remove('hidden'); 
+            const today = new Date();
+            document.getElementById('filter-start-date').valueAsDate = today; 
+            document.getElementById('filter-end-date').valueAsDate = today; 
+            loadPendapatan(); 
+        }
+        
         function loadPendapatan() {
-            const filterDate = document.getElementById('filter-date-pendapatan').value; const tbody = document.getElementById('pendapatan-body');
+            const startDate = document.getElementById('filter-start-date').value; 
+            const endDate = document.getElementById('filter-end-date').value; 
+            const tbody = document.getElementById('pendapatan-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mengambil data dari server...</td></tr>';
-            apiGet('getTransactionsByDate', '&date=' + filterDate).then(transactions => {
+            
+            apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
                 tbody.innerHTML = ''; let totalSehari = 0; let counter = 1;
                 transactions.forEach(trx => {
-                    totalSehari += trx.total; const d = new Date(trx.date); const tr = document.createElement('tr');
-                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${d.toLocaleTimeString('id-ID')}</td><td class="text-center">${trx.id}</td><td>${trx.pelanggan || '-'}</td><td class="text-right font-bold text-blue-800">Rp ${formatNumber(trx.total)}</td>`;
+                    totalSehari += trx.total; 
+                    const d = new Date(trx.date); 
+                    const tr = document.createElement('tr');
+                    // Tampilkan format DD/MM/YYYY agar lebih jelas
+                    const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center">${trx.id}</td><td>${trx.pelanggan || '-'}</td><td class="text-right font-bold text-blue-800">Rp ${formatNumber(trx.total)}</td>`;
                     tbody.appendChild(tr);
                 });
-                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada transaksi di tanggal ini.</td></tr>';
+                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada transaksi di rentang tanggal ini.</td></tr>';
                 document.getElementById('total-pendapatan-hari-ini').textContent = "Rp " + formatNumber(totalSehari);
             });
         }
+
         function openCetakUlang() { document.getElementById('cetak-ulang-modal').classList.remove('hidden'); document.getElementById('filter-date-cetak').valueAsDate = new Date(); loadCetakUlang(); }
+        
         function loadCetakUlang() {
             const filterDate = document.getElementById('filter-date-cetak').value; const tbody = document.getElementById('cetak-ulang-body');
             tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mencari struk...</td></tr>';
-            apiGet('getTransactionsByDate', '&date=' + filterDate).then(transactions => {
+            apiGet('getTransactionsByDate', `&date=${filterDate}`).then(transactions => {
                 tbody.innerHTML = ''; let counter = 1;
                 transactions.forEach(trx => {
                     const d = new Date(trx.date); const tr = document.createElement('tr');
@@ -720,6 +734,7 @@
                 if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada struk ditemukan.</td></tr>';
             });
         }
+        
         function cetakStrukTertentu(trxData) { trxData.date = new Date(trxData.date); executePrintReceipt(trxData, false); }
 
         // JAM
