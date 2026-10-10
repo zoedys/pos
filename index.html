@@ -199,7 +199,7 @@
         </div>
     </div>
 
-    <!-- MODAL-MODAL -->
+    <!-- MODAL SEARCH PRODUK -->
     <div id="search-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="max-height: 80vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Pencarian Produk</span><button onclick="closeModal('search-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
@@ -210,6 +210,7 @@
         </div>
     </div>
 
+    <!-- MODAL UBAH QTY -->
     <div id="edit-qty-modal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-72 shadow-lg">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Ubah Quantity (QTY)</span><button onclick="closeModal('edit-qty-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
@@ -217,6 +218,7 @@
         </div>
     </div>
 
+    <!-- MODAL MASTER PRODUK -->
     <div id="master-produk-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-11/12 max-w-4xl shadow-lg flex flex-col" style="height: 80vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Data Master Produk</span><button onclick="closeModal('master-produk-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
@@ -235,7 +237,7 @@
         </div>
     </div>
 
-<!-- MODAL PENDAPATAN (REKAP HARIAN/BULANAN & EXPORT PDF) -->
+    <!-- MODAL LAPORAN PENDAPATAN (DENGAN EXPORT PDF) -->
     <div id="pendapatan-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 80vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Laporan Penjualan</span><button onclick="closeModal('pendapatan-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
@@ -250,13 +252,12 @@
                 </select>
                 <button onclick="loadPendapatan()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Proses</button>
                 
-                <!-- TOMBOL EKSPOR PDF -->
+                <!-- TOMBOL EKSPOR PDF ADA DI SINI -->
                 <button onclick="cetakLaporanPDF()" class="bg-red-200 border border-gray-500 px-3 py-1 ml-auto text-red-800 hover:bg-red-300"><i class="fas fa-file-pdf"></i> Export PDF</button>
             </div>
             
-            <!-- AREA KHUSUS YANG AKAN DITARIK KE PDF -->
             <div class="flex-1 overflow-auto bg-white p-4" id="area-laporan-pdf">
-                <!-- KOP SURAT (Sembunyi di web, Muncul di PDF) -->
+                <!-- KOP SURAT UNTUK PDF -->
                 <div id="kop-laporan" class="hidden text-center mb-6">
                     <h2 class="font-bold text-xl uppercase" id="kop-nama-toko">NAMA TOKO</h2>
                     <p class="text-sm text-gray-600" id="kop-alamat-toko">Alamat Toko</p>
@@ -265,13 +266,10 @@
                 </div>
                 
                 <table class="transaction-table w-full">
-                    <thead class="sticky top-0 shadow-sm" id="pendapatan-thead">
-                        <!-- Judul tabel menyesuaikan tipe laporan otomatis -->
-                    </thead>
+                    <thead class="sticky top-0 shadow-sm" id="pendapatan-thead"></thead>
                     <tbody id="pendapatan-body"></tbody>
                 </table>
                 
-                <!-- Letak Total dipindah ke dalam area tabel agar ikut tercetak di PDF -->
                 <div class="mt-4 p-2 bg-[#E4E4E4] border border-gray-400 flex justify-end gap-4 text-sm font-bold">
                     <span>TOTAL PENDAPATAN: </span><span id="total-pendapatan-hari-ini" class="text-blue-800 text-lg">0</span>
                 </div>
@@ -419,7 +417,7 @@
         const emptyRowsToGenerate = 15;
         let pendingTransaction = null;
         let editProdukKode = null;
-        let fetchedTransactions = []; // Penampung untuk fitur cetak ulang
+        let fetchedTransactions = []; 
 
         const formatNumber = (num) => num.toLocaleString('id-ID');
         const formatDecimal = (num) => num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -714,11 +712,10 @@
             } else { window.print(); printArea.classList.add('hidden'); }
         }
 
-// LAPORAN PENDAPATAN (RENTANG TANGGAL & REKAP HARIAN/BULANAN)
+        // LAPORAN PENDAPATAN (RENTANG TANGGAL, REKAP, DAN EXPORT PDF)
         function openPendapatan() { 
             document.getElementById('pendapatan-modal').classList.remove('hidden'); 
             const today = new Date();
-            // Default diset dari tanggal 1 bulan ini s.d hari ini
             const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
             document.getElementById('filter-start-date').valueAsDate = firstDay; 
             document.getElementById('filter-end-date').valueAsDate = today; 
@@ -729,7 +726,7 @@
         function loadPendapatan() {
             const startDate = document.getElementById('filter-start-date').value; 
             const endDate = document.getElementById('filter-end-date').value; 
-            const reportType = document.getElementById('report-type').value; // Ambil tipe laporan
+            const reportType = document.getElementById('report-type').value; 
             
             const thead = document.getElementById('pendapatan-thead');
             const tbody = document.getElementById('pendapatan-body');
@@ -738,7 +735,6 @@
             apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
                 tbody.innerHTML = ''; let totalSemua = 0; let counter = 1;
                 
-                // 1. JIKA TIPE DETAIL TRANSAKSI
                 if (reportType === 'detail') {
                     thead.innerHTML = `<tr><th class="w-10">NO</th><th class="w-40">TGL & WAKTU</th><th class="w-32">NO TRX</th><th>PELANGGAN</th><th class="w-32 text-right">TOTAL (RP)</th></tr>`;
                     transactions.forEach(trx => {
@@ -751,60 +747,12 @@
                     });
                     if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada transaksi.</td></tr>';
                 } 
-                // FUNGSI EXPORT LAPORAN KE PDF (A4)
-        function cetakLaporanPDF() {
-            const tbody = document.getElementById('pendapatan-body');
-            if (tbody.innerHTML.includes('Tidak ada') || tbody.innerHTML.includes('Mengambil')) {
-                return alert("Tidak ada data laporan untuk dicetak!");
-            }
-
-            const printArea = document.getElementById('area-laporan-pdf');
-            const kop = document.getElementById('kop-laporan');
-            
-            // 1. Tampilkan KOP Surat
-            kop.classList.remove('hidden');
-            document.getElementById('kop-nama-toko').textContent = storeInfo.name;
-            document.getElementById('kop-alamat-toko').textContent = storeInfo.address;
-            
-            const typeSelect = document.getElementById('report-type');
-            document.getElementById('kop-judul-laporan').textContent = typeSelect.options[typeSelect.selectedIndex].text.toUpperCase();
-            
-            const d1 = new Date(document.getElementById('filter-start-date').value).toLocaleDateString('id-ID');
-            const d2 = new Date(document.getElementById('filter-end-date').value).toLocaleDateString('id-ID');
-            document.getElementById('kop-periode-laporan').textContent = `PERIODE: ${d1} s/d ${d2}`;
-            
-            // 2. Hilangkan mode scroll (overflow) sementara agar tabel tercetak penuh ke bawah
-            printArea.classList.remove('overflow-auto', 'flex-1');
-            printArea.style.height = 'auto';
-
-            // 3. Konversi ke PDF (Ukuran Kertas A4 Margin Rapih)
-            const opt = { 
-                margin: [15, 10, 15, 10], 
-                filename: `Laporan_Penjualan_${typeSelect.value}_${d1}.pdf`, 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 2, scrollY: 0 }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-            };
-            
-            html2pdf().set(opt).from(printArea).save().then(() => {
-                // 4. Kembalikan tampilan ke semula setelah PDF tersimpan
-                kop.classList.add('hidden');
-                printArea.classList.add('overflow-auto', 'flex-1');
-                printArea.style.height = '';
-            }).catch(err => {
-                console.error(err);
-                kop.classList.add('hidden');
-                printArea.classList.add('overflow-auto', 'flex-1');
-            });
-        }
-                // 2. JIKA TIPE REKAP PER HARI
                 else if (reportType === 'harian') {
                     thead.innerHTML = `<tr><th class="w-10">NO</th><th class="w-56">TANGGAL</th><th class="w-40 text-center">JML TRANSAKSI</th><th>KETERANGAN</th><th class="w-32 text-right">TOTAL (RP)</th></tr>`;
                     const grouped = {};
                     transactions.forEach(trx => {
                         totalSemua += trx.total;
                         const d = new Date(trx.date);
-                        // Kelompokkan nama hari & tanggal (contoh: Senin, 12 Oktober 2026)
                         const dateKey = d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); 
                         if (!grouped[dateKey]) grouped[dateKey] = { count: 0, total: 0 };
                         grouped[dateKey].count++;
@@ -818,8 +766,6 @@
                     }
                     if(Object.keys(grouped).length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada data harian.</td></tr>';
                 }
-                
-                // 3. JIKA TIPE REKAP PER BULAN
                 else if (reportType === 'bulanan') {
                     thead.innerHTML = `<tr><th class="w-10">NO</th><th class="w-56">BULAN</th><th class="w-40 text-center">JML TRANSAKSI</th><th>KETERANGAN</th><th class="w-32 text-right">TOTAL (RP)</th></tr>`;
                     const grouped = {};
@@ -827,7 +773,6 @@
                     transactions.forEach(trx => {
                         totalSemua += trx.total;
                         const d = new Date(trx.date);
-                        // Kelompokkan bulan & tahun (contoh: Oktober 2026)
                         const monthKey = months[d.getMonth()] + " " + d.getFullYear(); 
                         if (!grouped[monthKey]) grouped[monthKey] = { count: 0, total: 0 };
                         grouped[monthKey].count++;
@@ -841,10 +786,53 @@
                     }
                     if(Object.keys(grouped).length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada data bulanan.</td></tr>';
                 }
-                
                 document.getElementById('total-pendapatan-hari-ini').textContent = "Rp " + formatNumber(totalSemua);
             });
         }
+
+        // FUNGSI EKSPOR PDF LAPORAN
+        function cetakLaporanPDF() {
+            const tbody = document.getElementById('pendapatan-body');
+            if (tbody.innerHTML.includes('Tidak ada') || tbody.innerHTML.includes('Mengambil')) {
+                return alert("Tidak ada data laporan untuk dicetak!");
+            }
+
+            const printArea = document.getElementById('area-laporan-pdf');
+            const kop = document.getElementById('kop-laporan');
+            
+            kop.classList.remove('hidden');
+            document.getElementById('kop-nama-toko').textContent = storeInfo.name;
+            document.getElementById('kop-alamat-toko').textContent = storeInfo.address;
+            
+            const typeSelect = document.getElementById('report-type');
+            document.getElementById('kop-judul-laporan').textContent = typeSelect.options[typeSelect.selectedIndex].text.toUpperCase();
+            
+            const d1 = new Date(document.getElementById('filter-start-date').value).toLocaleDateString('id-ID');
+            const d2 = new Date(document.getElementById('filter-end-date').value).toLocaleDateString('id-ID');
+            document.getElementById('kop-periode-laporan').textContent = `PERIODE: ${d1} s/d ${d2}`;
+            
+            printArea.classList.remove('overflow-auto', 'flex-1');
+            printArea.style.height = 'auto';
+
+            const opt = { 
+                margin: [15, 10, 15, 10], 
+                filename: `Laporan_Penjualan_${typeSelect.value}_${d1}.pdf`, 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { scale: 2, scrollY: 0 }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+            
+            html2pdf().set(opt).from(printArea).save().then(() => {
+                kop.classList.add('hidden');
+                printArea.classList.add('overflow-auto', 'flex-1');
+                printArea.style.height = '';
+            }).catch(err => {
+                console.error(err);
+                kop.classList.add('hidden');
+                printArea.classList.add('overflow-auto', 'flex-1');
+            });
+        }
+
         // CETAK ULANG STRUK (RENTANG TANGGAL & PDF)
         function openCetakUlang() { 
             document.getElementById('cetak-ulang-modal').classList.remove('hidden'); 
@@ -887,7 +875,6 @@
             });
         }
         
-        // FUNGSI INI HANYA BOLEH ADA SATU KALI
         function cetakStrukTertentu(index, isPdf = false) { 
             let trxData = fetchedTransactions[index]; 
             trxData.date = new Date(trxData.date); 
