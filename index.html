@@ -235,17 +235,30 @@
         </div>
     </div>
 
-    <!-- MODAL PENDAPATAN DENGAN RENTANG TANGGAL -->
+<!-- MODAL PENDAPATAN DENGAN REKAP HARIAN & BULANAN -->
     <div id="pendapatan-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 70vh;">
-            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Laporan Pendapatan Penjualan</span><button onclick="closeModal('pendapatan-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
+            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Laporan Penjualan</span><button onclick="closeModal('pendapatan-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
             <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold">
                 <span>Dari:</span><input type="date" id="filter-start-date" class="classic-input" onchange="loadPendapatan()">
                 <span>Sampai:</span><input type="date" id="filter-end-date" class="classic-input" onchange="loadPendapatan()">
-                <button onclick="loadPendapatan()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Cari</button>
+                <span class="ml-2">Tipe:</span>
+                <select id="report-type" class="classic-input bg-white" onchange="loadPendapatan()">
+                    <option value="detail">Detail Transaksi (Struk)</option>
+                    <option value="harian">Rekap Total Per Hari</option>
+                    <option value="bulanan">Rekap Total Per Bulan</option>
+                </select>
+                <button onclick="loadPendapatan()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Proses</button>
             </div>
-            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-32">TGL & WAKTU</th><th class="w-32">NO TRX</th><th>PELANGGAN</th><th class="w-32 text-right">TOTAL PENDAPATAN</th></tr></thead><tbody id="pendapatan-body"></tbody></table></div>
-            <div class="p-2 bg-[#C0C0C0] border-t flex justify-end gap-4 text-sm font-bold"><span>TOTAL: </span><span id="total-pendapatan-hari-ini" class="text-blue-800 text-lg">0</span></div>
+            <div class="flex-1 overflow-auto bg-white">
+                <table class="transaction-table w-full">
+                    <thead class="sticky top-0 shadow-sm" id="pendapatan-thead">
+                        <!-- Judul tabel akan berubah otomatis menyesuaikan tipe laporan -->
+                    </thead>
+                    <tbody id="pendapatan-body"></tbody>
+                </table>
+            </div>
+            <div class="p-2 bg-[#C0C0C0] border-t flex justify-end gap-4 text-sm font-bold"><span>TOTAL PENDAPATAN: </span><span id="total-pendapatan-hari-ini" class="text-blue-800 text-lg">0</span></div>
         </div>
     </div>
 
@@ -684,36 +697,92 @@
             } else { window.print(); printArea.classList.add('hidden'); }
         }
 
-        // LAPORAN PENDAPATAN (RENTANG TANGGAL)
+// LAPORAN PENDAPATAN (RENTANG TANGGAL & REKAP HARIAN/BULANAN)
         function openPendapatan() { 
             document.getElementById('pendapatan-modal').classList.remove('hidden'); 
             const today = new Date();
-            document.getElementById('filter-start-date').valueAsDate = today; 
+            // Default diset dari tanggal 1 bulan ini s.d hari ini
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('filter-start-date').valueAsDate = firstDay; 
             document.getElementById('filter-end-date').valueAsDate = today; 
+            document.getElementById('report-type').value = 'detail';
             loadPendapatan(); 
         }
         
         function loadPendapatan() {
             const startDate = document.getElementById('filter-start-date').value; 
             const endDate = document.getElementById('filter-end-date').value; 
+            const reportType = document.getElementById('report-type').value; // Ambil tipe laporan
+            
+            const thead = document.getElementById('pendapatan-thead');
             const tbody = document.getElementById('pendapatan-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mengambil data dari server...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center font-bold text-blue-600">Mengambil & memproses data...</td></tr>';
             
             apiGet('getTransactionsByDate', `&startDate=${startDate}&endDate=${endDate}`).then(transactions => {
-                tbody.innerHTML = ''; let totalSehari = 0; let counter = 1;
-                transactions.forEach(trx => {
-                    totalSehari += trx.total; 
-                    const d = new Date(trx.date); 
-                    const tr = document.createElement('tr');
-                    const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
-                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center">${trx.id}</td><td>${trx.pelanggan || '-'}</td><td class="text-right font-bold text-blue-800">Rp ${formatNumber(trx.total)}</td>`;
-                    tbody.appendChild(tr);
-                });
-                if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada transaksi di rentang tanggal ini.</td></tr>';
-                document.getElementById('total-pendapatan-hari-ini').textContent = "Rp " + formatNumber(totalSehari);
+                tbody.innerHTML = ''; let totalSemua = 0; let counter = 1;
+                
+                // 1. JIKA TIPE DETAIL TRANSAKSI
+                if (reportType === 'detail') {
+                    thead.innerHTML = `<tr><th class="w-10">NO</th><th class="w-40">TGL & WAKTU</th><th class="w-32">NO TRX</th><th>PELANGGAN</th><th class="w-32 text-right">TOTAL (RP)</th></tr>`;
+                    transactions.forEach(trx => {
+                        totalSemua += trx.total; 
+                        const d = new Date(trx.date); 
+                        const tr = document.createElement('tr');
+                        const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+                        tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center">${trx.id}</td><td>${trx.pelanggan || '-'}</td><td class="text-right font-bold text-blue-800">${formatNumber(trx.total)}</td>`;
+                        tbody.appendChild(tr);
+                    });
+                    if(transactions.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada transaksi.</td></tr>';
+                } 
+                
+                // 2. JIKA TIPE REKAP PER HARI
+                else if (reportType === 'harian') {
+                    thead.innerHTML = `<tr><th class="w-10">NO</th><th class="w-56">TANGGAL</th><th class="w-40 text-center">JML TRANSAKSI</th><th>KETERANGAN</th><th class="w-32 text-right">TOTAL (RP)</th></tr>`;
+                    const grouped = {};
+                    transactions.forEach(trx => {
+                        totalSemua += trx.total;
+                        const d = new Date(trx.date);
+                        // Kelompokkan nama hari & tanggal (contoh: Senin, 12 Oktober 2026)
+                        const dateKey = d.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); 
+                        if (!grouped[dateKey]) grouped[dateKey] = { count: 0, total: 0 };
+                        grouped[dateKey].count++;
+                        grouped[dateKey].total += trx.total;
+                    });
+                    
+                    for (const [date, data] of Object.entries(grouped)) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td class="text-center">${counter++}</td><td class="font-bold">${date}</td><td class="text-center">${data.count} Struk</td><td>Rekapitulasi Harian</td><td class="text-right font-bold text-blue-800">${formatNumber(data.total)}</td>`;
+                        tbody.appendChild(tr);
+                    }
+                    if(Object.keys(grouped).length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada data harian.</td></tr>';
+                }
+                
+                // 3. JIKA TIPE REKAP PER BULAN
+                else if (reportType === 'bulanan') {
+                    thead.innerHTML = `<tr><th class="w-10">NO</th><th class="w-56">BULAN</th><th class="w-40 text-center">JML TRANSAKSI</th><th>KETERANGAN</th><th class="w-32 text-right">TOTAL (RP)</th></tr>`;
+                    const grouped = {};
+                    const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                    transactions.forEach(trx => {
+                        totalSemua += trx.total;
+                        const d = new Date(trx.date);
+                        // Kelompokkan bulan & tahun (contoh: Oktober 2026)
+                        const monthKey = months[d.getMonth()] + " " + d.getFullYear(); 
+                        if (!grouped[monthKey]) grouped[monthKey] = { count: 0, total: 0 };
+                        grouped[monthKey].count++;
+                        grouped[monthKey].total += trx.total;
+                    });
+                    
+                    for (const [month, data] of Object.entries(grouped)) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td class="text-center">${counter++}</td><td class="font-bold">${month}</td><td class="text-center">${data.count} Struk</td><td>Rekapitulasi Bulanan</td><td class="text-right font-bold text-blue-800">${formatNumber(data.total)}</td>`;
+                        tbody.appendChild(tr);
+                    }
+                    if(Object.keys(grouped).length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada data bulanan.</td></tr>';
+                }
+                
+                document.getElementById('total-pendapatan-hari-ini').textContent = "Rp " + formatNumber(totalSemua);
             });
         }
-
         // CETAK ULANG STRUK (RENTANG TANGGAL & PDF)
         function openCetakUlang() { 
             document.getElementById('cetak-ulang-modal').classList.remove('hidden'); 
