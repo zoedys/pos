@@ -35,7 +35,7 @@
         .module-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2); }
 
         @media print {
-            @page { margin: 0; }
+            @page { margin: 0; size: A4 portrait; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area { position: absolute; left: 0; top: 0; width: 100%; background: white; color: #000 !important; font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
@@ -45,11 +45,11 @@
             #print-area td, #print-area th { font-size: inherit !important; color: #000 !important; }
             .no-print { display: none !important; }
             
-            /* CSS KHUSUS CETAK KWITANSI A4 */
+            /* CSS KHUSUS CETAK KWITANSI A4 (PERBAIKAN MARGIN KANAN FULL WIDTH) */
             #print-kwitansi-area {
-                position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm;
+                position: absolute; left: 0; top: 0; width: 100% !important; max-width: 100%;
                 background: white; color: black; font-family: Arial, sans-serif;
-                padding: 10mm; visibility: visible; box-sizing: border-box;
+                padding: 40px 50px; visibility: visible; box-sizing: border-box;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
             #print-kwitansi-area * { visibility: visible; }
@@ -550,34 +550,34 @@
     </div>
 
     <!-- AREA BARU: CETAK KWITANSI A4 (SESUAI GAMBAR) -->
-    <div id="print-kwitansi-area" class="hidden">
+    <div id="print-kwitansi-area" class="hidden text-[13px]">
         <div id="kwt-original" class="relative pb-4 mb-4 border-b-2 border-dashed border-gray-600">
             <!-- Header Logo & Info -->
             <div class="flex justify-between items-start mb-4">
-                <div class="flex items-center gap-4">
-                    <!-- GANTI TULISAN "logo.png" PADA src= DI BAWAH INI DENGAN NAMA FILE LOGO ANDA -->
+                <div class="flex items-center gap-4 flex-1">
+                    <!-- GANTI TULISAN "logo AJS.png" PADA src= DI BAWAH INI DENGAN NAMA FILE LOGO ANDA -->
                     <img src="logo AJS.png" alt="Logo" class="w-32 h-16 object-contain" onerror="this.outerHTML='<div class=\'w-32 h-16 flex items-center justify-center font-bold text-3xl tracking-widest\'>LOGO</div>'">
                     <div class="border-l-2 border-black pl-4">
-                        <h1 class="font-bold text-xl leading-tight">YAYASAN AL MADINA WONOSOBO</h1>
+                        <h1 class="font-bold text-2xl leading-tight">YAYASAN AL MADINA WONOSOBO</h1>
                         <p class="text-sm">Jl. KH. Hasyim Asy'ari Km. 01 Wonosobo Telp. (0286)3301969</p>
                         <p class="text-sm">Info Pemesanan : <strong class="italic">0881-081-658-168</strong></p>
                     </div>
                 </div>
-                <div class="text-right text-xs pt-1">
+                <div class="text-right text-sm pt-1 whitespace-nowrap">
                     <p>No. <span id="pk-no" class="font-bold">-</span></p>
                 </div>
             </div>
 
-            <!-- Formulir Konten (Spasi dirapatkan) -->
-            <div class="text-sm space-y-2.5">
+            <!-- Formulir Konten (Spasi dirapatkan & Dilebarkan) -->
+            <div class="text-base space-y-2.5">
                 <div class="flex items-end">
-                    <span class="w-40 font-medium">Telah diterima dari</span>
+                    <span class="w-48 font-medium">Telah diterima dari</span>
                     <span class="mr-2">:</span>
                     <span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 font-bold italic" id="pk-terima"></span>
                 </div>
                 
                 <div class="flex items-center">
-                    <span class="w-40 font-medium">Uang Sebanyak</span>
+                    <span class="w-48 font-medium">Uang Sebanyak</span>
                     <span class="mr-2"> </span>
                     <!-- Kotak otomatis menyesuaikan teks -->
                     <div class="inline-block px-4 py-1 bg-[#fef08a] border border-black" style="transform: skewX(-15deg);">
@@ -586,13 +586,13 @@
                 </div>
                 
                 <div class="flex items-center mt-2">
-                    <span class="w-40 font-medium">Metode Pembayaran</span>
+                    <span class="w-48 font-medium">Metode Pembayaran</span>
                     <span class="mr-2">:</span>
                     <div class="flex items-center gap-4" id="pk-metode"></div>
                 </div>
                 
                 <div class="flex items-end mt-2">
-                    <span class="w-40 font-medium">Guna membayar</span>
+                    <span class="w-48 font-medium">Guna membayar</span>
                     <span class="mr-2">:</span>
                     <span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 italic font-medium" id="pk-guna"></span>
                 </div>
@@ -648,7 +648,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA KESELURUHAN -->
+    <!-- SCRIPT UTAMA KESELURUEMHAN -->
     <script>
         // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxb26f_sGBEI_aoV4m7qh5SQ0J6nEiOT7mpezUOv-_ru99CibG7PvaZwJN6fPeQ44c/exec"; 
