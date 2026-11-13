@@ -44,6 +44,15 @@
             #print-area table { width: 100% !important; font-size: inherit !important; }
             #print-area td, #print-area th { font-size: inherit !important; color: #000 !important; }
             .no-print { display: none !important; }
+            
+            /* CSS KHUSUS CETAK KWITANSI A4 */
+            #print-kwitansi-area {
+                position: absolute; left: 0; top: 0; width: 210mm; min-height: 297mm;
+                background: white; color: black; font-family: Arial, sans-serif;
+                padding: 10mm; visibility: visible; box-sizing: border-box;
+                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+            }
+            #print-kwitansi-area * { visibility: visible; }
         }
     </style>
 </head>
@@ -266,14 +275,14 @@
             </div>
         </div>
         <div class="flex px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px]">
-            <div class="menu-btn font-bold"><i class="fas fa-file-invoice"></i> BUAT KWITANSI</div>
-            <div class="menu-btn"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
+            <div class="menu-btn font-bold" onclick="openKwitansiForm()"><i class="fas fa-file-invoice"></i> BUAT KWITANSI</div>
+            <div class="menu-btn" onclick="openKwitansiHistory()"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
             <div class="menu-btn ml-auto text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
         </div>
         <div class="flex-1 flex items-center justify-center text-gray-500 flex-col">
-            <i class="fas fa-tools text-6xl mb-4 text-emerald-300"></i>
-            <h2 class="text-xl font-bold">Modul AJS Sedang Dibangun</h2>
-            <p class="text-sm">Area form kwitansi akan ditempatkan di sini pada tahap selanjutnya.</p>
+            <i class="fas fa-file-invoice text-6xl mb-4 text-emerald-300"></i>
+            <h2 class="text-xl font-bold">Dashboard AJS</h2>
+            <p class="text-sm">Klik "BUAT KWITANSI" di menu atas untuk memulai transaksi.</p>
         </div>
     </div>
 
@@ -289,17 +298,16 @@
             </div>
         </div>
         <div class="flex px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px]">
-            <div class="menu-btn font-bold"><i class="fas fa-file-invoice"></i> BUAT KWITANSI</div>
-            <div class="menu-btn"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
+            <div class="menu-btn font-bold" onclick="openKwitansiForm()"><i class="fas fa-file-invoice"></i> BUAT KWITANSI</div>
+            <div class="menu-btn" onclick="openKwitansiHistory()"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
             <div class="menu-btn ml-auto text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
         </div>
         <div class="flex-1 flex items-center justify-center text-gray-500 flex-col">
-            <i class="fas fa-tools text-6xl mb-4 text-purple-300"></i>
-            <h2 class="text-xl font-bold">Modul Almadina Trans Sedang Dibangun</h2>
-            <p class="text-sm">Area form kwitansi travel akan ditempatkan di sini pada tahap selanjutnya.</p>
+            <i class="fas fa-file-invoice text-6xl mb-4 text-purple-300"></i>
+            <h2 class="text-xl font-bold">Dashboard Almadina Trans</h2>
+            <p class="text-sm">Klik "BUAT KWITANSI" di menu atas untuk memulai transaksi.</p>
         </div>
     </div>
-
 
     <!-- ========================================== -->
     <!-- SEMUA MODAL POPUP (POS RETAIL)             -->
@@ -488,6 +496,153 @@
         <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 0 10px;">
             <div style="text-align: left;"><p style="margin: 0;">Penerima</p><br><br><br><p style="margin: 0;">(__________)</p></div>
             <div style="text-align: center;"><p style="margin: 0;">Penjual</p><br><br><br><p style="margin: 0;">(___________)</p></div>
+        </div>
+    </div>
+
+    <!-- AREA BARU: FORM KWITANSI -->
+    <div id="kwitansi-form-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-11/12 max-w-2xl shadow-lg flex flex-col" style="max-height: 90vh;">
+            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center">
+                <span id="kwitansi-form-title">Buat Kwitansi</span>
+                <button onclick="closeModal('kwitansi-form-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold hover:bg-gray-200">X</button>
+            </div>
+            <div class="p-4 flex flex-col gap-3 overflow-y-auto">
+                <div><label class="block text-xs font-bold mb-1">Telah Diterima Dari</label><input type="text" id="kwt-terima" class="classic-input w-full uppercase"></div>
+                <div><label class="block text-xs font-bold mb-1">Uang Sebanyak (Rp)</label><input type="number" id="kwt-nominal" class="classic-input w-full font-bold text-lg text-blue-700" oninput="updateTerbilang()"></div>
+                <div class="bg-yellow-100 p-2 text-xs italic font-bold text-gray-700 border border-gray-300 rounded" id="kwt-terbilang">-</div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">Metode Pembayaran</label>
+                    <div class="flex gap-4 text-xs">
+                        <label><input type="radio" name="kwt-metode" value="Tunai" checked onchange="toggleTransfer()"> Tunai</label>
+                        <label><input type="radio" name="kwt-metode" value="Transfer" onchange="toggleTransfer()"> Transfer ke Rek</label>
+                        <input type="text" id="kwt-rek" class="classic-input w-48 hidden" placeholder="Cth: BCA 123456789">
+                    </div>
+                </div>
+                <div><label class="block text-xs font-bold mb-1">Guna Membayar</label><input type="text" id="kwt-guna" class="classic-input w-full uppercase"></div>
+                
+                <div class="border border-gray-400 p-3 bg-[#E4E4E4] mt-2 shadow-inner">
+                    <label class="block text-xs font-bold mb-2">Rincian Layanan</label>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div><label class="block mb-1">Hari / Tanggal</label><input type="text" id="kwt-rin-tgl" class="classic-input w-full"></div>
+                        <div><label class="block mb-1">Jenis Layanan</label><input type="text" id="kwt-rin-jenis" class="classic-input w-full"></div>
+                        <div><label class="block mb-1">Tujuan</label><input type="text" id="kwt-rin-tujuan" class="classic-input w-full"></div>
+                        <div><label class="block mb-1">Jumlah Hari</label><input type="text" id="kwt-rin-jml" class="classic-input w-full"></div>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end gap-2">
+                    <button onclick="processKwitansi()" class="bg-emerald-600 text-white win-border px-6 py-2 text-sm font-bold shadow-md hover:bg-emerald-500"><i class="fas fa-print"></i> Simpan & Cetak Kwitansi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AREA BARU: HISTORI KWITANSI -->
+    <div id="kwt-history-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
+        <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 70vh;">
+            <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span id="kwt-hist-title">Histori Kwitansi</span><button onclick="closeModal('kwt-history-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button></div>
+            <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold">
+                <span>Dari:</span><input type="date" id="kwt-hist-start" class="classic-input">
+                <span>Sampai:</span><input type="date" id="kwt-hist-end" class="classic-input">
+                <button onclick="loadKwitansiHistory()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Cari</button>
+            </div>
+            <div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10">NO</th><th class="w-24">TGL</th><th class="w-32">NO KWITANSI</th><th>DITERIMA DARI</th><th class="w-32 text-right">NOMINAL (RP)</th><th class="w-24 text-center">AKSI</th></tr></thead><tbody id="kwt-history-body"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- AREA BARU: CETAK KWITANSI A4 (SESUAI GAMBAR) -->
+    <div id="print-kwitansi-area" class="hidden">
+        <div id="kwt-original" class="relative pb-8 mb-8 border-b-2 border-dashed border-gray-600">
+            <!-- Header Logo & Info -->
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-32 h-16 border-2 border-black flex items-center justify-center font-bold text-3xl tracking-widest bg-white">logo</div>
+                    <div class="border-l-2 border-black pl-4">
+                        <h1 class="font-bold text-xl leading-tight">YAYASAN AL MADINA WONOSOBO</h1>
+                        <p class="text-sm">Jl. KH. Hasyim Asy'ari Km. 01 Wonosobo Telp. (0286)3301969</p>
+                        <p class="text-sm">Info Pemesanan : <strong class="italic">0881-081-658-168</strong></p>
+                    </div>
+                </div>
+                <div class="text-right text-xs pt-1">
+                    <p>No. <span id="pk-no" class="font-bold">-</span></p>
+                </div>
+            </div>
+
+            <!-- Formulir Konten -->
+            <div class="text-sm space-y-4">
+                <div class="flex items-end">
+                    <span class="w-40 font-medium">Telah diterima dari</span>
+                    <span class="mr-2">:</span>
+                    <span class="flex-1 border-b border-dotted border-gray-500 pb-1 font-bold italic" id="pk-terima"></span>
+                </div>
+                
+                <div class="flex items-center">
+                    <span class="w-40 font-medium">Uang Sebanyak</span>
+                    <span class="mr-2"> </span>
+                    <div class="inline-block px-6 py-1 bg-[#fef08a] border border-black min-w-[500px]" style="transform: skewX(-15deg);">
+                        <span class="block font-bold text-sm tracking-wide capitalize" style="transform: skewX(15deg);" id="pk-terbilang"></span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center mt-2">
+                    <span class="w-40 font-medium">Metode Pembayaran</span>
+                    <span class="mr-2">:</span>
+                    <div class="flex items-center gap-4" id="pk-metode"></div>
+                </div>
+                
+                <div class="flex items-end mt-2">
+                    <span class="w-40 font-medium">Guna membayar</span>
+                    <span class="mr-2">:</span>
+                    <span class="flex-1 border-b border-dotted border-gray-500 pb-1 italic font-medium" id="pk-guna"></span>
+                </div>
+                
+                <!-- Rincian Tabel -->
+                <div class="mt-4">
+                    <p class="mb-2 font-medium">Rincian Layanan</p>
+                    <table class="w-full text-center text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-[#99f6e4]">
+                                <th class="py-1 px-2 rounded-l-full border-0">Hari / Tanggal</th>
+                                <th class="py-1 px-2 border-0">Jenis Layanan</th>
+                                <th class="py-1 px-2 border-0">Tujuan</th>
+                                <th class="py-1 px-2 rounded-r-full border-0">Jumlah Hari</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tgl"></td>
+                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jenis"></td>
+                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tujuan"></td>
+                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jml"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer Tanda Tangan & Nominal Angka -->
+                <div class="flex justify-between items-end mt-12">
+                    <div class="flex flex-col">
+                        <div class="flex items-end border-t-2 border-b border-[#99f6e4] py-1 mb-1">
+                            <span class="italic mr-2 font-medium">Terbilang</span>
+                            <div class="inline-block px-4 bg-[#fef08a] border border-black min-w-[200px] h-[26px]" style="transform: skewX(-15deg);">
+                                <span class="block font-bold text-lg leading-none pt-0.5" style="transform: skewX(15deg);">
+                                    <span class="italic mr-2 text-sm">Rp.</span><span id="pk-nominal"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="border-t-2 border-[#99f6e4] w-full mt-1"></div>
+                    </div>
+                    
+                    <div class="text-center w-64">
+                        <p>Wonosobo, <span id="pk-tanggal"></span></p>
+                        <p class="mb-16">Hormat Kami</p>
+                        <p class="border-b border-dotted border-gray-500 pb-1 uppercase font-bold" id="pk-op"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="kwt-salinan" class="relative opacity-90 pt-2">
+            <!-- Akan di-clone secara dinamis via JavaScript -->
         </div>
     </div>
 
@@ -1038,6 +1193,177 @@
             const timeStr = String(now.getHours()).padStart(2, '0') + "." + String(now.getMinutes()).padStart(2, '0') + "." + String(now.getSeconds()).padStart(2, '0');
             const dateEl = document.getElementById('status-date'); const timeEl = document.getElementById('status-time');
             if(dateEl) dateEl.textContent = dateStr; if(timeEl) timeEl.textContent = timeStr;
+        }
+
+        // ===============================================
+        // FUNGSI KHUSUS KWITANSI (AJS & ALMADINA)
+        // ===============================================
+
+        let fetchedKwitansi = [];
+
+        function updateTerbilang() {
+            const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0;
+            document.getElementById('kwt-terbilang').textContent = terbilang(nominal).replace(/\s+/g, ' ').trim() + " Rupiah";
+        }
+
+        // Fungsi mengubah nominal angka ke huruf (Bahasa Indonesia)
+        function terbilang(a) {
+            var bilangan = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+            if(a===0) return "Nol";
+            if (a < 12) return bilangan[a];
+            if (a < 20) return bilangan[a - 10] + " Belas";
+            if (a < 100) return bilangan[Math.floor(a / 10)] + " Puluh " + bilangan[a % 10];
+            if (a < 200) return "Seratus " + terbilang(a - 100);
+            if (a < 1000) return bilangan[Math.floor(a / 100)] + " Ratus " + terbilang(a % 100);
+            if (a < 2000) return "Seribu " + terbilang(a - 1000);
+            if (a < 1000000) return terbilang(Math.floor(a / 1000)) + " Ribu " + terbilang(a % 1000);
+            if (a < 1000000000) return terbilang(Math.floor(a / 1000000)) + " Juta " + terbilang(a % 1000000);
+            return "";
+        }
+
+        function toggleTransfer() {
+            const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer';
+            const rekInput = document.getElementById('kwt-rek');
+            if(isTransfer) { rekInput.classList.remove('hidden'); rekInput.focus(); }
+            else { rekInput.classList.add('hidden'); }
+        }
+
+        function openKwitansiForm() {
+            document.getElementById('kwitansi-form-title').textContent = "Buat Kwitansi - " + (selectedModule === 'ajs' ? 'AJS' : 'ALMADINA TRANS');
+            // Reset input
+            document.getElementById('kwt-terima').value = '';
+            document.getElementById('kwt-nominal').value = '';
+            document.getElementById('kwt-terbilang').textContent = '-';
+            document.getElementById('kwt-guna').value = '';
+            document.getElementById('kwt-rek').value = '';
+            document.getElementById('kwt-rin-tgl').value = '';
+            document.getElementById('kwt-rin-jenis').value = '';
+            document.getElementById('kwt-rin-tujuan').value = '';
+            document.getElementById('kwt-rin-jml').value = '';
+            document.getElementById('kwitansi-form-modal').classList.remove('hidden');
+        }
+
+        function processKwitansi() {
+            const terima = document.getElementById('kwt-terima').value.trim();
+            const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0;
+            const guna = document.getElementById('kwt-guna').value.trim();
+            
+            if(!terima || !nominal || !guna) return alert("Harap lengkapi form (Terima Dari, Nominal, Guna Membayar)!");
+            
+            const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer';
+            const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('kwt-rek').value : 'Tunai';
+            
+            const rincian = {
+                tgl: document.getElementById('kwt-rin-tgl').value.trim(),
+                jenis: document.getElementById('kwt-rin-jenis').value.trim(),
+                tujuan: document.getElementById('kwt-rin-tujuan').value.trim(),
+                jml: document.getElementById('kwt-rin-jml').value.trim()
+            };
+            
+            const prefix = selectedModule === 'ajs' ? 'AJS' : 'AT';
+            const now = new Date();
+            // Generate ID Cerdas: Prefix-TahunBulanTgl-Random3Angka
+            const idStr = prefix + "-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0');
+            
+            const kData = {
+                id: idStr, date: now.toISOString(), terimaDari: terima, gunaMembayar: guna,
+                nominal: nominal, metode: metodeText, rincian: rincian, operator: appUser.user || 'admin'
+            };
+            
+            // Simpan ke database via API
+            if (typeof google !== 'undefined') {
+                const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
+                apiPost(actionName, kData);
+            }
+            
+            document.getElementById('kwitansi-form-modal').classList.add('hidden');
+            executePrintKwitansi(kData);
+        }
+
+        function executePrintKwitansi(kData) {
+            const d = new Date(kData.date);
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const tglStr = d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+            
+            document.getElementById('pk-no').textContent = kData.id;
+            document.getElementById('pk-terima').textContent = kData.terimaDari.toUpperCase();
+            
+            const nominalStr = terbilang(kData.nominal).replace(/\s+/g, ' ').trim() + " Rupiah";
+            document.getElementById('pk-terbilang').textContent = nominalStr;
+            document.getElementById('pk-nominal').textContent = formatNumber(kData.nominal);
+            document.getElementById('pk-guna').textContent = kData.gunaMembayar;
+            
+            const isTransfer = kData.metode.startsWith('Transfer');
+            const rekStr = isTransfer ? kData.metode.replace('Transfer ke Rek:', '').trim() : '...................................................';
+            
+            // Box Centang Custom
+            const boxTunai = !isTransfer ? '<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div>' : '<div class="w-4 h-4 border border-black"></div>';
+            const boxTransfer = isTransfer ? '<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div>' : '<div class="w-4 h-4 border border-black"></div>';
+
+            document.getElementById('pk-metode').innerHTML = `
+                ${boxTunai} Tunai 
+                <span class="ml-4 flex items-center gap-1">${boxTransfer} Transfer ke Rek :</span> 
+                <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>
+            `;
+            
+            document.getElementById('pk-rin-tgl').textContent = kData.rincian.tgl || '................................';
+            document.getElementById('pk-rin-jenis').textContent = kData.rincian.jenis || '................................';
+            document.getElementById('pk-rin-tujuan').textContent = kData.rincian.tujuan || '................................';
+            document.getElementById('pk-rin-jml').textContent = kData.rincian.jml || '................................';
+            
+            document.getElementById('pk-tanggal').textContent = tglStr;
+            document.getElementById('pk-op').textContent = kData.operator.toUpperCase();
+            
+            // Kloning layout untuk salinan dan beri watermark
+            const originalContent = document.getElementById('kwt-original').innerHTML;
+            const salinanDiv = document.getElementById('kwt-salinan');
+            salinanDiv.innerHTML = originalContent + '<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20"><span class="text-8xl font-bold tracking-widest transform -rotate-12 text-gray-400">S A L I N A N</span></div>';
+
+            const printArea = document.getElementById('print-kwitansi-area');
+            printArea.classList.remove('hidden');
+            window.print();
+            printArea.classList.add('hidden');
+        }
+
+        // FUNGSI HISTORY KWITANSI
+        function openKwitansiHistory() {
+            document.getElementById('kwt-hist-title').textContent = "Histori Kwitansi - " + (selectedModule === 'ajs' ? 'AJS' : 'ALMADINA TRANS');
+            document.getElementById('kwt-history-modal').classList.remove('hidden');
+            const today = new Date();
+            document.getElementById('kwt-hist-start').valueAsDate = today;
+            document.getElementById('kwt-hist-end').valueAsDate = today;
+            loadKwitansiHistory();
+        }
+
+        function loadKwitansiHistory() {
+            const startDate = document.getElementById('kwt-hist-start').value;
+            const endDate = document.getElementById('kwt-hist-end').value;
+            const tbody = document.getElementById('kwt-history-body');
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center font-bold text-blue-600">Mengambil data dari server...</td></tr>';
+            
+            const actionName = selectedModule === 'ajs' ? 'getKwitansiAJS' : 'getKwitansiAlmadina';
+            apiGet(actionName, `&startDate=${startDate}&endDate=${endDate}`).then(data => {
+                fetchedKwitansi = data;
+                tbody.innerHTML = ''; let counter = 1;
+                data.forEach((k, index) => {
+                    const d = new Date(k.date);
+                    const dateStr = d.toLocaleDateString('id-ID') + ' ' + d.toLocaleTimeString('id-ID').substring(0,5);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${k.id}</td>
+                        <td class="uppercase">${k.terimaDari}</td><td class="text-right font-bold text-blue-800">${formatNumber(k.nominal)}</td>
+                        <td class="text-center"><button onclick="cetakStrukTertentuKwitansi(${index})" class="bg-blue-200 border border-gray-500 px-2 py-0.5 text-[10px] hover:bg-blue-300"><i class="fas fa-print"></i> Cetak</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada kwitansi di rentang tanggal ini.</td></tr>';
+            });
+        }
+
+        function cetakStrukTertentuKwitansi(index) {
+            let kData = fetchedKwitansi[index];
+            kData.date = new Date(kData.date);
+            executePrintKwitansi(kData);
         }
     </script>
 </body>
