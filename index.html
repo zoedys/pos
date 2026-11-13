@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retail Manager POS</title>
+    <title>Berkah Berniaga - Portal Bisnis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -15,7 +15,7 @@
         .classic-input:focus { outline: none; border: 1px solid #000000; }
         .win-border { border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #808080; border-bottom: 1px solid #808080; }
         .win-border-inset { border-top: 1px solid #808080; border-left: 1px solid #808080; border-right: 1px solid #FFFFFF; border-bottom: 1px solid #FFFFFF; }
-        .menu-btn { padding: 2px 6px; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid transparent; }
+        .menu-btn { padding: 2px 6px; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 4px; border: 1px solid transparent; font-weight: bold; }
         .menu-btn:hover { border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #808080; border-bottom: 1px solid #808080; }
         .transaction-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .transaction-table th { background-color: #E0E0E0; border: 1px solid #A0A0A0; padding: 4px 8px; text-align: left; font-weight: bold; white-space: nowrap; }
@@ -27,20 +27,18 @@
         .table-container::-webkit-scrollbar { width: 16px; height: 16px; }
         .table-container::-webkit-scrollbar-track { background: #F0F0F0; border-left: 1px solid #A0A0A0; }
         .table-container::-webkit-scrollbar-thumb { background-color: #C0C0C0; border: 1px solid #FFFFFF; border-right-color: #808080; border-bottom-color: #808080; }
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
+        .modal-overlay { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px); }
+
+        /* Gaya Khusus Halaman Portal (Super App) */
+        .portal-bg { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        .module-card { transition: all 0.3s ease; }
+        .module-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2); }
 
         @media print {
             @page { margin: 0; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
-            #print-area { 
-                position: absolute; left: 0; top: 0; 
-                width: 100%; 
-                background: white; 
-                color: #000 !important; 
-                font-family: Arial, Helvetica, sans-serif; 
-                font-weight: bold;
-            }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; background: white; color: #000 !important; font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
             #print-area.paper-80mm { max-width: 76mm; padding: 2mm; font-size: 14px; }
             #print-area.paper-58mm { max-width: 55mm; padding: 0mm 2mm; font-size: 12px; }
             #print-area table { width: 100% !important; font-size: inherit !important; }
@@ -52,26 +50,86 @@
 <body>
 
     <!-- Loading Screen -->
-    <div id="gas-loading" class="fixed inset-0 bg-[#C0C0C0] z-[999] flex flex-col items-center justify-center">
-        <div class="bg-[#F0F0F0] win-border p-6 shadow-xl w-80 text-center flex flex-col items-center gap-4">
-            <i class="fas fa-spinner fa-spin text-3xl text-blue-800"></i>
-            <h2 class="text-sm font-bold text-gray-800">Menghubungkan ke Database...</h2>
-            <p class="text-xs text-gray-600">Mohon tunggu sebentar.</p>
+    <div id="gas-loading" class="fixed inset-0 bg-gray-900 text-white z-[999] flex flex-col items-center justify-center">
+        <i class="fas fa-circle-notch fa-spin text-5xl text-blue-400 mb-4"></i>
+        <h2 class="text-xl font-bold tracking-widest">BERKAH BERNIAGA SYSTEM</h2>
+        <p class="text-sm text-gray-400 mt-2">Menghubungkan ke Database Cloud...</p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 1. HALAMAN PORTAL UTAMA (LANDING PAGE)     -->
+    <!-- ========================================== -->
+    <div id="portal-container" class="hidden fixed inset-0 portal-bg flex-col items-center justify-center z-40">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg tracking-wider">BERKAH BERNIAGA BERSAMA</h1>
+            <p class="text-blue-200 text-sm md:text-base tracking-widest">ENTERPRISE MANAGEMENT PORTAL</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl px-6">
+            <!-- Modul POS Retail -->
+            <div onclick="openLogin('pos')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-blue-500">
+                <div class="h-32 bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">
+                    <i class="fas fa-shopping-cart text-5xl text-white drop-shadow-md"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">POS RETAIL</h2>
+                    <p class="text-xs text-gray-500">Sistem Kasir Minimarket, Laporan Pendapatan, dan Manajemen Stok.</p>
+                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-blue-600 font-bold text-sm">
+                    Masuk Modul <i class="fas fa-arrow-right ml-1"></i>
+                </div>
+            </div>
+
+            <!-- Modul AJS -->
+            <div onclick="openLogin('ajs')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-emerald-500">
+                <div class="h-32 bg-gradient-to-r from-emerald-600 to-emerald-400 flex items-center justify-center">
+                    <i class="fas fa-bus text-5xl text-white drop-shadow-md"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">AJS SYSTEM</h2>
+                    <p class="text-xs text-gray-500">Penerbitan Kwitansi Antar Jemput Sekolah dan Histori Pembayaran.</p>
+                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-emerald-600 font-bold text-sm">
+                    Masuk Modul <i class="fas fa-arrow-right ml-1"></i>
+                </div>
+            </div>
+
+            <!-- Modul Almadina -->
+            <div onclick="openLogin('almadina')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-purple-500">
+                <div class="h-32 bg-gradient-to-r from-purple-600 to-purple-400 flex items-center justify-center">
+                    <i class="fas fa-shuttle-van text-5xl text-white drop-shadow-md"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">ALMADINA TRANS</h2>
+                    <p class="text-xs text-gray-500">Kwitansi Layanan Travel, Sewa Armada, dan Laporan Transportasi.</p>
+                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-purple-600 font-bold text-sm">
+                    Masuk Modul <i class="fas fa-arrow-right ml-1"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-4 text-white/50 text-xs text-center w-full">
+            &copy; 2026 Berkah Berniaga Bersama. All rights reserved.
         </div>
     </div>
 
-    <!-- Login -->
-    <div id="login-container" class="fixed inset-0 bg-gray-200 hidden items-center justify-center z-50">
-        <div class="bg-gray-100 p-6 border-2 border-white border-r-gray-500 border-b-gray-500 shadow-md w-80">
+    <!-- Login Modal Khusus (Smart Login) -->
+    <div id="login-container" class="fixed inset-0 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-gray-100 p-6 border-2 border-white border-r-gray-500 border-b-gray-500 shadow-2xl w-80 relative transform scale-100 transition-transform">
+            <button onclick="closeLogin()" class="absolute top-2 right-2 w-6 h-6 bg-gray-300 text-black font-bold text-xs win-border hover:bg-red-500 hover:text-white">X</button>
             <div class="flex items-center mb-4 pb-2 border-b border-gray-300">
-                <i class="fas fa-desktop text-2xl text-blue-800 mr-3"></i>
-                <h2 class="text-lg font-bold">Login Sistem</h2>
+                <i id="login-icon" class="fas fa-lock text-2xl text-gray-700 mr-3"></i>
+                <div>
+                    <h2 class="text-lg font-bold leading-tight">Otorisasi Sistem</h2>
+                    <p id="login-module-name" class="text-[10px] font-bold text-blue-600 uppercase">MODUL POS RETAIL</p>
+                </div>
             </div>
             
             <form id="login-form" onsubmit="handleLogin(event)">
                 <div class="mb-3">
                     <label class="block text-xs font-bold mb-1">User ID</label>
-                    <input type="text" id="username" class="classic-input w-full" required>
+                    <input type="text" id="username" class="classic-input w-full" required autocomplete="off">
                 </div>
                 <div class="mb-4">
                     <label class="block text-xs font-bold mb-1">Password</label>
@@ -79,20 +137,22 @@
                 </div>
                 <div id="login-error" class="text-red-600 text-xs hidden mb-2 font-bold">User/Password Salah!</div>
                 <div class="flex justify-end gap-2">
-                    <button type="submit" class="bg-gray-300 border-2 border-white border-r-gray-600 border-b-gray-600 px-4 py-1 text-sm active:border-gray-600 active:border-r-white active:border-b-white">
-                        OK
+                    <button type="submit" class="bg-gray-300 border-2 border-white border-r-gray-600 border-b-gray-600 px-6 py-1.5 text-sm font-bold active:border-gray-600 active:border-r-white active:border-b-white">
+                        LOGIN
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Main App -->
-<div id="app-container" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
+    <!-- ========================================== -->
+    <!-- 2. MODUL POS RETAIL (EKSISTING)            -->
+    <!-- ========================================== -->
+    <div id="app-container" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
         <div class="flex items-center px-2 py-1 bg-white border-b border-gray-300 text-xs select-none">
             <div class="flex items-center gap-2 font-semibold">
                 <i class="fas fa-shopping-cart text-green-600"></i>
-                <span id="app-title-text">TRANSAKSI PENJUALAN</span>
+                <span id="app-title-text">TRANSAKSI PENJUALAN RETAIL</span>
             </div>
         </div>
 
@@ -106,7 +166,7 @@
             <div class="flex gap-1">
                 <div class="menu-btn" onclick="openAdministrasi()"><i class="fas fa-wrench text-red-500"></i> ADMINISTRASI</div>
                 <div class="menu-btn" onclick="openPengaturan()"><i class="fas fa-cog text-gray-500"></i> PENGATURAN</div>
-                <div class="menu-btn" onclick="handleLogout()"><i class="fas fa-door-open text-black"></i> TUTUP</div>
+                <div class="menu-btn text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
             </div>
         </div>
 
@@ -194,6 +254,57 @@
         </div>
     </div>
 
+
+    <!-- ========================================== -->
+    <!-- 3. MODUL AJS (TEMPLATE AWAL)               -->
+    <!-- ========================================== -->
+    <div id="ajs-container" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
+        <div class="flex items-center px-2 py-1 bg-emerald-700 text-white border-b border-gray-300 text-xs select-none">
+            <div class="flex items-center gap-2 font-bold">
+                <i class="fas fa-bus"></i>
+                <span>SISTEM ANTAR JEMPUT SEKOLAH (AJS)</span>
+            </div>
+        </div>
+        <div class="flex px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px]">
+            <div class="menu-btn font-bold"><i class="fas fa-file-invoice"></i> BUAT KWITANSI</div>
+            <div class="menu-btn"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
+            <div class="menu-btn ml-auto text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
+        </div>
+        <div class="flex-1 flex items-center justify-center text-gray-500 flex-col">
+            <i class="fas fa-tools text-6xl mb-4 text-emerald-300"></i>
+            <h2 class="text-xl font-bold">Modul AJS Sedang Dibangun</h2>
+            <p class="text-sm">Area form kwitansi akan ditempatkan di sini pada tahap selanjutnya.</p>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 4. MODUL ALMADINA TRANS (TEMPLATE AWAL)    -->
+    <!-- ========================================== -->
+    <div id="almadina-container" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
+        <div class="flex items-center px-2 py-1 bg-purple-800 text-white border-b border-gray-300 text-xs select-none">
+            <div class="flex items-center gap-2 font-bold">
+                <i class="fas fa-shuttle-van"></i>
+                <span>ALMADINA TRANS MANAGEMENT</span>
+            </div>
+        </div>
+        <div class="flex px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px]">
+            <div class="menu-btn font-bold"><i class="fas fa-file-invoice"></i> BUAT KWITANSI</div>
+            <div class="menu-btn"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
+            <div class="menu-btn ml-auto text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
+        </div>
+        <div class="flex-1 flex items-center justify-center text-gray-500 flex-col">
+            <i class="fas fa-tools text-6xl mb-4 text-purple-300"></i>
+            <h2 class="text-xl font-bold">Modul Almadina Trans Sedang Dibangun</h2>
+            <p class="text-sm">Area form kwitansi travel akan ditempatkan di sini pada tahap selanjutnya.</p>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- SEMUA MODAL POPUP (POS RETAIL)             -->
+    <!-- ========================================== -->
+
     <!-- MODAL SEARCH PRODUK -->
     <div id="search-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="max-height: 80vh;">
@@ -232,7 +343,7 @@
         </div>
     </div>
 
-    <!-- MODAL LAPORAN PENDAPATAN (DENGAN EXPORT PDF) -->
+    <!-- MODAL LAPORAN PENDAPATAN -->
     <div id="pendapatan-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-4xl shadow-lg flex flex-col" style="height: 80vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Laporan Penjualan</span><button onclick="closeModal('pendapatan-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
@@ -246,25 +357,19 @@
                     <option value="bulanan">Rekap Total Per Bulan</option>
                 </select>
                 <button onclick="loadPendapatan()" class="bg-gray-300 win-border px-3 py-1 ml-2"><i class="fas fa-sync-alt text-blue-600"></i> Proses</button>
-                
-                <!-- TOMBOL EKSPOR PDF ADA DI SINI -->
                 <button onclick="cetakLaporanPDF()" class="bg-red-200 border border-gray-500 px-3 py-1 ml-auto text-red-800 hover:bg-red-300"><i class="fas fa-file-pdf"></i> Export PDF</button>
             </div>
-            
             <div class="flex-1 overflow-auto bg-white p-4" id="area-laporan-pdf">
-                <!-- KOP SURAT UNTUK PDF -->
                 <div id="kop-laporan" class="hidden text-center mb-6">
                     <h2 class="font-bold text-xl uppercase" id="kop-nama-toko">NAMA TOKO</h2>
                     <p class="text-sm text-gray-600" id="kop-alamat-toko">Alamat Toko</p>
                     <h3 class="font-bold mt-4 border-b-2 border-black inline-block pb-1" id="kop-judul-laporan">LAPORAN PENJUALAN</h3>
                     <p class="text-xs mt-1 font-bold" id="kop-periode-laporan">Periode: ...</p>
                 </div>
-                
                 <table class="transaction-table w-full">
                     <thead class="sticky top-0 shadow-sm" id="pendapatan-thead"></thead>
                     <tbody id="pendapatan-body"></tbody>
                 </table>
-                
                 <div class="mt-4 p-2 bg-[#E4E4E4] border border-gray-400 flex justify-end gap-4 text-sm font-bold">
                     <span>TOTAL PENDAPATAN: </span><span id="total-pendapatan-hari-ini" class="text-blue-800 text-lg">0</span>
                 </div>
@@ -413,6 +518,8 @@
         let pendingTransaction = null;
         let editProdukKode = null;
         let fetchedTransactions = []; 
+        
+        let selectedModule = ''; // Menyimpan status routing modul
 
         const formatNumber = (num) => num.toLocaleString('id-ID');
         const formatDecimal = (num) => num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -426,41 +533,86 @@
                 appUser = data.appUser || { user: "admin", pass: "1234" };
                 
                 document.getElementById('gas-loading').classList.add('hidden');
-                document.getElementById('login-container').classList.remove('hidden');
-                document.getElementById('login-container').classList.add('flex');
+                
+                // MUNCULKAN PORTAL UTAMA TERLEBIH DAHULU
+                document.getElementById('portal-container').classList.remove('hidden');
+                document.getElementById('portal-container').classList.add('flex');
                 
                 updateStoreUI(); loadSelectPelanggan();
             }).catch(err => {
-                document.querySelector('#gas-loading > div').innerHTML = `<div class="text-red-600 font-bold">Koneksi Error</div><p class="text-xs text-red-800">${err}</p>`;
+                document.querySelector('#gas-loading > div').innerHTML = `<div class="text-red-600 font-bold">Koneksi Error</div><p class="text-xs text-gray-800">${err}</p>`;
             });
             
             setInterval(updateClock, 1000); updateClock();
         };
 
+        // --- SISTEM ROUTING (PORTAL -> LOGIN -> MODUL) ---
+        function openLogin(moduleTarget) {
+            selectedModule = moduleTarget; 
+            const modal = document.getElementById('login-container');
+            const title = document.getElementById('login-module-name');
+            const icon = document.getElementById('login-icon');
+
+            if (moduleTarget === 'pos') { title.textContent = "MODUL POS RETAIL"; icon.className = "fas fa-shopping-cart text-2xl text-blue-600 mr-3"; }
+            if (moduleTarget === 'ajs') { title.textContent = "MODUL A.J.S SYSTEM"; icon.className = "fas fa-bus text-2xl text-emerald-600 mr-3"; }
+            if (moduleTarget === 'almadina') { title.textContent = "MODUL ALMADINA TRANS"; icon.className = "fas fa-shuttle-van text-2xl text-purple-600 mr-3"; }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById('username').focus();
+        }
+
+        function closeLogin() {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('flex');
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
         function handleLogin(e) {
             e.preventDefault();
             if (document.getElementById('username').value === appUser.user && document.getElementById('password').value === appUser.pass) {
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
-                document.getElementById('app-container').classList.add('flex');
-                document.getElementById('op-name').textContent = "OPERATOR : " + appUser.user;
-                setTimeout(() => document.getElementById('barcode-input').focus(), 100);
-                renderCartTable();
+                closeLogin();
+                document.getElementById('portal-container').classList.add('hidden');
+                document.getElementById('portal-container').classList.remove('flex');
+                
+                // Masukkan User ke Modul yang dipilih
+                if (selectedModule === 'pos') {
+                    document.getElementById('app-container').classList.remove('hidden');
+                    document.getElementById('app-container').classList.add('flex');
+                    document.getElementById('op-name').textContent = "OPERATOR : " + appUser.user;
+                    setTimeout(() => document.getElementById('barcode-input').focus(), 100);
+                    renderCartTable();
+                } else if (selectedModule === 'ajs') {
+                    document.getElementById('ajs-container').classList.remove('hidden');
+                    document.getElementById('ajs-container').classList.add('flex');
+                } else if (selectedModule === 'almadina') {
+                    document.getElementById('almadina-container').classList.remove('hidden');
+                    document.getElementById('almadina-container').classList.add('flex');
+                }
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
         }
+
         function handleLogout() {
-            if(confirm("Tutup aplikasi?")) {
-                cart = []; selectedRowIndex = -1;
+            if(confirm("Keluar dari modul ini dan kembali ke menu utama?")) {
                 document.getElementById('app-container').classList.add('hidden');
                 document.getElementById('app-container').classList.remove('flex');
-                document.getElementById('login-container').classList.remove('hidden');
-                document.getElementById('password').value = ''; 
-                document.getElementById('username').focus();
+                document.getElementById('ajs-container').classList.add('hidden');
+                document.getElementById('ajs-container').classList.remove('flex');
+                document.getElementById('almadina-container').classList.add('hidden');
+                document.getElementById('almadina-container').classList.remove('flex');
+                
+                document.getElementById('portal-container').classList.remove('hidden');
+                document.getElementById('portal-container').classList.add('flex');
+                
+                cart = []; selectedRowIndex = -1; selectedModule = '';
             }
         }
 
+        // --- FUNGSI KASIR (EKSISTING) ---
         function clearCart() {
             if (cart.length === 0) return;
             if (confirm("Batalkan transaksi ini?")) {
@@ -515,7 +667,7 @@
         }
 
         document.addEventListener('keydown', function(e) {
-            if (document.getElementById('login-container').classList.contains('hidden') === false) return;
+            if (document.getElementById('app-container').classList.contains('hidden')) return;
             const isModalOpen = document.querySelectorAll('.modal-overlay:not(.hidden)').length > 0;
             if (!isModalOpen) {
                 if (e.key === 'F5') { e.preventDefault(); openMasterProduk(); }
@@ -547,7 +699,10 @@
 
         function closeModal(modalId) { 
             document.getElementById(modalId).classList.add('hidden'); 
-            if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal') document.getElementById('barcode-input').focus();
+            if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal') {
+                const b = document.getElementById('barcode-input');
+                if(b) b.focus();
+            }
         }
         function openEditQtyModal() {
             if (selectedRowIndex === -1 || cart.length === 0) return;
