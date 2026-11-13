@@ -551,12 +551,12 @@
 
     <!-- AREA BARU: CETAK KWITANSI A4 (SESUAI GAMBAR) -->
     <div id="print-kwitansi-area" class="hidden">
-        <div id="kwt-original" class="relative pb-8 mb-8 border-b-2 border-dashed border-gray-600">
+        <div id="kwt-original" class="relative pb-4 mb-4 border-b-2 border-dashed border-gray-600">
             <!-- Header Logo & Info -->
-            <div class="flex justify-between items-start mb-6">
+            <div class="flex justify-between items-start mb-4">
                 <div class="flex items-center gap-4">
-                    <!-- GANTI src="logo.png" SESUAI DENGAN NAMA FILE GAMBAR YANG ANDA UNGGAH DI GITHUB -->
-                    <img src="logo.png" onerror="this.src='https://placehold.co/128x64/ffffff/000000?text=LOGO'" class="w-32 h-16 object-contain border-2 border-black p-1 bg-white" alt="Logo Yayasan">
+                    <!-- LOGO DIJADIKAN KOTAK TEKS SESUAI GAMBAR -->
+                    <div class="w-32 h-16 border-2 border-black flex items-center justify-center font-bold text-3xl bg-white tracking-widest">LOGO</div>
                     <div class="border-l-2 border-black pl-4">
                         <h1 class="font-bold text-xl leading-tight">YAYASAN AL MADINA WONOSOBO</h1>
                         <p class="text-sm">Jl. KH. Hasyim Asy'ari Km. 01 Wonosobo Telp. (0286)3301969</p>
@@ -568,19 +568,20 @@
                 </div>
             </div>
 
-            <!-- Formulir Konten -->
-            <div class="text-sm space-y-4">
+            <!-- Formulir Konten (Spasi dirapatkan) -->
+            <div class="text-sm space-y-2.5">
                 <div class="flex items-end">
                     <span class="w-40 font-medium">Telah diterima dari</span>
                     <span class="mr-2">:</span>
-                    <span class="flex-1 border-b border-dotted border-gray-500 pb-1 font-bold italic" id="pk-terima"></span>
+                    <span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 font-bold italic" id="pk-terima"></span>
                 </div>
                 
                 <div class="flex items-center">
                     <span class="w-40 font-medium">Uang Sebanyak</span>
                     <span class="mr-2"> </span>
-                    <div class="inline-block px-6 py-1 bg-[#fef08a] border border-black min-w-[500px]" style="transform: skewX(-15deg);">
-                        <span class="block font-bold text-sm tracking-wide capitalize" style="transform: skewX(15deg);" id="pk-terbilang"></span>
+                    <!-- Kotak otomatis menyesuaikan teks -->
+                    <div class="inline-block px-4 py-1 bg-[#fef08a] border border-black" style="transform: skewX(-15deg);">
+                        <span class="block font-bold text-sm tracking-wide capitalize px-2" style="transform: skewX(15deg);" id="pk-terbilang"></span>
                     </div>
                 </div>
                 
@@ -593,12 +594,12 @@
                 <div class="flex items-end mt-2">
                     <span class="w-40 font-medium">Guna membayar</span>
                     <span class="mr-2">:</span>
-                    <span class="flex-1 border-b border-dotted border-gray-500 pb-1 italic font-medium" id="pk-guna"></span>
+                    <span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 italic font-medium" id="pk-guna"></span>
                 </div>
                 
                 <!-- Rincian Tabel -->
-                <div class="mt-4">
-                    <p class="mb-2 font-medium">Rincian Layanan</p>
+                <div class="mt-3">
+                    <p class="mb-1 font-medium">Rincian Layanan</p>
                     <table class="w-full text-center text-sm border-collapse">
                         <thead>
                             <tr class="bg-[#99f6e4]">
@@ -610,22 +611,22 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tgl"></td>
-                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jenis"></td>
-                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tujuan"></td>
-                                <td class="py-2 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jml"></td>
+                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tgl"></td>
+                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jenis"></td>
+                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tujuan"></td>
+                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jml"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Footer Tanda Tangan & Nominal Angka -->
-                <div class="flex justify-between items-end mt-12">
+                <div class="flex justify-between items-end mt-6">
                     <div class="flex flex-col">
                         <div class="flex items-end border-t-2 border-b border-[#99f6e4] py-1 mb-1">
                             <span class="italic mr-2 font-medium">Terbilang</span>
-                            <div class="inline-block px-4 bg-[#fef08a] border border-black min-w-[200px] h-[26px]" style="transform: skewX(-15deg);">
-                                <span class="block font-bold text-lg leading-none pt-0.5" style="transform: skewX(15deg);">
+                            <div class="inline-block px-3 bg-[#fef08a] border border-black h-[26px]" style="transform: skewX(-15deg);">
+                                <span class="block font-bold text-lg leading-none pt-0.5 px-2" style="transform: skewX(15deg);">
                                     <span class="italic mr-2 text-sm">Rp.</span><span id="pk-nominal"></span>
                                 </span>
                             </div>
@@ -635,14 +636,14 @@
                     
                     <div class="text-center w-64">
                         <p>Wonosobo, <span id="pk-tanggal"></span></p>
-                        <p class="mb-16">Hormat Kami</p>
-                        <p class="border-b border-dotted border-gray-500 pb-1 uppercase font-bold" id="pk-op"></p>
+                        <p class="mb-10">Hormat Kami</p>
+                        <p class="border-b border-dotted border-gray-500 pb-0.5 uppercase font-bold" id="pk-op"></p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="kwt-salinan" class="relative opacity-90 pt-2">
+        <div id="kwt-salinan" class="relative opacity-90 pt-1">
             <!-- Akan di-clone secara dinamis via JavaScript -->
         </div>
     </div>
@@ -1213,12 +1214,12 @@
             if(a===0) return "Nol";
             if (a < 12) return bilangan[a];
             if (a < 20) return bilangan[a - 10] + " Belas";
-            if (a < 100) return bilangan[Math.floor(a / 10)] + " Puluh " + bilangan[a % 10];
-            if (a < 200) return "Seratus " + terbilang(a - 100);
-            if (a < 1000) return bilangan[Math.floor(a / 100)] + " Ratus " + terbilang(a % 100);
-            if (a < 2000) return "Seribu " + terbilang(a - 1000);
-            if (a < 1000000) return terbilang(Math.floor(a / 1000)) + " Ribu " + terbilang(a % 1000);
-            if (a < 1000000000) return terbilang(Math.floor(a / 1000000)) + " Juta " + terbilang(a % 1000000);
+            if (a < 100) return bilangan[Math.floor(a / 10)] + " Puluh" + (a % 10 > 0 ? " " + bilangan[a % 10] : "");
+            if (a < 200) return "Seratus" + (a - 100 > 0 ? " " + terbilang(a - 100) : "");
+            if (a < 1000) return bilangan[Math.floor(a / 100)] + " Ratus" + (a % 100 > 0 ? " " + terbilang(a % 100) : "");
+            if (a < 2000) return "Seribu" + (a - 1000 > 0 ? " " + terbilang(a - 1000) : "");
+            if (a < 1000000) return terbilang(Math.floor(a / 1000)) + " Ribu" + (a % 1000 > 0 ? " " + terbilang(a % 1000) : "");
+            if (a < 1000000000) return terbilang(Math.floor(a / 1000000)) + " Juta" + (a % 1000000 > 0 ? " " + terbilang(a % 1000000) : "");
             return "";
         }
 
@@ -1295,17 +1296,20 @@
             document.getElementById('pk-guna').textContent = kData.gunaMembayar;
             
             const isTransfer = kData.metode.startsWith('Transfer');
-            const rekStr = isTransfer ? kData.metode.replace('Transfer ke Rek:', '').trim() : '...................................................';
             
-            // Box Centang Custom
-            const boxTunai = !isTransfer ? '<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div>' : '<div class="w-4 h-4 border border-black"></div>';
-            const boxTransfer = isTransfer ? '<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div>' : '<div class="w-4 h-4 border border-black"></div>';
-
-            document.getElementById('pk-metode').innerHTML = `
-                ${boxTunai} Tunai 
-                <span class="ml-4 flex items-center gap-1">${boxTransfer} Transfer ke Rek :</span> 
-                <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>
-            `;
+            // Hapus yang tidak terpilih dan hanya render opsi yang dipilih
+            if (isTransfer) {
+                const rekStr = kData.metode.replace('Transfer ke Rek:', '').trim();
+                document.getElementById('pk-metode').innerHTML = `
+                    <div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> 
+                    <span class="flex items-center gap-1">Transfer ke Rek :</span> 
+                    <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>
+                `;
+            } else {
+                document.getElementById('pk-metode').innerHTML = `
+                    <div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai
+                `;
+            }
             
             document.getElementById('pk-rin-tgl').textContent = kData.rincian.tgl || '................................';
             document.getElementById('pk-rin-jenis').textContent = kData.rincian.jenis || '................................';
@@ -1315,10 +1319,10 @@
             document.getElementById('pk-tanggal').textContent = tglStr;
             document.getElementById('pk-op').textContent = kData.operator.toUpperCase();
             
-            // Kloning layout untuk salinan dan beri watermark
+            // Kloning layout untuk salinan dan beri watermark (Ukuran tulisan SALINAN Diperbesar Maksimal)
             const originalContent = document.getElementById('kwt-original').innerHTML;
             const salinanDiv = document.getElementById('kwt-salinan');
-            salinanDiv.innerHTML = originalContent + '<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20"><span class="text-8xl font-bold tracking-widest transform -rotate-12 text-gray-400">S A L I N A N</span></div>';
+            salinanDiv.innerHTML = originalContent + '<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10"><span class="text-[12rem] font-bold tracking-widest transform -rotate-12 text-black">SALINAN</span></div>';
 
             const printArea = document.getElementById('print-kwitansi-area');
             printArea.classList.remove('hidden');
