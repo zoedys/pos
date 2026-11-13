@@ -1295,6 +1295,7 @@
             
             const isTransfer = kData.metode.startsWith('Transfer');
             
+            // Hapus yang tidak terpilih dan hanya render opsi yang dipilih
             if (isTransfer) {
                 const rekStr = kData.metode.replace('Transfer ke Rek:', '').trim();
                 document.getElementById('pk-metode').innerHTML = `
@@ -1323,26 +1324,13 @@
                 <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.08; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>
             `;
 
+            // MENGEMBALIKAN KE FITUR PRINT BAWAAN BROWSER 
+            // (Bisa pilih cetak printer fisik ATAU simpan PDF, dan margin dijamin rapi)
             const printArea = document.getElementById('print-kwitansi-area');
             printArea.classList.remove('hidden');
-            
-            // KUNCI PDF KE 800PX AGAR MARGIN KANAN FULL WIDTH (TIDAK KOSONG)
-            const opt = { 
-                margin: [5, 0, 5, 0], 
-                filename: `Kwitansi_${kData.id}.pdf`, 
-                image: { type: 'jpeg', quality: 1 }, 
-                html2canvas: { scale: 2, windowWidth: 800 }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-            };
-            
-            html2pdf().set(opt).from(printArea).save().then(() => { 
-                printArea.classList.add('hidden'); 
-            }).catch(err => { 
-                console.error(err); 
-                printArea.classList.add('hidden'); 
-            });
+            window.print();
+            printArea.classList.add('hidden');
         }
-
         // FUNGSI HISTORY KWITANSI
         function openKwitansiHistory() {
             document.getElementById('kwt-hist-title').textContent = "Histori Kwitansi - " + (selectedModule === 'ajs' ? 'AJS' : 'ALMADINA TRANS');
