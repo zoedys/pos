@@ -1272,11 +1272,9 @@
                 nominal: nominal, metode: metodeText, rincian: rincian, operator: appUser.user || 'admin'
             };
             
-            // Simpan ke database via API
-            if (typeof google !== 'undefined') {
-                const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
-                apiPost(actionName, kData);
-            }
+            // SIMPAN KE DATABASE (Gembok pengaman GitHub sudah dilepas!)
+            const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
+            apiPost(actionName, kData);
             
             document.getElementById('kwitansi-form-modal').classList.add('hidden');
             executePrintKwitansi(kData);
@@ -1297,7 +1295,6 @@
             
             const isTransfer = kData.metode.startsWith('Transfer');
             
-            // Hapus yang tidak terpilih dan hanya render opsi yang dipilih
             if (isTransfer) {
                 const rekStr = kData.metode.replace('Transfer ke Rek:', '').trim();
                 document.getElementById('pk-metode').innerHTML = `
@@ -1319,15 +1316,31 @@
             document.getElementById('pk-tanggal').textContent = tglStr;
             document.getElementById('pk-op').textContent = kData.operator.toUpperCase();
             
-            // Kloning layout untuk salinan dan beri watermark (Ukuran tulisan SALINAN Diperbesar Maksimal)
+            // WATERMARK SALINAN (DIPAKSA BESAR & TRANSPARAN)
             const originalContent = document.getElementById('kwt-original').innerHTML;
             const salinanDiv = document.getElementById('kwt-salinan');
-            salinanDiv.innerHTML = originalContent + '<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10"><span class="text-[12rem] font-bold tracking-widest transform -rotate-12 text-black">SALINAN</span></div>';
+            salinanDiv.innerHTML = originalContent + `
+                <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.08; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>
+            `;
 
             const printArea = document.getElementById('print-kwitansi-area');
             printArea.classList.remove('hidden');
-            window.print();
-            printArea.classList.add('hidden');
+            
+            // KUNCI PDF KE 800PX AGAR MARGIN KANAN FULL WIDTH (TIDAK KOSONG)
+            const opt = { 
+                margin: [5, 0, 5, 0], 
+                filename: `Kwitansi_${kData.id}.pdf`, 
+                image: { type: 'jpeg', quality: 1 }, 
+                html2canvas: { scale: 2, windowWidth: 800 }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+            
+            html2pdf().set(opt).from(printArea).save().then(() => { 
+                printArea.classList.add('hidden'); 
+            }).catch(err => { 
+                console.error(err); 
+                printArea.classList.add('hidden'); 
+            });
         }
 
         // FUNGSI HISTORY KWITANSI
