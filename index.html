@@ -59,7 +59,6 @@
             @page { margin: 0; size: A4 portrait; }
             body * { visibility: hidden !important; }
             
-            /* KITA HANYA MENCETAK DIV INI SAJA, DENGAN STYLING FIX A4 */
             #print-kwitansi-area, #print-kwitansi-area * { visibility: visible !important; }
             #print-kwitansi-area {
                 position: absolute; left: 0; top: 0; 
@@ -82,55 +81,50 @@
     <!-- ========================================== -->
     <!-- 1. HALAMAN PORTAL UTAMA (LANDING PAGE)     -->
     <!-- ========================================== -->
-    <div id="portal-container" class="hidden fixed inset-0 portal-bg flex-col items-center justify-center z-40">
-        <div class="text-center mb-10">
+    <div id="portal-container" class="hidden fixed inset-0 portal-bg flex-col items-center justify-center z-40 overflow-y-auto py-10">
+        <div class="text-center mb-10 mt-10">
             <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg tracking-wider">BERKAH BERNIAGA BERSAMA</h1>
             <p class="text-blue-200 text-sm md:text-base tracking-widest">ENTERPRISE MANAGEMENT PORTAL</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl px-6">
+        <!-- MENU PORTAL MENJADI 4 KOTAK -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl px-6 pb-10">
             <div onclick="openLogin('pos')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-blue-500">
-                <div class="h-32 bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center">
-                    <i class="fas fa-shopping-cart text-5xl text-white drop-shadow-md"></i>
-                </div>
+                <div class="h-32 bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center"><i class="fas fa-shopping-cart text-5xl text-white drop-shadow-md"></i></div>
                 <div class="p-6 text-center">
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">POS RETAIL</h2>
-                    <p class="text-xs text-gray-500">Sistem Kasir Minimarket, Laporan Pendapatan, dan Manajemen Stok.</p>
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">POS RETAIL</h2>
+                    <p class="text-xs text-gray-500">Kasir Minimarket, Pendapatan, dan Manajemen Stok.</p>
                 </div>
-                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-blue-600 font-bold text-sm">
-                    Masuk Modul <i class="fas fa-arrow-right ml-1"></i>
-                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-blue-600 font-bold text-sm">Masuk Modul <i class="fas fa-arrow-right ml-1"></i></div>
             </div>
 
             <div onclick="openLogin('ajs')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-emerald-500">
-                <div class="h-32 bg-gradient-to-r from-emerald-600 to-emerald-400 flex items-center justify-center">
-                    <i class="fas fa-bus text-5xl text-white drop-shadow-md"></i>
-                </div>
+                <div class="h-32 bg-gradient-to-r from-emerald-600 to-emerald-400 flex items-center justify-center"><i class="fas fa-bus text-5xl text-white drop-shadow-md"></i></div>
                 <div class="p-6 text-center">
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">AJS SYSTEM</h2>
-                    <p class="text-xs text-gray-500">Penerbitan Kwitansi Antar Jemput Sekolah dan Histori Pembayaran.</p>
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">AJS SYSTEM</h2>
+                    <p class="text-xs text-gray-500">Kwitansi Antar Jemput Sekolah dan Histori Pembayaran.</p>
                 </div>
-                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-emerald-600 font-bold text-sm">
-                    Masuk Modul <i class="fas fa-arrow-right ml-1"></i>
-                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-emerald-600 font-bold text-sm">Masuk Modul <i class="fas fa-arrow-right ml-1"></i></div>
             </div>
 
             <div onclick="openLogin('almadina')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-purple-500">
-                <div class="h-32 bg-gradient-to-r from-purple-600 to-purple-400 flex items-center justify-center">
-                    <i class="fas fa-shuttle-van text-5xl text-white drop-shadow-md"></i>
-                </div>
+                <div class="h-32 bg-gradient-to-r from-purple-600 to-purple-400 flex items-center justify-center"><i class="fas fa-shuttle-van text-5xl text-white drop-shadow-md"></i></div>
                 <div class="p-6 text-center">
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">ALMADINA TRANS</h2>
-                    <p class="text-xs text-gray-500">Kwitansi Layanan Travel, Sewa Armada, dan Laporan Transportasi.</p>
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">ALMADINA TRANS</h2>
+                    <p class="text-xs text-gray-500">Layanan Travel, Sewa Armada, dan Transportasi.</p>
                 </div>
-                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-purple-600 font-bold text-sm">
-                    Masuk Modul <i class="fas fa-arrow-right ml-1"></i>
-                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-purple-600 font-bold text-sm">Masuk Modul <i class="fas fa-arrow-right ml-1"></i></div>
             </div>
-        </div>
-        
-        <div class="absolute bottom-4 text-white/50 text-xs text-center w-full">
-            &copy; 2026 Berkah Berniaga Bersama. All rights reserved.
+            
+            <!-- MODUL BARU: ALMAQUA MINERAL -->
+            <div onclick="openLogin('almaqua')" class="module-card bg-white rounded-xl overflow-hidden shadow-2xl cursor-pointer flex flex-col border-b-4 border-cyan-500">
+                <div class="h-32 bg-gradient-to-r from-cyan-600 to-cyan-400 flex items-center justify-center"><i class="fas fa-tint text-5xl text-white drop-shadow-md"></i></div>
+                <div class="p-6 text-center">
+                    <h2 class="text-lg font-bold text-gray-800 mb-2">ALMAQUA MINERAL</h2>
+                    <p class="text-xs text-gray-500">Invoice Air Minum Isi Ulang dan Tagihan Agen.</p>
+                </div>
+                <div class="mt-auto py-3 bg-gray-50 text-center border-t text-cyan-600 font-bold text-sm">Masuk Modul <i class="fas fa-arrow-right ml-1"></i></div>
+            </div>
         </div>
     </div>
 
@@ -145,20 +139,11 @@
                     <p id="login-module-name" class="text-[10px] font-bold text-blue-600 uppercase">MODUL POS RETAIL</p>
                 </div>
             </div>
-            
             <form id="login-form" onsubmit="handleLogin(event)">
-                <div class="mb-3">
-                    <label class="block text-xs font-bold mb-1">User ID</label>
-                    <input type="text" id="username" class="classic-input w-full" required autocomplete="off">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-xs font-bold mb-1">Password</label>
-                    <input type="password" id="password" class="classic-input w-full" required>
-                </div>
+                <div class="mb-3"><label class="block text-xs font-bold mb-1">User ID</label><input type="text" id="username" class="classic-input w-full" required autocomplete="off"></div>
+                <div class="mb-4"><label class="block text-xs font-bold mb-1">Password</label><input type="password" id="password" class="classic-input w-full" required></div>
                 <div id="login-error" class="text-red-600 text-xs hidden mb-2 font-bold">User/Password Salah!</div>
-                <div class="flex justify-end gap-2">
-                    <button type="submit" class="bg-gray-300 border-2 border-white border-r-gray-600 border-b-gray-600 px-6 py-1.5 text-sm font-bold active:border-gray-600 active:border-r-white active:border-b-white">LOGIN</button>
-                </div>
+                <div class="flex justify-end gap-2"><button type="submit" class="bg-gray-300 border-2 border-white border-r-gray-600 border-b-gray-600 px-6 py-1.5 text-sm font-bold active:border-gray-600 active:border-r-white active:border-b-white">LOGIN</button></div>
             </form>
         </div>
     </div>
@@ -239,37 +224,26 @@
 
 
     <!-- ========================================== -->
-    <!-- 3. RUANG KERJA KWITANSI (AJS & ALMADINA)   -->
+    <!-- 3. RUANG KERJA AJS & ALMADINA TRANS        -->
     <!-- ========================================== -->
     <div id="kwitansi-workspace" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
         
-        <!-- Dinamis Header (Warna berubah sesuai modul) -->
         <div id="kw-header" class="flex items-center px-2 py-1 bg-emerald-700 text-white border-b border-gray-300 text-xs select-none">
-            <div class="flex items-center gap-2 font-bold">
-                <i id="kw-icon" class="fas fa-bus"></i>
-                <span id="kw-title">SISTEM ANTAR JEMPUT SEKOLAH (AJS)</span>
-            </div>
+            <div class="flex items-center gap-2 font-bold"><i id="kw-icon" class="fas fa-bus"></i><span id="kw-title">SISTEM ANTAR JEMPUT SEKOLAH (AJS)</span></div>
         </div>
         
-        <!-- Toolbar Atas -->
         <div class="flex px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px] py-1 shadow-sm relative z-20">
             <div class="menu-btn font-bold text-blue-800" onclick="resetFormKwitansi()"><i class="fas fa-file-invoice"></i> KWITANSI BARU</div>
             <div class="menu-btn" onclick="openKwitansiHistory()"><i class="fas fa-history"></i> HISTORI KEUANGAN</div>
             <div class="menu-btn ml-auto text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
         </div>
 
-        <!-- Area Split Screen (Kiri Form, Kanan Kertas Live) -->
         <div class="flex-1 flex overflow-hidden">
-            
-            <!-- PANEL KIRI: FORMULIR INPUT -->
             <div class="w-1/3 min-w-[320px] max-w-[400px] bg-gray-100 border-r border-gray-400 p-5 overflow-y-auto flex flex-col gap-4 shadow-inner z-10 no-print">
                 <h3 class="font-bold text-sm border-b-2 border-gray-300 pb-1 text-gray-700 uppercase" id="form-panel-title">Buat Kwitansi Baru</h3>
-                
                 <div><label class="block text-xs font-bold mb-1">Telah Diterima Dari</label><input type="text" id="kwt-terima" class="classic-input w-full uppercase" oninput="updateLivePreview()" placeholder="Nama/Instansi..."></div>
-                
                 <div><label class="block text-xs font-bold mb-1">Uang Sebanyak (Rp)</label><input type="number" id="kwt-nominal" class="classic-input w-full font-bold text-lg text-blue-700" oninput="updateLivePreview()" placeholder="Cth: 150000"></div>
                 <div class="bg-yellow-100 p-2 text-xs italic font-bold text-gray-700 border border-gray-300 rounded" id="kwt-terbilang">-</div>
-                
                 <div class="p-2 border border-gray-300 bg-white">
                     <label class="block text-xs font-bold mb-1 border-b pb-1">Metode Pembayaran</label>
                     <div class="flex gap-4 text-xs mt-2 mb-2">
@@ -278,9 +252,7 @@
                     </div>
                     <input type="text" id="kwt-rek" class="classic-input w-full hidden" placeholder="Cth: BCA 123456789 A/N Budi" oninput="updateLivePreview()">
                 </div>
-                
                 <div><label class="block text-xs font-bold mb-1">Guna Membayar</label><input type="text" id="kwt-guna" class="classic-input w-full uppercase" oninput="updateLivePreview()" placeholder="Keterangan pembayaran..."></div>
-                
                 <div class="border border-gray-400 p-3 bg-[#E4E4E4] mt-2 shadow-inner">
                     <label class="block text-xs font-bold mb-2 border-b border-gray-300 pb-1 text-gray-700">Rincian Layanan</label>
                     <div class="flex flex-col gap-3 text-xs mt-2">
@@ -299,27 +271,19 @@
                         <div><label class="block mb-1 font-bold">Jumlah Hari</label><input type="text" id="kwt-rin-jml" class="classic-input w-full" oninput="updateLivePreview()"></div>
                     </div>
                 </div>
-                
                 <div class="mt-4 mb-8">
-                    <button onclick="saveAndPrintKwitansi()" id="btn-simpan-cetak" class="w-full bg-emerald-600 text-white win-border px-4 py-3 text-sm font-bold shadow-md hover:bg-emerald-500 transition-colors">
+                    <button onclick="saveAndPrintKwitansi()" class="w-full bg-emerald-600 text-white win-border px-4 py-3 text-sm font-bold shadow-md hover:bg-emerald-500 transition-colors">
                         <i class="fas fa-print mr-2"></i> SIMPAN & CETAK KWITANSI
                     </button>
                 </div>
             </div>
 
-            <!-- PANEL KANAN: LIVE PREVIEW KERTAS KWITANSI -->
+            <!-- Preview AJS/Almadina -->
             <div class="flex-1 bg-[#8c9196] flex justify-center overflow-y-auto relative p-8 print:p-0 print:bg-white">
-                
-                <!-- Kotak Pembungkus Skala (Scale) agar muat di layar Monitor (Tidak ikut tercetak) -->
-                <div id="live-preview-scaler" style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20 no-print">
-                    
-                    <!-- KERTAS KWITANSI ASLI (Yang akan tercetak 100%, ukuran FIX A4) -->
-                    <!-- KITA COPY ISINYA KE ELEMENT PRINT KHUSUS SAAT MAU MENCETAK -->
+                <div style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20 no-print">
                     <div id="display-kwitansi-area" class="bg-white shadow-2xl relative text-[13px] mx-auto overflow-hidden" style="width: 210mm; min-height: 297mm; padding: 10mm 15mm; box-sizing: border-box;">
                         
-                        <!-- KWITANSI ATAS (ASLI) -->
-                        <div id="kwt-original" class="relative pb-4 mb-4 border-b-2 border-dashed border-gray-600 z-20">
-                            <!-- Header -->
+                        <div id="kwt-original" class="relative pb-4 mb-4 border-b-2 border-dashed border-gray-600 z-20 bg-white">
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-4 flex-1">
                                     <img id="kw-logo-img" src="logo AJS.png" alt="Logo" class="w-32 h-16 object-contain" onerror="this.outerHTML='<div class=\\'w-32 h-16 flex items-center justify-center font-bold text-3xl tracking-widest\\'>LOGO</div>'">
@@ -329,79 +293,170 @@
                                         <p class="text-sm">Info Pemesanan : <strong class="italic">0881-081-658-168</strong></p>
                                     </div>
                                 </div>
-                                <div class="text-right text-sm pt-1 whitespace-nowrap">
-                                    <p>No. <span id="pk-no" class="font-bold">AJS-XXXX</span></p>
-                                </div>
+                                <div class="text-right text-sm pt-1 whitespace-nowrap"><p>No. <span id="pk-no" class="font-bold">AJS-XXXX</span></p></div>
                             </div>
 
-                            <!-- Isi -->
                             <div class="text-base space-y-2.5">
-                                <div class="flex items-end">
-                                    <span class="w-48 font-medium">Telah diterima dari</span><span class="mr-2">:</span>
-                                    <span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 font-bold italic" id="pk-terima">....................................................................</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="w-48 font-medium">Uang Sebanyak</span><span class="mr-2"> </span>
-                                    <div class="inline-block px-4 py-1 bg-[#fef08a] border border-black" style="transform: skewX(-15deg);">
-                                        <span class="block font-bold text-sm tracking-wide capitalize px-2" style="transform: skewX(15deg);" id="pk-terbilang">-</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center mt-2">
-                                    <span class="w-48 font-medium">Metode Pembayaran</span><span class="mr-2">:</span>
-                                    <div class="flex items-center gap-4" id="pk-metode">
-                                        <div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai
-                                    </div>
-                                </div>
-                                <div class="flex items-end mt-2">
-                                    <span class="w-48 font-medium">Guna membayar</span><span class="mr-2">:</span>
-                                    <span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 italic font-medium" id="pk-guna">....................................................................</span>
-                                </div>
+                                <div class="flex items-end"><span class="w-48 font-medium">Telah diterima dari</span><span class="mr-2">:</span><span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 font-bold italic" id="pk-terima">...................</span></div>
+                                <div class="flex items-center"><span class="w-48 font-medium">Uang Sebanyak</span><span class="mr-2"> </span><div class="inline-block px-4 py-1 bg-[#fef08a] border border-black" style="transform: skewX(-15deg);"><span class="block font-bold text-sm tracking-wide capitalize px-2" style="transform: skewX(15deg);" id="pk-terbilang">-</span></div></div>
+                                <div class="flex items-center mt-2"><span class="w-48 font-medium">Metode Pembayaran</span><span class="mr-2">:</span><div class="flex items-center gap-4" id="pk-metode"><div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai</div></div>
+                                <div class="flex items-end mt-2"><span class="w-48 font-medium">Guna membayar</span><span class="mr-2">:</span><span class="flex-1 border-b border-dotted border-gray-500 pb-0.5 italic font-medium" id="pk-guna">...................</span></div>
                                 
-                                <!-- Tabel Rincian -->
                                 <div class="mt-3">
                                     <p class="mb-1 font-medium">Rincian Layanan</p>
                                     <table class="w-full text-center text-sm border-collapse">
-                                        <thead>
-                                            <tr class="bg-gray-200">
-                                                <th class="py-1 px-2 rounded-l-full border-0">Hari / Tanggal</th>
-                                                <th class="py-1 px-2 border-0">Jenis Layanan</th>
-                                                <th class="py-1 px-2 border-0">Tujuan</th>
-                                                <th class="py-1 px-2 rounded-r-full border-0">Jumlah Hari</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tgl">................</td>
-                                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jenis">ANTAR & JEMPUT</td>
-                                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tujuan">................</td>
-                                                <td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jml">......</td>
-                                            </tr>
-                                        </tbody>
+                                        <thead><tr class="bg-gray-200"><th class="py-1 px-2 rounded-l-full border-0">Hari / Tanggal</th><th class="py-1 px-2 border-0">Jenis Layanan</th><th class="py-1 px-2 border-0">Tujuan</th><th class="py-1 px-2 rounded-r-full border-0">Jumlah Hari</th></tr></thead>
+                                        <tbody><tr><td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tgl">....</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jenis">....</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-tujuan">....</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium" id="pk-rin-jml">..</td></tr></tbody>
                                     </table>
                                 </div>
-
-                                <!-- Tanda Tangan (Garis dihilangkan, ttd di kanan) -->
                                 <div class="flex justify-between items-end mt-6">
                                     <div class="flex items-end mb-1">
                                         <span class="italic mr-2 font-medium">Terbilang</span>
-                                        <div class="inline-block px-3 bg-[#fef08a] border border-black h-[26px]" style="transform: skewX(-15deg);">
-                                            <span class="block font-bold text-lg leading-none pt-0.5 px-2" style="transform: skewX(15deg);">
-                                                <span class="italic mr-2 text-sm">Rp.</span><span id="pk-nominal">0</span>
-                                            </span>
-                                        </div>
+                                        <div class="inline-block px-3 bg-[#fef08a] border border-black h-[26px]" style="transform: skewX(-15deg);"><span class="block font-bold text-lg leading-none pt-0.5 px-2" style="transform: skewX(15deg);"><span class="italic mr-2 text-sm">Rp.</span><span id="pk-nominal">0</span></span></div>
                                     </div>
-                                    <div class="text-center w-64">
-                                        <p>Wonosobo, <span id="pk-tanggal">-</span></p>
-                                        <p class="mb-10">Hormat Kami</p>
-                                        <p class="border-b border-dotted border-gray-500 pb-0.5 uppercase font-bold" id="pk-op">ADMIN</p>
+                                    <div class="text-center w-64"><p>Wonosobo, <span id="pk-tanggal">-</span></p><p class="mb-10">Hormat Kami</p><p class="border-b border-dotted border-gray-500 pb-0.5 uppercase font-bold" id="pk-op">ADMIN</p></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="kwt-salinan" class="relative opacity-90 pt-1 z-10 bg-white">
+                            <!-- Clone salinan AJS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 4. RUANG KERJA ALMAQUA MINERAL (INVOICE)   -->
+    <!-- ========================================== -->
+    <div id="almaqua-workspace" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
+        
+        <!-- Header Almaqua -->
+        <div class="flex items-center px-2 py-1 bg-cyan-700 text-white border-b border-gray-300 text-xs select-none">
+            <div class="flex items-center gap-2 font-bold"><i class="fas fa-tint"></i><span>ALMAQUA MINERAL MANAGEMENT</span></div>
+        </div>
+        
+        <!-- Toolbar -->
+        <div class="flex px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px] py-1 shadow-sm relative z-20">
+            <div class="menu-btn font-bold text-blue-800" onclick="resetFormAlmaqua()"><i class="fas fa-file-invoice"></i> INVOICE BARU</div>
+            <div class="menu-btn" onclick="openKwitansiHistory()"><i class="fas fa-history"></i> HISTORI INVOICE</div>
+            <div class="menu-btn ml-auto text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
+        </div>
+
+        <div class="flex-1 flex overflow-hidden">
+            <!-- PANEL KIRI: FORM ALMAQUA -->
+            <div class="w-1/3 min-w-[320px] max-w-[400px] bg-blue-50 border-r border-blue-200 p-5 overflow-y-auto flex flex-col gap-4 shadow-inner z-10 no-print">
+                <h3 class="font-bold text-sm border-b-2 border-blue-200 pb-1 text-blue-800 uppercase">Buat Invoice Almaqua</h3>
+                
+                <div><label class="block text-xs font-bold mb-1 text-blue-900">Ditagihkan Kepada</label><input type="text" id="alm-tagih" class="classic-input w-full uppercase font-bold text-blue-900" oninput="updateLivePreviewAlmaqua()" placeholder="Contoh: UNIT SD"></div>
+                
+                <div class="border border-blue-200 p-3 bg-white mt-2 shadow-sm rounded">
+                    <label class="block text-xs font-bold mb-2 border-b border-gray-100 pb-1 text-gray-700">Detail Layanan / Produk</label>
+                    <div class="flex flex-col gap-3 text-xs mt-2">
+                        <div><label class="block mb-1 font-bold">Deskripsi Layanan</label><input type="text" id="alm-deskripsi" class="classic-input w-full" value="Air Minum Isi Ulang Almaqua" oninput="updateLivePreviewAlmaqua()"></div>
+                        <div class="flex gap-2">
+                            <div class="w-1/3"><label class="block mb-1 font-bold">Volume</label><input type="number" id="alm-vol" class="classic-input w-full font-bold text-center" value="1" min="1" oninput="updateLivePreviewAlmaqua()"></div>
+                            <div class="flex-1"><label class="block mb-1 font-bold">Harga / Satuan (Rp)</label><input type="number" id="alm-harga" class="classic-input w-full font-bold text-right" value="5000" oninput="updateLivePreviewAlmaqua()"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-100 p-3 rounded text-center border border-blue-300 mt-2 shadow-inner">
+                    <p class="text-xs font-bold text-blue-800 mb-1">TOTAL TAGIHAN</p>
+                    <p class="text-2xl font-black text-blue-900">Rp <span id="alm-total-info">5.000</span></p>
+                </div>
+                
+                <div class="mt-4 mb-8">
+                    <button onclick="saveAndPrintAlmaqua()" class="w-full bg-blue-600 text-white win-border px-4 py-3 text-sm font-bold shadow-md hover:bg-blue-500 transition-colors rounded">
+                        <i class="fas fa-print mr-2"></i> SIMPAN & CETAK INVOICE
+                    </button>
+                </div>
+            </div>
+
+            <!-- PANEL KANAN: PREVIEW INVOICE ALMAQUA -->
+            <div class="flex-1 bg-[#8c9196] flex justify-center overflow-y-auto relative p-8 print:p-0 print:bg-white">
+                <div style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20 no-print">
+                    
+                    <!-- AREA KERTAS ALMAQUA -->
+                    <div id="display-almaqua-area" class="bg-white shadow-2xl relative text-sm mx-auto overflow-hidden" style="width: 210mm; min-height: 297mm; padding: 10mm 15mm; box-sizing: border-box; font-family: Arial, sans-serif;">
+                        
+                        <div id="alm-original" class="relative pb-6 mb-6 border-b-2 border-dashed border-gray-400 z-20 bg-white">
+                            <!-- Header -->
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="flex items-center gap-4">
+                                    <!-- LOGO ALMAQUA -->
+                                    <img src="logo ALMAQUA.png" alt="Almaqua" class="w-36 h-auto object-contain" onerror="this.outerHTML='<div class=\\'w-36 h-12 flex items-center justify-center font-bold text-2xl tracking-widest text-blue-500 border border-blue-500\\'>ALMAQUA</div>'">
+                                    <div>
+                                        <h1 class="font-black text-[1.1rem] text-gray-800 uppercase tracking-wide">YAYASAN AL-MADINA</h1>
+                                        <p class="text-[11px] text-gray-600">Jl. KH. Hasyim Asy'ari Km. 01 Wonosobo</p>
+                                        <p class="text-[11px] text-gray-600">WA/Telp: 0882-2038-3000</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="flex items-center justify-end gap-3 mb-1">
+                                        <h2 class="text-3xl font-black text-blue-700 tracking-widest">INVOICE</h2>
+                                        <span class="border-2 border-blue-500 text-blue-600 px-2 py-0.5 rounded text-[11px] font-bold">ASLI</span>
+                                    </div>
+                                    <p class="text-[11px] text-gray-700">Tanggal: <span id="alm-tgl">16 November 2026</span></p>
+                                </div>
+                            </div>
+
+                            <!-- Tagihan Ke -->
+                            <div class="mb-6 flex justify-between items-end">
+                                <div class="border-l-4 border-blue-400 pl-3">
+                                    <p class="text-[10px] font-bold text-gray-500 mb-0.5">DITAGIHKAN KEPADA:</p>
+                                    <h3 class="text-lg font-black text-blue-900 uppercase tracking-wider" id="alm-preview-tagih">UNIT SD</h3>
+                                </div>
+                            </div>
+
+                            <!-- Table -->
+                            <table class="w-full text-xs border border-gray-200 mb-8">
+                                <thead class="bg-[#f8fafc]">
+                                    <tr>
+                                        <th class="py-2.5 px-3 text-left border-b border-r border-gray-200 font-bold text-gray-700">Deskripsi Layanan</th>
+                                        <th class="py-2.5 px-3 text-center border-b border-r border-gray-200 font-bold text-gray-700 w-16">Vol</th>
+                                        <th class="py-2.5 px-3 text-right border-b border-r border-gray-200 font-bold text-gray-700 w-32">Harga/Satuan</th>
+                                        <th class="py-2.5 px-3 text-right border-b border-gray-200 font-bold text-gray-700 w-32">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="py-4 px-3 border-b border-r border-gray-200 text-gray-800 text-sm" id="alm-preview-desk">Air Minum Isi Ulang Almaqua</td>
+                                        <td class="py-4 px-3 border-b border-r border-gray-200 text-center font-bold text-gray-800 text-sm" id="alm-preview-vol">25</td>
+                                        <td class="py-4 px-3 border-b border-r border-gray-200 text-right text-gray-800 text-sm"><span class="text-xs text-gray-500 mr-1">Rp</span><span id="alm-preview-harga">5.000</span></td>
+                                        <td class="py-4 px-3 border-b border-gray-200 text-right font-bold text-gray-900 text-sm"><span class="text-xs text-gray-500 mr-1">Rp</span><span id="alm-preview-total">125.000</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Footer -->
+                            <div class="flex justify-between items-start">
+                                <div class="flex gap-16 text-xs text-gray-700 mt-2">
+                                    <div class="text-center">
+                                        <p class="mb-14">Penerima,</p>
+                                        <div class="border-b border-gray-400 w-28"></div>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="mb-14">Hormat Kami,</p>
+                                        <div class="border-b border-gray-400 w-28"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-[#eff6ff] rounded-lg py-3 px-8 text-center border border-blue-100">
+                                    <p class="text-[10px] font-bold text-blue-400 mb-1">TOTAL TAGIHAN</p>
+                                    <div class="flex items-center justify-center gap-1 text-blue-700">
+                                        <span class="text-sm font-bold">Rp</span>
+                                        <span class="text-3xl font-black tracking-tight" id="alm-preview-grand">125.000</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- KWITANSI BAWAH (SALINAN OTOMATIS) -->
-                        <div id="kwt-salinan" class="relative opacity-90 pt-1 z-10">
-                            <!-- Akan dikloning otomatis dari Javascript -->
+                        <!-- SALINAN ALMAQUA -->
+                        <div id="alm-salinan" class="relative opacity-90 pt-1 z-10 bg-white">
+                            <!-- Clone -->
                         </div>
                     </div>
                 </div>
@@ -413,10 +468,10 @@
     <!-- ========================================== -->
     <!-- WADAH KHUSUS UNTUK PRINT CSS A4            -->
     <!-- ========================================== -->
-    <!-- Elemen ini hanya muncul saat proses Print dipanggil -->
     <div id="print-kwitansi-area" class="hidden text-[13px] bg-white">
         <!-- Akan diisi otomatis dari JS sebelum window.print() -->
     </div>
+
 
     <!-- ========================================== -->
     <!-- MODAL KHUSUS HISTORI & PREVIEW (READ ONLY) -->
@@ -424,7 +479,7 @@
     <div id="kwt-history-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-11/12 max-w-5xl shadow-lg flex flex-col" style="height: 80vh;">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center">
-                <span id="kwt-hist-title">Histori Kwitansi</span>
+                <span id="kwt-hist-title">Histori Transaksi</span>
                 <button onclick="closeModal('kwt-history-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 flex items-center justify-center text-black font-bold">X</button>
             </div>
             <div class="p-2 bg-[#F0F0F0] border-b flex gap-2 items-center text-xs font-bold shadow-sm">
@@ -434,8 +489,8 @@
             </div>
             <div class="flex-1 overflow-auto bg-white">
                 <table class="transaction-table w-full">
-                    <thead class="sticky top-0 shadow-sm">
-                        <tr><th class="w-10">NO</th><th class="w-32">TANGGAL</th><th class="w-32">NO KWITANSI</th><th>DITERIMA DARI</th><th class="w-32 text-right">NOMINAL (RP)</th><th class="w-32 text-center">AKSI (LIHAT/CETAK)</th></tr>
+                    <thead class="sticky top-0 shadow-sm" id="hist-thead">
+                        <!-- Header akan diganti dinamis tergantung Modul -->
                     </thead>
                     <tbody id="kwt-history-body"></tbody>
                 </table>
@@ -446,7 +501,7 @@
     <div id="kwt-preview-modal" class="fixed inset-0 modal-overlay hidden z-[70] flex items-center justify-center p-4">
         <div class="bg-gray-300 border-2 border-white border-r-gray-600 border-b-gray-600 w-full max-w-4xl h-[95vh] flex flex-col shadow-2xl relative">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center shadow-sm">
-                <span>Pratinjau Dokumen Kwitansi</span>
+                <span>Pratinjau Dokumen</span>
                 <button onclick="closeModal('kwt-preview-modal')" class="bg-gray-300 text-black px-2 font-bold win-border hover:bg-red-500 hover:text-white">X</button>
             </div>
             <div class="flex-1 overflow-auto flex justify-center p-4 bg-[#8c9196]">
@@ -456,15 +511,12 @@
             </div>
             <div class="p-3 bg-[#C0C0C0] border-t-2 border-white flex justify-end gap-3">
                 <button onclick="closeModal('kwt-preview-modal')" class="bg-gray-200 border-2 border-white border-r-gray-500 border-b-gray-500 px-4 py-2 font-bold text-gray-700">Tutup</button>
-                <button onclick="cetakDariPreview()" class="bg-blue-600 border-2 border-blue-400 border-r-blue-800 border-b-blue-800 text-white px-6 py-2 font-bold hover:bg-blue-500 shadow-md"><i class="fas fa-print mr-1"></i> Cetak Kwitansi Ini</button>
+                <button onclick="cetakDariPreview()" class="bg-blue-600 border-2 border-blue-400 border-r-blue-800 border-b-blue-800 text-white px-6 py-2 font-bold hover:bg-blue-500 shadow-md"><i class="fas fa-print mr-1"></i> Cetak Dokumen Ini</button>
             </div>
         </div>
     </div>
 
-
-    <!-- ========================================== -->
-    <!-- SEMUA MODAL POS RETAIL (Eksisting)         -->
-    <!-- ========================================== -->
+    <!-- SEMUA MODAL POS RETAIL (Eksisting, Disembunyikan kodenya untuk kerapihan) -->
     <div id="search-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center"><div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-3/4 max-w-3xl shadow-lg flex flex-col" style="max-height: 80vh;"><div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Pencarian Produk</span><button onclick="closeModal('search-modal')" class="bg-gray-300 border border-white border-r-gray-600 border-b-gray-600 w-5 h-5 text-black font-bold">X</button></div><div class="p-2 flex gap-2 items-center bg-[#F0F0F0] border-b border-gray-400"><span class="text-xs font-bold">CARI NAMA:</span><input type="text" id="search-input" class="classic-input flex-1" oninput="filterProductSearch()"></div><div class="flex-1 overflow-auto bg-white" style="min-height: 300px;"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-32">KODE</th><th>NAMA PRODUK</th><th class="w-24 text-center">SATUAN</th><th class="w-32 text-right">HARGA JUAL</th></tr></thead><tbody id="search-results"></tbody></table></div></div></div>
     <div id="edit-qty-modal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center"><div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-72 shadow-lg"><div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Ubah Quantity (QTY)</span><button onclick="closeModal('edit-qty-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div><div class="p-4 flex flex-col gap-3"><div class="text-xs font-bold text-center text-blue-800" id="qty-modal-product-name">-</div><div><label class="block text-xs font-bold mb-1 text-center">Masukkan QTY Baru:</label><input type="number" id="edit-qty-input" class="classic-input w-full text-center text-3xl font-bold p-2" min="1" onkeypress="handleEditQtyEnter(event)"></div><div class="mt-2 flex justify-center"><button onclick="saveEditQty()" class="bg-gray-300 win-border px-8 py-2 text-sm font-bold text-blue-800">OK</button></div></div></div></div>
     <div id="master-produk-modal" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center"><div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-11/12 max-w-4xl shadow-lg flex flex-col" style="height: 80vh;"><div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Data Master Produk</span><button onclick="closeModal('master-produk-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div><div class="p-2 bg-[#F0F0F0] border-b border-gray-400 flex gap-2 items-end text-xs font-bold flex-wrap"><div class="flex flex-col gap-1"><label>KODE/BARCODE</label><input type="text" id="prod-kode" class="classic-input w-28"></div><div class="flex flex-col gap-1 flex-1 min-w-[150px]"><label>NAMA PRODUK</label><input type="text" id="prod-nama" class="classic-input w-full"></div><div class="flex flex-col gap-1"><label>HARGA BELI</label><input type="number" id="prod-harga-beli" class="classic-input w-24 text-right" oninput="hitungProfitForm()"></div><div class="flex flex-col gap-1"><label>HARGA JUAL</label><input type="number" id="prod-harga" class="classic-input w-24 text-right" oninput="hitungProfitForm()"></div><div class="flex flex-col gap-1"><label>PROFIT</label><input type="text" id="prod-profit" class="classic-input w-24 text-right bg-gray-200" readonly></div><div class="flex flex-col gap-1"><label>SATUAN</label><input type="text" id="prod-satuan" class="classic-input w-16"></div><div class="flex gap-1 h-[26px]"><button onclick="simpanProduk()" class="bg-gray-300 win-border px-3 text-blue-800"><i class="fas fa-save"></i> Simpan</button><button onclick="resetFormProduk()" class="bg-gray-300 win-border px-3 text-red-600"><i class="fas fa-eraser"></i> Bersihkan</button></div></div><div class="flex-1 overflow-auto bg-white"><table class="transaction-table w-full"><thead class="sticky top-0 shadow-sm"><tr><th class="w-10 text-center">NO</th><th class="w-32">KODE</th><th>NAMA PRODUK</th><th class="w-20 text-center">SATUAN</th><th class="w-28 text-right">HARGA BELI</th><th class="w-28 text-right">HARGA JUAL</th><th class="w-28 text-right">PROFIT</th><th class="w-24 text-center">AKSI</th></tr></thead><tbody id="master-produk-body"></tbody></table></div></div></div>
@@ -475,6 +527,7 @@
     <div id="payment-modal" class="fixed inset-0 modal-overlay hidden z-[55] flex items-center justify-center"><div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-80 shadow-lg flex flex-col"><div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Pembayaran</span><button onclick="closeModal('payment-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div><div class="p-4 flex flex-col gap-3"><div><label class="block text-xs font-bold mb-1">TOTAL BELANJA</label><input type="text" id="pay-total" class="classic-input w-full text-right text-xl font-bold text-red-600" readonly></div><div><label class="block text-xs font-bold mb-1">DIBAYAR (CASH)</label><input type="number" id="pay-cash" class="classic-input w-full text-right text-xl font-bold" oninput="calculateChange()"></div><div><label class="block text-xs font-bold mb-1">KEMBALI</label><input type="text" id="pay-change" class="classic-input w-full text-right text-xl font-bold text-blue-600" readonly></div><div class="mt-2 flex justify-center"><button onclick="processPaymentAndPrint()" class="bg-gray-300 win-border px-4 py-2 text-sm font-bold flex items-center gap-2"><i class="fas fa-print"></i> Bayar & Cetak</button></div></div></div></div>
     <div id="pdf-confirm-modal" class="fixed inset-0 modal-overlay hidden z-[60] flex items-center justify-center"><div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-80 shadow-lg"><div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Konfirmasi Cetak</span></div><div class="p-6 text-center text-sm font-bold text-gray-800"><i class="fas fa-question-circle text-4xl text-blue-600 mb-3"></i><p>Apakah struk ingin disimpan ke PDF juga?</p></div><div class="p-2 bg-[#C0C0C0] border-t flex justify-center gap-2"><button onclick="handlePrintChoice(true)" class="bg-gray-300 win-border px-3 py-1.5 text-xs font-bold text-blue-800 flex items-center gap-1">Ya, Simpan PDF</button><button onclick="handlePrintChoice(false)" class="bg-gray-300 win-border px-3 py-1.5 text-xs font-bold text-black flex items-center gap-1">Tidak, Cetak Saja</button></div></div></div>
 
+    <!-- SCRIPT UTAMA KESELURUHAN -->
     <script>
         // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxb26f_sGBEI_aoV4m7qh5SQ0J6nEiOT7mpezUOv-_ru99CibG7PvaZwJN6fPeQ44c/exec"; 
@@ -490,14 +543,13 @@
         let productsDb = []; let customersDb = []; let storeInfo = {}; let appUser = {};
         let cart = []; let totalAmount = 0; let totalQty = 0; let selectedRowIndex = -1;
         const emptyRowsToGenerate = 15;
-        let pendingTransaction = null;
-        let editProdukKode = null;
-        let fetchedTransactions = []; 
-        let fetchedKwitansi = [];
+        let pendingTransaction = null; let editProdukKode = null;
+        let fetchedTransactions = []; let fetchedKwitansi = [];
         let selectedModule = ''; 
 
-        // State khusus untuk Kwitansi Workspace
+        // State khusus untuk Kwitansi Workspace (AJS/Almadina & Almaqua)
         let currentKwitansiId = ''; 
+        let currentAlmaquaId = '';
         let tempPrintDataForHistory = null; 
 
         const formatNumber = (num) => num.toLocaleString('id-ID');
@@ -521,7 +573,7 @@
             setInterval(updateClock, 1000); updateClock();
         };
 
-        // --- SISTEM ROUTING ---
+        // --- SISTEM ROUTING UTAMA ---
         function openLogin(moduleTarget) {
             selectedModule = moduleTarget; 
             const modal = document.getElementById('login-container');
@@ -531,6 +583,7 @@
             if (moduleTarget === 'pos') { title.textContent = "MODUL POS RETAIL"; icon.className = "fas fa-shopping-cart text-2xl text-blue-600 mr-3"; }
             if (moduleTarget === 'ajs') { title.textContent = "MODUL A.J.S SYSTEM"; icon.className = "fas fa-bus text-2xl text-emerald-600 mr-3"; }
             if (moduleTarget === 'almadina') { title.textContent = "MODUL ALMADINA TRANS"; icon.className = "fas fa-shuttle-van text-2xl text-purple-600 mr-3"; }
+            if (moduleTarget === 'almaqua') { title.textContent = "MODUL ALMAQUA MINERAL"; icon.className = "fas fa-tint text-2xl text-cyan-600 mr-3"; }
 
             modal.classList.remove('hidden'); modal.classList.add('flex');
             document.getElementById('username').focus();
@@ -570,9 +623,12 @@
                         title.textContent = "ALMADINA TRANS MANAGEMENT";
                         logoImg.src = "logo ALMADINA.png"; 
                     }
-                    
                     ws.classList.remove('hidden'); ws.classList.add('flex');
                     resetFormKwitansi(); 
+                } else if (selectedModule === 'almaqua') {
+                    const wsAlm = document.getElementById('almaqua-workspace');
+                    wsAlm.classList.remove('hidden'); wsAlm.classList.add('flex');
+                    resetFormAlmaqua();
                 }
             } else { document.getElementById('login-error').classList.remove('hidden'); }
         }
@@ -581,13 +637,106 @@
             if(confirm("Keluar dari modul ini dan kembali ke menu utama?")) {
                 document.getElementById('app-container').classList.add('hidden'); document.getElementById('app-container').classList.remove('flex');
                 document.getElementById('kwitansi-workspace').classList.add('hidden'); document.getElementById('kwitansi-workspace').classList.remove('flex');
+                document.getElementById('almaqua-workspace').classList.add('hidden'); document.getElementById('almaqua-workspace').classList.remove('flex');
                 document.getElementById('portal-container').classList.remove('hidden'); document.getElementById('portal-container').classList.add('flex');
                 cart = []; selectedRowIndex = -1; selectedModule = '';
             }
         }
 
+
         // ===============================================
-        // FUNGSI KHUSUS KWITANSI (SUPER APP - LIVE PREVIEW)
+        // FUNGSI KHUSUS ALMAQUA MINERAL (INVOICE)
+        // ===============================================
+        
+        function resetFormAlmaqua() {
+            document.getElementById('alm-tagih').value = '';
+            document.getElementById('alm-deskripsi').value = 'Air Minum Isi Ulang Almaqua';
+            document.getElementById('alm-vol').value = '1';
+            document.getElementById('alm-harga').value = '5000';
+            
+            // Generate ID Invoice Almaqua
+            const now = new Date();
+            currentAlmaquaId = "ALM-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0');
+            
+            updateLivePreviewAlmaqua();
+        }
+
+        function updateLivePreviewAlmaqua() {
+            if (selectedModule !== 'almaqua') return;
+
+            const tagih = document.getElementById('alm-tagih').value.toUpperCase();
+            const desk = document.getElementById('alm-deskripsi').value;
+            const vol = parseInt(document.getElementById('alm-vol').value) || 0;
+            const harga = parseInt(document.getElementById('alm-harga').value) || 0;
+            const total = vol * harga;
+
+            // Form Kiri
+            document.getElementById('alm-total-info').textContent = formatNumber(total);
+
+            // Kertas Invoice
+            const now = new Date();
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const tglStr = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
+
+            document.getElementById('alm-tgl').textContent = tglStr;
+            document.getElementById('alm-preview-tagih').textContent = tagih || '........................';
+            document.getElementById('alm-preview-desk').textContent = desk || '........................';
+            document.getElementById('alm-preview-vol').textContent = vol || '0';
+            document.getElementById('alm-preview-harga').textContent = formatNumber(harga);
+            document.getElementById('alm-preview-total').textContent = formatNumber(total);
+            document.getElementById('alm-preview-grand').textContent = formatNumber(total);
+
+            // Watermark Salinan Almaqua
+            const originalContent = document.getElementById('alm-original').innerHTML;
+            
+            // Mengubah ASLI menjadi SALINAN pada kloningan
+            const modifiedForSalinan = originalContent
+                .replace('<span class="border-2 border-blue-500 text-blue-600 px-2 py-0.5 rounded text-[11px] font-bold">ASLI</span>', 
+                         '<span class="border-2 border-red-500 text-red-500 px-2 py-0.5 rounded text-[11px] font-bold">SALINAN</span>');
+
+            document.getElementById('alm-salinan').innerHTML = modifiedForSalinan + `<div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.06; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>`;
+        }
+
+        function saveAndPrintAlmaqua() {
+            const tagih = document.getElementById('alm-tagih').value.trim();
+            const desk = document.getElementById('alm-deskripsi').value.trim();
+            const vol = parseInt(document.getElementById('alm-vol').value) || 0;
+            const harga = parseInt(document.getElementById('alm-harga').value) || 0;
+            const total = vol * harga;
+
+            if(!tagih || !desk || vol <= 0) return alert("Harap lengkapi Ditagihkan Kepada, Deskripsi, dan Volume!");
+
+            const kData = {
+                id: currentAlmaquaId,
+                date: new Date().toISOString(),
+                ditagihkanKe: tagih,
+                deskripsi: desk,
+                vol: vol,
+                harga: harga,
+                total: total,
+                operator: appUser.user || 'admin'
+            };
+
+            // Simpan ke Google Sheets (Pastikan ada backend saveKwitansiAlmaqua)
+            if (typeof google !== 'undefined') {
+                apiPost('saveKwitansiAlmaqua', kData);
+            }
+
+            // Pindahkan HTML dari Live Preview ke Area Cetak Khusus
+            const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML;
+            const printAreaContainer = document.getElementById('print-kwitansi-area');
+            
+            printAreaContainer.innerHTML = htmlToPrint;
+            printAreaContainer.classList.remove('hidden');
+            
+            window.print();
+            
+            printAreaContainer.classList.add('hidden');
+        }
+
+
+        // ===============================================
+        // FUNGSI KHUSUS KWITANSI AJS & ALMADINA (EKSISTING)
         // ===============================================
 
         function resetFormKwitansi() {
@@ -600,29 +749,7 @@
             
             document.getElementById('kwt-rin-tgl').valueAsDate = new Date();
             currentKwitansiId = generateIdKwitansi();
-            
-            document.getElementById('btn-simpan-cetak').innerHTML = '<i class="fas fa-print mr-2"></i> SIMPAN & CETAK KWITANSI';
             updateLivePreview(); 
-        }
-
-        function generateIdKwitansi() {
-            const prefix = selectedModule === 'ajs' ? 'AJS' : 'AT';
-            const now = new Date();
-            return prefix + "-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0');
-        }
-
-        function terbilang(a) {
-            var bilangan = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
-            if(a===0) return "";
-            if (a < 12) return bilangan[a];
-            if (a < 20) return bilangan[a - 10] + " Belas";
-            if (a < 100) return bilangan[Math.floor(a / 10)] + " Puluh" + (a % 10 > 0 ? " " + bilangan[a % 10] : "");
-            if (a < 200) return "Seratus" + (a - 100 > 0 ? " " + terbilang(a - 100) : "");
-            if (a < 1000) return bilangan[Math.floor(a / 100)] + " Ratus" + (a % 100 > 0 ? " " + terbilang(a % 100) : "");
-            if (a < 2000) return "Seribu" + (a - 1000 > 0 ? " " + terbilang(a - 1000) : "");
-            if (a < 1000000) return terbilang(Math.floor(a / 1000)) + " Ribu" + (a % 1000 > 0 ? " " + terbilang(a % 1000) : "");
-            if (a < 1000000000) return terbilang(Math.floor(a / 1000000)) + " Juta" + (a % 1000000 > 0 ? " " + terbilang(a % 1000000) : "");
-            return "";
         }
 
         function toggleTransfer() {
@@ -647,8 +774,6 @@
             const guna = document.getElementById('kwt-guna').value.toUpperCase();
 
             const nominalStr = nominal > 0 ? terbilang(nominal).replace(/\s+/g, ' ').trim() + " Rupiah" : "";
-            document.getElementById('kwt-terbilang').textContent = nominalStr || '-';
-
             document.getElementById('pk-no').textContent = currentKwitansiId;
             document.getElementById('pk-terima').textContent = terima || '....................................................................';
             document.getElementById('pk-terbilang').textContent = nominalStr || '-';
@@ -663,21 +788,16 @@
                 document.getElementById('pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`;
             }
 
-            // TANGGAL DENGAN NAMA HARI BAHASA INDONESIA
             let tglVal = document.getElementById('kwt-rin-tgl').value;
             if(tglVal) {
                 let td = new Date(tglVal);
                 const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-                let hari = namaHari[td.getDay()];
-                tglVal = hari + ", " + String(td.getDate()).padStart(2, '0') + "/" + String(td.getMonth()+1).padStart(2, '0') + "/" + String(td.getFullYear()).substring(2);
+                tglVal = namaHari[td.getDay()] + ", " + String(td.getDate()).padStart(2, '0') + "/" + String(td.getMonth()+1).padStart(2, '0') + "/" + String(td.getFullYear()).substring(2);
             }
             document.getElementById('pk-rin-tgl').textContent = tglVal || '................';
 
             const jenisSel = document.getElementById('kwt-rin-jenis-select').value;
-            let jenisVal = jenisSel;
-            if(jenisSel === 'LAINNYA') jenisVal = document.getElementById('kwt-rin-jenis').value.toUpperCase();
-            document.getElementById('pk-rin-jenis').textContent = jenisVal || '................';
-
+            document.getElementById('pk-rin-jenis').textContent = (jenisSel === 'LAINNYA' ? document.getElementById('kwt-rin-jenis').value.toUpperCase() : jenisSel) || '................';
             document.getElementById('pk-rin-tujuan').textContent = document.getElementById('kwt-rin-tujuan').value.toUpperCase() || '................';
             document.getElementById('pk-rin-jml').textContent = document.getElementById('kwt-rin-jml').value || '......';
 
@@ -690,7 +810,6 @@
             document.getElementById('kwt-salinan').innerHTML = originalContent + `<div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.08; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>`;
         }
 
-        // PROSES SAAT TOMBOL SIMPAN & CETAK DIKLIK
         function saveAndPrintKwitansi() {
             const terima = document.getElementById('kwt-terima').value.trim();
             const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0;
@@ -706,30 +825,42 @@
             const jenisVal = jenisSel === 'LAINNYA' ? document.getElementById('kwt-rin-jenis').value.trim() : jenisSel;
             
             const rincian = { tgl: tglValStr, jenis: jenisVal, tujuan: document.getElementById('kwt-rin-tujuan').value.trim(), jml: document.getElementById('kwt-rin-jml').value.trim() };
-            
             const kData = { id: currentKwitansiId, date: new Date().toISOString(), terimaDari: terima, gunaMembayar: guna, nominal: nominal, metode: metodeText, rincian: rincian, operator: appUser.user || 'admin' };
             
-            // PENGUNCI DIHAPUS - SEKARANG PASTI MENGIRIM DATA DARI GITHUB KE GOOGLE SHEETS
-            const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
-            apiPost(actionName, kData);
+            if (typeof google !== 'undefined') {
+                const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
+                apiPost(actionName, kData);
+            }
             
-            // PINDAHKAN HTML DARI LIVE PREVIEW KE DALAM AREA CETAK KHUSUS
             const htmlToPrint = document.getElementById('display-kwitansi-area').innerHTML;
             const printAreaContainer = document.getElementById('print-kwitansi-area');
-            
             printAreaContainer.innerHTML = htmlToPrint;
-            printAreaContainer.classList.remove('hidden'); // Tampilkan agar terbaca CSS Print
-            
-            // Panggil Print bawaan (Sekarang CSS menjamin lebarnya Fix A4)
+            printAreaContainer.classList.remove('hidden'); 
             window.print();
-            
-            printAreaContainer.classList.add('hidden'); // Sembunyikan lagi
+            printAreaContainer.classList.add('hidden'); 
         }
+
         // ===============================================
-        // FUNGSI HISTORY & PREVIEW KWITANSI (LIHAT/CETAK)
+        // FUNGSI HISTORY & PREVIEW KWITANSI (GLOBAL: AJS/ALMADINA/ALMAQUA)
         // ===============================================
         function openKwitansiHistory() {
-            document.getElementById('kwt-hist-title').textContent = "Histori Kwitansi - " + (selectedModule === 'ajs' ? 'AJS' : 'ALMADINA TRANS');
+            let titleText = "Histori Kwitansi";
+            let theadHtml = "";
+            
+            if (selectedModule === 'ajs') titleText = "Histori Kwitansi - AJS";
+            else if (selectedModule === 'almadina') titleText = "Histori Kwitansi - ALMADINA TRANS";
+            else if (selectedModule === 'almaqua') titleText = "Histori Invoice - ALMAQUA";
+            
+            document.getElementById('kwt-hist-title').textContent = titleText;
+            
+            // Set Header Tabel Dinamis
+            if (selectedModule === 'almaqua') {
+                theadHtml = `<tr><th class="w-10">NO</th><th class="w-32">TANGGAL</th><th class="w-32">NO INVOICE</th><th>DITAGIHKAN KEPADA</th><th class="w-32 text-right">TOTAL (RP)</th><th class="w-32 text-center">AKSI</th></tr>`;
+            } else {
+                theadHtml = `<tr><th class="w-10">NO</th><th class="w-32">TANGGAL</th><th class="w-32">NO KWITANSI</th><th>DITERIMA DARI</th><th class="w-32 text-right">NOMINAL (RP)</th><th class="w-32 text-center">AKSI</th></tr>`;
+            }
+            document.getElementById('hist-thead').innerHTML = theadHtml;
+            
             document.getElementById('kwt-history-modal').classList.remove('hidden');
             const today = new Date();
             document.getElementById('kwt-hist-start').valueAsDate = today;
@@ -743,34 +874,59 @@
             const tbody = document.getElementById('kwt-history-body');
             tbody.innerHTML = '<tr><td colspan="6" class="text-center font-bold text-blue-600 py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Mengambil data dari server...</td></tr>';
             
-            const actionName = selectedModule === 'ajs' ? 'getKwitansiAJS' : 'getKwitansiAlmadina';
+            let actionName = '';
+            if (selectedModule === 'ajs') actionName = 'getKwitansiAJS';
+            else if (selectedModule === 'almadina') actionName = 'getKwitansiAlmadina';
+            else if (selectedModule === 'almaqua') actionName = 'getKwitansiAlmaqua';
+
             apiGet(actionName, `&startDate=${startDate}&endDate=${endDate}`).then(data => {
                 fetchedKwitansi = data;
                 tbody.innerHTML = ''; let counter = 1;
                 data.forEach((k, index) => {
                     const d = new Date(k.date);
                     const dateStr = d.toLocaleDateString('id-ID') + ' <br><span class="text-gray-500 font-normal">' + d.toLocaleTimeString('id-ID').substring(0,5) + '</span>';
+                    
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${k.id}</td>
-                        <td class="uppercase">${k.terimaDari}</td><td class="text-right font-bold text-blue-800">${formatNumber(k.nominal)}</td>
-                        <td class="text-center">
-                            <div class="flex justify-center gap-2">
-                                <button onclick="lihatStrukTertentuKwitansi(${index})" class="bg-yellow-200 border border-gray-500 px-3 py-1 text-xs hover:bg-yellow-300 font-bold shadow-sm rounded-sm"><i class="fas fa-eye text-yellow-700"></i> Lihat</button>
-                                <button onclick="cetakStrukTertentuKwitansi(${index})" class="bg-blue-200 border border-gray-500 px-3 py-1 text-xs hover:bg-blue-300 font-bold shadow-sm rounded-sm"><i class="fas fa-print text-blue-700"></i> Cetak</button>
-                            </div>
-                        </td>
-                    `;
+                    if (selectedModule === 'almaqua') {
+                        tr.innerHTML = `
+                            <td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${k.id}</td>
+                            <td class="uppercase">${k.ditagihkanKe}</td><td class="text-right font-bold text-blue-800">${formatNumber(k.total)}</td>
+                            <td class="text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="lihatStrukTertentuKwitansi(${index})" class="bg-yellow-200 border border-gray-500 px-3 py-1 text-xs hover:bg-yellow-300 font-bold shadow-sm rounded-sm"><i class="fas fa-eye text-yellow-700"></i></button>
+                                    <button onclick="cetakStrukTertentuKwitansi(${index})" class="bg-blue-200 border border-gray-500 px-3 py-1 text-xs hover:bg-blue-300 font-bold shadow-sm rounded-sm"><i class="fas fa-print text-blue-700"></i></button>
+                                </div>
+                            </td>
+                        `;
+                    } else {
+                        tr.innerHTML = `
+                            <td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${k.id}</td>
+                            <td class="uppercase">${k.terimaDari}</td><td class="text-right font-bold text-blue-800">${formatNumber(k.nominal)}</td>
+                            <td class="text-center">
+                                <div class="flex justify-center gap-2">
+                                    <button onclick="lihatStrukTertentuKwitansi(${index})" class="bg-yellow-200 border border-gray-500 px-3 py-1 text-xs hover:bg-yellow-300 font-bold shadow-sm rounded-sm"><i class="fas fa-eye text-yellow-700"></i></button>
+                                    <button onclick="cetakStrukTertentuKwitansi(${index})" class="bg-blue-200 border border-gray-500 px-3 py-1 text-xs hover:bg-blue-300 font-bold shadow-sm rounded-sm"><i class="fas fa-print text-blue-700"></i></button>
+                                </div>
+                            </td>
+                        `;
+                    }
                     tbody.appendChild(tr);
                 });
-                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Tidak ada kwitansi di rentang tanggal ini.</td></tr>';
+                if(data.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Tidak ada data di rentang tanggal ini.</td></tr>';
             });
         }
 
         function lihatStrukTertentuKwitansi(index) {
             let kData = fetchedKwitansi[index];
             tempPrintDataForHistory = kData; 
-            const htmlToRender = generateHTMLKwitansiDinamis(kData);
+            
+            let htmlToRender = "";
+            if (selectedModule === 'almaqua') {
+                htmlToRender = generateHTMLAlmaquaDinamis(kData);
+            } else {
+                htmlToRender = generateHTMLKwitansiDinamis(kData);
+            }
+            
             document.getElementById('modal-preview-render-area').innerHTML = `<div>${htmlToRender}</div>`;
             document.getElementById('kwt-preview-modal').classList.remove('hidden');
         }
@@ -778,8 +934,11 @@
         function cetakDariPreview() {
             if(tempPrintDataForHistory) {
                 const printAreaContainer = document.getElementById('print-kwitansi-area');
-                printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(tempPrintDataForHistory);
-                
+                if (selectedModule === 'almaqua') {
+                    printAreaContainer.innerHTML = generateHTMLAlmaquaDinamis(tempPrintDataForHistory);
+                } else {
+                    printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(tempPrintDataForHistory);
+                }
                 printAreaContainer.classList.remove('hidden');
                 window.print();
                 printAreaContainer.classList.add('hidden');
@@ -789,13 +948,93 @@
         function cetakStrukTertentuKwitansi(index) {
             let kData = fetchedKwitansi[index];
             const printAreaContainer = document.getElementById('print-kwitansi-area');
-            printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(kData);
-            
+            if (selectedModule === 'almaqua') {
+                printAreaContainer.innerHTML = generateHTMLAlmaquaDinamis(kData);
+            } else {
+                printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(kData);
+            }
             printAreaContainer.classList.remove('hidden');
             window.print();
             printAreaContainer.classList.add('hidden');
         }
         
+        // PEMBANTU: Generate HTML Almaqua dari Data
+        function generateHTMLAlmaquaDinamis(kData) {
+            kData.date = new Date(kData.date);
+            const d = kData.date;
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const tglBawahStr = d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+
+            const htmlOriginal = `
+                <div class="relative pb-6 mb-6 border-b-2 border-dashed border-gray-400 z-20 bg-white" style="font-family: Arial, sans-serif;">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex items-center gap-4">
+                            <img src="logo ALMAQUA.png" alt="Almaqua" class="w-36 h-auto object-contain" onerror="this.outerHTML='<div class=\\'w-36 h-12 flex items-center justify-center font-bold text-2xl tracking-widest text-blue-500 border border-blue-500\\'>ALMAQUA</div>'">
+                            <div>
+                                <h1 class="font-black text-[1.1rem] text-gray-800 uppercase tracking-wide">YAYASAN AL-MADINA</h1>
+                                <p class="text-[11px] text-gray-600">Jl. KH. Hasyim Asy'ari Km. 01 Wonosobo</p>
+                                <p class="text-[11px] text-gray-600">WA/Telp: 0882-2038-3000</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center justify-end gap-3 mb-1">
+                                <h2 class="text-3xl font-black text-blue-700 tracking-widest">INVOICE</h2>
+                                <span class="border-2 border-blue-500 text-blue-600 px-2 py-0.5 rounded text-[11px] font-bold">ASLI</span>
+                            </div>
+                            <p class="text-[11px] text-gray-700">Tanggal: <span>${tglBawahStr}</span></p>
+                        </div>
+                    </div>
+                    <div class="mb-6 flex justify-between items-end">
+                        <div class="border-l-4 border-blue-400 pl-3">
+                            <p class="text-[10px] font-bold text-gray-500 mb-0.5">DITAGIHKAN KEPADA:</p>
+                            <h3 class="text-lg font-black text-blue-900 uppercase tracking-wider">${kData.ditagihkanKe}</h3>
+                        </div>
+                    </div>
+                    <table class="w-full text-xs border border-gray-200 mb-8">
+                        <thead class="bg-[#f8fafc]">
+                            <tr>
+                                <th class="py-2.5 px-3 text-left border-b border-r border-gray-200 font-bold text-gray-700">Deskripsi Layanan</th>
+                                <th class="py-2.5 px-3 text-center border-b border-r border-gray-200 font-bold text-gray-700 w-16">Vol</th>
+                                <th class="py-2.5 px-3 text-right border-b border-r border-gray-200 font-bold text-gray-700 w-32">Harga/Satuan</th>
+                                <th class="py-2.5 px-3 text-right border-b border-gray-200 font-bold text-gray-700 w-32">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-4 px-3 border-b border-r border-gray-200 text-gray-800 text-sm">${kData.deskripsi}</td>
+                                <td class="py-4 px-3 border-b border-r border-gray-200 text-center font-bold text-gray-800 text-sm">${kData.vol}</td>
+                                <td class="py-4 px-3 border-b border-r border-gray-200 text-right text-gray-800 text-sm"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(kData.harga)}</td>
+                                <td class="py-4 px-3 border-b border-gray-200 text-right font-bold text-gray-900 text-sm"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(kData.total)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="flex justify-between items-start">
+                        <div class="flex gap-16 text-xs text-gray-700 mt-2">
+                            <div class="text-center"><p class="mb-14">Penerima,</p><div class="border-b border-gray-400 w-28"></div></div>
+                            <div class="text-center"><p class="mb-14">Hormat Kami,</p><div class="border-b border-gray-400 w-28"></div></div>
+                        </div>
+                        <div class="bg-[#eff6ff] rounded-lg py-3 px-8 text-center border border-blue-100">
+                            <p class="text-[10px] font-bold text-blue-400 mb-1">TOTAL TAGIHAN</p>
+                            <div class="flex items-center justify-center gap-1 text-blue-700">
+                                <span class="text-sm font-bold">Rp</span>
+                                <span class="text-3xl font-black tracking-tight">${formatNumber(kData.total)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const modifiedForSalinan = htmlOriginal.replace('<span class="border-2 border-blue-500 text-blue-600 px-2 py-0.5 rounded text-[11px] font-bold">ASLI</span>', '<span class="border-2 border-red-500 text-red-500 px-2 py-0.5 rounded text-[11px] font-bold">SALINAN</span>');
+
+            return htmlOriginal + `
+                <div class="relative opacity-90 pt-1 z-10 bg-white">
+                    ${modifiedForSalinan}
+                    <div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.06; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>
+                </div>
+            `;
+        }
+
+        // PEMBANTU: Generate HTML AJS/Almadina dari Data
         function generateHTMLKwitansiDinamis(kData) {
             kData.date = new Date(kData.date);
             const d = kData.date;
@@ -819,9 +1058,7 @@
                     const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
                     let hari = namaHari[dt.getDay()];
                     tglRincian = hari + ", " + String(dt.getDate()).padStart(2, '0') + "/" + String(dt.getMonth()+1).padStart(2, '0') + "/" + String(dt.getFullYear()).substring(2);
-                } else {
-                    tglRincian = kData.rincian.tgl; 
-                }
+                } else { tglRincian = kData.rincian.tgl; }
             }
             
             const htmlOriginal = `
@@ -866,16 +1103,10 @@
         }
 
         // ===============================================
-        // FUNGSI KASIR BAWAAN (TIDAK ADA PERUBAHAN)
+        // KASIR BAWAAN (TIDAK ADA PERUBAHAN LOGIKA, HANYA DIRAPIKAN)
         // ===============================================
-        function closeModal(modalId) { 
-            document.getElementById(modalId).classList.add('hidden'); 
-            if(modalId === 'kwt-preview-modal') return; 
-            if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal' && modalId !== 'kwt-history-modal') {
-                const b = document.getElementById('barcode-input');
-                if(b) b.focus();
-            }
-        }
+        // (Sama seperti sebelumnya untuk modul Kasir Retail)
+        function closeModal(modalId) { document.getElementById(modalId).classList.add('hidden'); if(modalId === 'kwt-preview-modal') return; if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal' && modalId !== 'kwt-history-modal') { const b = document.getElementById('barcode-input'); if(b) b.focus(); } }
         function openEditQtyModal() { if (selectedRowIndex === -1 || cart.length === 0) return; document.getElementById('edit-qty-modal').classList.remove('hidden'); document.getElementById('qty-modal-product-name').textContent = cart[selectedRowIndex].name; const inputEl = document.getElementById('edit-qty-input'); inputEl.value = cart[selectedRowIndex].qty; inputEl.focus(); inputEl.select(); }
         function saveEditQty() { const newQty = parseInt(document.getElementById('edit-qty-input').value); if (newQty > 0 && selectedRowIndex > -1) { cart[selectedRowIndex].qty = newQty; renderCartTable(); closeModal('edit-qty-modal'); } else if (newQty === 0) { deleteSelectedItem(); closeModal('edit-qty-modal'); } }
         function handleEditQtyEnter(e) { if (e.key === 'Enter') { e.preventDefault(); saveEditQty(); } }
