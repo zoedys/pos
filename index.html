@@ -33,6 +33,29 @@
         .module-card { transition: all 0.3s ease; }
         .module-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2); }
 
+        /* KUNCI MATI UKURAN A4 UNTUK LIVE PREVIEW DAN MODAL HISTORI */
+        #print-kwitansi-area {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            padding: 10mm 15mm;
+            box-sizing: border-box;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        #modal-preview-render-area > div {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 10mm 15mm;
+            box-sizing: border-box;
+            margin: 0 auto;
+            position: relative;
+        }
+
         @media print {
             @page { margin: 0; size: A4 portrait; }
             body * { visibility: hidden; }
@@ -44,13 +67,11 @@
             #print-area td, #print-area th { font-size: inherit !important; color: #000 !important; }
             .no-print { display: none !important; }
             
-            /* CSS KHUSUS CETAK KWITANSI A4 */
+            /* SAAT DI PRINT, LEPAS KUNCI AGAR MENYESUAIKAN KERTAS DENGAN RAPI */
             #print-kwitansi-area, #print-kwitansi-area * { visibility: visible !important; }
             #print-kwitansi-area {
                 position: absolute; left: 0; top: 0; width: 100% !important; max-width: 100%;
-                background: white; color: black; font-family: Arial, sans-serif;
-                padding: 40px 50px; visibility: visible; box-sizing: border-box;
-                transform: none !important; margin: 0 !important;
+                min-height: auto !important; padding: 8mm 12mm !important; margin: 0 !important;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
         }
@@ -149,17 +170,12 @@
         </div>
     </div>
 
-
     <!-- ========================================== -->
     <!-- 2. MODUL POS RETAIL (EKSISTING)            -->
     <!-- ========================================== -->
     <div id="app-container" class="hidden flex-col h-full w-full bg-[#E4E4E4] border-2 border-gray-400">
-        <!-- Area Kasir (Tidak berubah dari sebelumnya) -->
         <div class="flex items-center px-2 py-1 bg-white border-b border-gray-300 text-xs select-none">
-            <div class="flex items-center gap-2 font-semibold">
-                <i class="fas fa-shopping-cart text-green-600"></i>
-                <span id="app-title-text">TRANSAKSI PENJUALAN RETAIL</span>
-            </div>
+            <div class="flex items-center gap-2 font-semibold"><i class="fas fa-shopping-cart text-green-600"></i><span id="app-title-text">TRANSAKSI PENJUALAN RETAIL</span></div>
         </div>
         <div class="flex justify-between items-center px-1 bg-[#F0F0F0] border-b border-gray-400 text-[10px]">
             <div class="flex gap-1">
@@ -309,8 +325,8 @@
                 <!-- Kotak Pembungkus Skala (Scale) agar muat di layar Monitor -->
                 <div id="live-preview-scaler" style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20">
                     
-                    <!-- KERTAS KWITANSI ASLI (Yang akan tercetak 100%) -->
-                    <div id="print-kwitansi-area" class="bg-white shadow-2xl relative text-[13px] mx-auto overflow-hidden">
+                    <!-- KERTAS KWITANSI ASLI (Yang akan tercetak 100%, ukuran FIX A4) -->
+                    <div id="print-kwitansi-area" class="bg-white shadow-2xl relative text-[13px] mx-auto">
                         
                         <!-- KWITANSI ATAS (ASLI) -->
                         <div id="kwt-original" class="relative pb-4 mb-4 border-b-2 border-dashed border-gray-600 z-20">
@@ -474,9 +490,7 @@
         // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxb26f_sGBEI_aoV4m7qh5SQ0J6nEiOT7mpezUOv-_ru99CibG7PvaZwJN6fPeQ44c/exec"; 
 
-        function apiGet(action, param = "") {
-            return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json());
-        }
+        function apiGet(action, param = "") { return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json()); }
         function apiPost(action, data, type = null) {
             let payload = { action: action, data: data };
             if (type) payload.type = type;
@@ -495,7 +509,7 @@
 
         // State khusus untuk Kwitansi Workspace
         let currentKwitansiId = ''; 
-        let tempPrintDataForHistory = null; // Data untuk dicetak dari Histori
+        let tempPrintDataForHistory = null; 
 
         const formatNumber = (num) => num.toLocaleString('id-ID');
         const formatDecimal = (num) => num.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -560,16 +574,16 @@
                         hdr.className = "flex items-center px-2 py-1 bg-emerald-700 text-white border-b border-gray-300 text-xs select-none";
                         icon.className = "fas fa-bus";
                         title.textContent = "SISTEM ANTAR JEMPUT SEKOLAH (AJS)";
-                        logoImg.src = "logo AJS.png"; // LOGO AJS
+                        logoImg.src = "logo AJS.png"; 
                     } else {
                         hdr.className = "flex items-center px-2 py-1 bg-purple-800 text-white border-b border-gray-300 text-xs select-none";
                         icon.className = "fas fa-shuttle-van";
                         title.textContent = "ALMADINA TRANS MANAGEMENT";
-                        logoImg.src = "logo ALMADINA.png"; // LOGO ALMADINA (Bisa diganti nanti)
+                        logoImg.src = "logo ALMADINA.png"; 
                     }
                     
                     ws.classList.remove('hidden'); ws.classList.add('flex');
-                    resetFormKwitansi(); // Otomatis mengisi tanggal dan ID unik
+                    resetFormKwitansi(); 
                 }
             } else { document.getElementById('login-error').classList.remove('hidden'); }
         }
@@ -588,27 +602,18 @@
         // ===============================================
 
         function resetFormKwitansi() {
-            // Bersihkan form
-            document.getElementById('kwt-terima').value = '';
-            document.getElementById('kwt-nominal').value = '';
-            document.getElementById('kwt-guna').value = '';
-            document.getElementById('kwt-rek').value = '';
-            document.getElementById('kwt-rin-tujuan').value = '';
-            document.getElementById('kwt-rin-jml').value = '';
-            document.getElementById('kwt-rin-jenis-select').value = 'ANTAR & JEMPUT';
-            document.getElementById('kwt-rin-jenis').value = '';
+            document.getElementById('kwt-terima').value = ''; document.getElementById('kwt-nominal').value = '';
+            document.getElementById('kwt-guna').value = ''; document.getElementById('kwt-rek').value = '';
+            document.getElementById('kwt-rin-tujuan').value = ''; document.getElementById('kwt-rin-jml').value = '';
+            document.getElementById('kwt-rin-jenis-select').value = 'ANTAR & JEMPUT'; document.getElementById('kwt-rin-jenis').value = '';
             document.querySelector('input[name="kwt-metode"][value="Tunai"]').checked = true;
-            toggleTransfer();
-            handleJenisLayanan();
+            toggleTransfer(); handleJenisLayanan();
             
-            // Set Tanggal Rincian ke Hari Ini
             document.getElementById('kwt-rin-tgl').valueAsDate = new Date();
-            
-            // Generate ID Baru
             currentKwitansiId = generateIdKwitansi();
             
             document.getElementById('btn-simpan-cetak').innerHTML = '<i class="fas fa-print mr-2"></i> SIMPAN & CETAK KWITANSI';
-            updateLivePreview(); // Jalankan render awal layar kosong
+            updateLivePreview(); 
         }
 
         function generateIdKwitansi() {
@@ -645,7 +650,6 @@
             updateLivePreview();
         }
 
-        // FUNGSI INTI: Memperbarui tampilan Kertas di kanan secara Live!
         function updateLivePreview() {
             if(selectedModule !== 'ajs' && selectedModule !== 'almadina') return;
 
@@ -653,11 +657,9 @@
             const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0;
             const guna = document.getElementById('kwt-guna').value.toUpperCase();
 
-            // Update info di Panel Form Kiri
             const nominalStr = nominal > 0 ? terbilang(nominal).replace(/\s+/g, ' ').trim() + " Rupiah" : "";
             document.getElementById('kwt-terbilang').textContent = nominalStr || '-';
 
-            // ================= UPDATE KE KERTAS =================
             document.getElementById('pk-no').textContent = currentKwitansiId;
             document.getElementById('pk-terima').textContent = terima || '....................................................................';
             document.getElementById('pk-terbilang').textContent = nominalStr || '-';
@@ -672,11 +674,13 @@
                 document.getElementById('pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`;
             }
 
-            // Rincian Layanan (Baca Date Picker & Select)
+            // MENGUBAH FORMAT TANGGAL KE "NAMA HARI, DD/MM/YY"
             let tglVal = document.getElementById('kwt-rin-tgl').value;
             if(tglVal) {
                 let td = new Date(tglVal);
-                tglVal = String(td.getDate()).padStart(2, '0') + "/" + String(td.getMonth()+1).padStart(2, '0') + "/" + String(td.getFullYear()).substring(2);
+                const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                let hari = namaHari[td.getDay()];
+                tglVal = hari + ", " + String(td.getDate()).padStart(2, '0') + "/" + String(td.getMonth()+1).padStart(2, '0') + "/" + String(td.getFullYear()).substring(2);
             }
             document.getElementById('pk-rin-tgl').textContent = tglVal || '................';
 
@@ -688,18 +692,15 @@
             document.getElementById('pk-rin-tujuan').textContent = document.getElementById('kwt-rin-tujuan').value.toUpperCase() || '................';
             document.getElementById('pk-rin-jml').textContent = document.getElementById('kwt-rin-jml').value || '......';
 
-            // Update Tanggal Tanda Tangan
             const now = new Date();
             const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
             document.getElementById('pk-tanggal').textContent = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
             document.getElementById('pk-op').textContent = (appUser.user || 'ADMIN').toUpperCase();
 
-            // CLONING UNTUK WATERMARK SALINAN
             const originalContent = document.getElementById('kwt-original').innerHTML;
             document.getElementById('kwt-salinan').innerHTML = originalContent + `<div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.08; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>`;
         }
 
-        // AKSI SIMPAN DAN CETAK DARI DASHBOARD UTAMA
         function saveAndPrintKwitansi() {
             const terima = document.getElementById('kwt-terima').value.trim();
             const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0;
@@ -707,11 +708,9 @@
             
             if(!terima || !nominal || !guna) return alert("Harap lengkapi form (Terima Dari, Nominal, Guna Membayar)!");
             
-            // Susun data untuk dikirim ke Google Sheets
             const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer';
             const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('kwt-rek').value : 'Tunai';
             
-            // Ambil format date string (YYYY-MM-DD)
             const tglValStr = document.getElementById('kwt-rin-tgl').value; 
             const jenisSel = document.getElementById('kwt-rin-jenis-select').value;
             const jenisVal = jenisSel === 'LAINNYA' ? document.getElementById('kwt-rin-jenis').value.trim() : jenisSel;
@@ -720,13 +719,12 @@
             
             const kData = { id: currentKwitansiId, date: new Date().toISOString(), terimaDari: terima, gunaMembayar: guna, nominal: nominal, metode: metodeText, rincian: rincian, operator: appUser.user || 'admin' };
             
-            // Simpan ke database via API
             if (typeof google !== 'undefined') {
                 const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
                 apiPost(actionName, kData);
             }
             
-            // Panggil Print Bawaan Browser
+            // MENCETAK KE PRINTER BAWAAN BROWSER DENGAN UKURAN CSS A4 PASTI
             window.print();
         }
 
@@ -772,40 +770,24 @@
             });
         }
 
-        // FUNGSI TOMBOL "LIHAT" PADA HISTORI
         function lihatStrukTertentuKwitansi(index) {
             let kData = fetchedKwitansi[index];
-            tempPrintDataForHistory = kData; // Simpan untuk jika di-klik cetak dari preview
-            
-            // 1. Memanggil logic pembuat HTML (Generate HTML Kwitansinya)
+            tempPrintDataForHistory = kData; 
             const htmlToRender = generateHTMLKwitansiDinamis(kData);
-            
-            // 2. Tampilkan di Modal Preview
-            document.getElementById('modal-preview-render-area').innerHTML = htmlToRender;
+            document.getElementById('modal-preview-render-area').innerHTML = `<div>${htmlToRender}</div>`;
             document.getElementById('kwt-preview-modal').classList.remove('hidden');
         }
         
-        // FUNGSI CETAK DARI DALAM MODAL PREVIEW
         function cetakDariPreview() {
             if(tempPrintDataForHistory) {
-                // Untuk mencetak, kita harus merender sementara ke div utama lalu memanggil window.print()
                 const renderUtama = document.getElementById('print-kwitansi-area');
-                
-                // Simpan dulu isi live preview yang sedang ada di background (agar tidak hilang)
                 const backupLiveHTML = renderUtama.innerHTML; 
-                
-                // Ganti dengan data Histori
                 renderUtama.innerHTML = generateHTMLKwitansiDinamis(tempPrintDataForHistory);
-                
-                // Print! (Browser otomatis menyembunyikan modal dan hal lain karena CSS print)
                 window.print();
-                
-                // Kembalikan keadaan Live Preview
                 renderUtama.innerHTML = backupLiveHTML;
             }
         }
 
-        // FUNGSI TOMBOL "CETAK" LANGSUNG PADA HISTORI
         function cetakStrukTertentuKwitansi(index) {
             let kData = fetchedKwitansi[index];
             const renderUtama = document.getElementById('print-kwitansi-area');
@@ -815,7 +797,6 @@
             renderUtama.innerHTML = backupLiveHTML;
         }
         
-        // FUNGSI PEMBANTU: Merakit (Membangun) Kode Kertas HTML dari Data Mentah (JSON)
         function generateHTMLKwitansiDinamis(kData) {
             kData.date = new Date(kData.date);
             const d = kData.date;
@@ -835,8 +816,13 @@
             let tglRincian = '................';
             if (kData.rincian.tgl) {
                 let dt = new Date(kData.rincian.tgl);
-                if(!isNaN(dt)) tglRincian = String(dt.getDate()).padStart(2, '0') + "/" + String(dt.getMonth()+1).padStart(2, '0') + "/" + String(dt.getFullYear()).substring(2);
-                else tglRincian = kData.rincian.tgl; // Fallback text lama
+                if(!isNaN(dt)) {
+                    const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                    let hari = namaHari[dt.getDay()];
+                    tglRincian = hari + ", " + String(dt.getDate()).padStart(2, '0') + "/" + String(dt.getMonth()+1).padStart(2, '0') + "/" + String(dt.getFullYear()).substring(2);
+                } else {
+                    tglRincian = kData.rincian.tgl; 
+                }
             }
             
             const htmlOriginal = `
@@ -883,42 +869,22 @@
             `;
         }
 
-
         // ===============================================
         // FUNGSI KASIR BAWAAN (TIDAK ADA PERUBAHAN)
         // ===============================================
         function closeModal(modalId) { 
             document.getElementById(modalId).classList.add('hidden'); 
-            if(modalId === 'kwt-preview-modal') return; // Jika yang ditutup preview, biarkan saja
+            if(modalId === 'kwt-preview-modal') return; 
             if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal' && modalId !== 'kwt-history-modal') {
                 const b = document.getElementById('barcode-input');
                 if(b) b.focus();
             }
         }
-        function openEditQtyModal() {
-            if (selectedRowIndex === -1 || cart.length === 0) return;
-            document.getElementById('edit-qty-modal').classList.remove('hidden');
-            document.getElementById('qty-modal-product-name').textContent = cart[selectedRowIndex].name;
-            const inputEl = document.getElementById('edit-qty-input'); inputEl.value = cart[selectedRowIndex].qty; inputEl.focus(); inputEl.select();
-        }
-        function saveEditQty() {
-            const newQty = parseInt(document.getElementById('edit-qty-input').value);
-            if (newQty > 0 && selectedRowIndex > -1) { cart[selectedRowIndex].qty = newQty; renderCartTable(); closeModal('edit-qty-modal'); } 
-            else if (newQty === 0) { deleteSelectedItem(); closeModal('edit-qty-modal'); }
-        }
+        function openEditQtyModal() { if (selectedRowIndex === -1 || cart.length === 0) return; document.getElementById('edit-qty-modal').classList.remove('hidden'); document.getElementById('qty-modal-product-name').textContent = cart[selectedRowIndex].name; const inputEl = document.getElementById('edit-qty-input'); inputEl.value = cart[selectedRowIndex].qty; inputEl.focus(); inputEl.select(); }
+        function saveEditQty() { const newQty = parseInt(document.getElementById('edit-qty-input').value); if (newQty > 0 && selectedRowIndex > -1) { cart[selectedRowIndex].qty = newQty; renderCartTable(); closeModal('edit-qty-modal'); } else if (newQty === 0) { deleteSelectedItem(); closeModal('edit-qty-modal'); } }
         function handleEditQtyEnter(e) { if (e.key === 'Enter') { e.preventDefault(); saveEditQty(); } }
         function openMasterProduk() { document.getElementById('master-produk-modal').classList.remove('hidden'); resetFormProduk(); renderMasterProduk(); }
-        function renderMasterProduk() {
-            const tbody = document.getElementById('master-produk-body'); tbody.innerHTML = '';
-            productsDb.forEach((p, index) => {
-                const profit = p.price - (p.cost || 0); const profitColor = profit < 0 ? 'text-red-600' : 'text-green-700';
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td class="text-center">${index + 1}</td><td>${p.code}</td><td>${p.name}</td><td class="text-center">${p.unit}</td>
-                    <td class="text-right">${formatNumber(p.cost || 0)}</td><td class="text-right font-bold">${formatNumber(p.price)}</td><td class="text-right font-bold ${profitColor}">${formatNumber(profit)}</td>
-                    <td class="text-center"><button onclick="editProduk('${p.code}')" class="px-2 py-0.5 bg-yellow-200 border border-gray-500 text-[10px] mr-1">Edit</button><button onclick="hapusProduk('${p.code}')" class="px-2 py-0.5 bg-red-200 border border-gray-500 text-[10px]">Del</button></td>`;
-                tbody.appendChild(tr);
-            });
-        }
+        function renderMasterProduk() { const tbody = document.getElementById('master-produk-body'); tbody.innerHTML = ''; productsDb.forEach((p, index) => { const profit = p.price - (p.cost || 0); const profitColor = profit < 0 ? 'text-red-600' : 'text-green-700'; const tr = document.createElement('tr'); tr.innerHTML = `<td class="text-center">${index + 1}</td><td>${p.code}</td><td>${p.name}</td><td class="text-center">${p.unit}</td><td class="text-right">${formatNumber(p.cost || 0)}</td><td class="text-right font-bold">${formatNumber(p.price)}</td><td class="text-right font-bold ${profitColor}">${formatNumber(profit)}</td><td class="text-center"><button onclick="editProduk('${p.code}')" class="px-2 py-0.5 bg-yellow-200 border border-gray-500 text-[10px] mr-1">Edit</button><button onclick="hapusProduk('${p.code}')" class="px-2 py-0.5 bg-red-200 border border-gray-500 text-[10px]">Del</button></td>`; tbody.appendChild(tr); }); }
         function resetFormProduk() { editProdukKode = null; ['prod-kode','prod-nama','prod-harga-beli','prod-harga','prod-profit','prod-satuan'].forEach(id => document.getElementById(id).value = ''); document.getElementById('prod-kode').readOnly = false; }
         function hitungProfitForm() { const beli = parseFloat(document.getElementById('prod-harga-beli').value) || 0; const jual = parseFloat(document.getElementById('prod-harga').value) || 0; const profit = jual - beli; const profitEl = document.getElementById('prod-profit'); profitEl.value = formatNumber(profit); profitEl.className = `classic-input w-24 text-right ${profit < 0 ? 'text-red-600' : 'text-green-700 font-bold'}`; }
         function simpanProduk() { const code = document.getElementById('prod-kode').value.trim(); const name = document.getElementById('prod-nama').value.trim().toUpperCase(); const cost = parseFloat(document.getElementById('prod-harga-beli').value); const price = parseFloat(document.getElementById('prod-harga').value); const unit = document.getElementById('prod-satuan').value.trim().toUpperCase(); if(!code || !name || isNaN(cost) || isNaN(price) || !unit) return alert("Isi form dengan benar!"); if (editProdukKode) { const idx = productsDb.findIndex(p => p.code === editProdukKode); if (idx > -1) productsDb[idx] = { code, name, cost, price, unit }; } else { if(productsDb.find(p => p.code === code)) return alert("Kode sudah ada!"); productsDb.push({ code, name, cost, price, unit }); } apiPost('syncProducts', productsDb); resetFormProduk(); renderMasterProduk(); }
