@@ -709,10 +709,9 @@
             
             const kData = { id: currentKwitansiId, date: new Date().toISOString(), terimaDari: terima, gunaMembayar: guna, nominal: nominal, metode: metodeText, rincian: rincian, operator: appUser.user || 'admin' };
             
-            if (typeof google !== 'undefined') {
-                const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
-                apiPost(actionName, kData);
-            }
+            // PENGUNCI DIHAPUS - SEKARANG PASTI MENGIRIM DATA DARI GITHUB KE GOOGLE SHEETS
+            const actionName = selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina';
+            apiPost(actionName, kData);
             
             // PINDAHKAN HTML DARI LIVE PREVIEW KE DALAM AREA CETAK KHUSUS
             const htmlToPrint = document.getElementById('display-kwitansi-area').innerHTML;
@@ -726,7 +725,6 @@
             
             printAreaContainer.classList.add('hidden'); // Sembunyikan lagi
         }
-
         // ===============================================
         // FUNGSI HISTORY & PREVIEW KWITANSI (LIHAT/CETAK)
         // ===============================================
