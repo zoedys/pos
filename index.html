@@ -899,36 +899,37 @@
         }
 
         function saveAndPrintAlmaqua() {
-            const terima = document.getElementById('alm-terima').value.trim();
-            const guna = document.getElementById('alm-guna').value.trim();
-            if(!terima || !guna || almaquaCart.length === 0) return alert("Harap isi Telah Diterima Dari, Guna Membayar, dan minimal 1 produk di keranjang!");
-            
-            let finalTotal = 0; 
-            almaquaCart.forEach(i => finalTotal += i.total);
-            
-            const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
-            const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('alm-rek').value : 'Tunai';
+    const terima = document.getElementById('alm-terima').value.trim();
+    const guna = document.getElementById('alm-guna').value.trim();
+    if(!terima || !guna || almaquaCart.length === 0) return alert("Harap isi Telah Diterima Dari, Guna Membayar, dan minimal 1 produk di keranjang!");
+    
+    let finalTotal = 0; 
+    almaquaCart.forEach(i => finalTotal += i.total);
+    
+    const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
+    const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('alm-rek').value : 'Tunai';
 
-            const kData = { 
-                id: currentAlmaquaId, 
-                date: new Date().toISOString(), 
-                terimaDari: terima, 
-                gunaMembayar: guna, 
-                nominal: finalTotal, 
-                metode: metodeText, 
-                items: almaquaCart, 
-                operator: appUser.user || 'admin' 
-            };
-            
-            if (typeof google !== 'undefined') { apiPost('saveKwitansiAlmaqua', kData); }
-            
-            const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML; 
-            const printAreaContainer = document.getElementById('print-kwitansi-area');
-            printAreaContainer.innerHTML = htmlToPrint; 
-            printAreaContainer.classList.remove('hidden'); 
-            window.print(); 
-            printAreaContainer.classList.add('hidden');
-        }
+    const kData = { 
+        id: currentAlmaquaId, 
+        date: new Date().toISOString(), 
+        terimaDari: terima, 
+        gunaMembayar: guna, 
+        nominal: finalTotal, 
+        metode: metodeText, 
+        items: almaquaCart, 
+        operator: appUser.user || 'admin' 
+    };
+    
+    // PERBAIKAN: Langsung kirim tanpa syarat (IF dihapus)
+    apiPost('saveKwitansiAlmaqua', kData);
+    
+    const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML; 
+    const printAreaContainer = document.getElementById('print-kwitansi-area');
+    printAreaContainer.innerHTML = htmlToPrint; 
+    printAreaContainer.classList.remove('hidden'); 
+    window.print(); 
+    printAreaContainer.classList.add('hidden');
+}
 
 
         // ===============================================
