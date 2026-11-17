@@ -32,45 +32,54 @@
         .module-card { transition: all 0.3s ease; }
         .module-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2); }
 
-        #print-kwitansi-area { width: 210mm !important; min-height: 297mm !important; background: white !important; color: black !important; font-family: Arial, sans-serif !important; padding: 10mm 15mm !important; box-sizing: border-box !important; margin: 0 auto; position: relative; }
-        #modal-preview-render-area > div { width: 210mm; min-height: 297mm; background: white; padding: 10mm 15mm; box-sizing: border-box; margin: 0 auto; position: relative; }
-
-        /* PERBAIKAN TOTAL UNTUK MESIN CETAK KASIR */
+        /* CSS KHUSUS PRINT - DIROMBAK TOTAL */
         @media print {
             @page { margin: 0; }
             
-            /* MEMATIKAN 100vh YANG MENYEBABKAN PRINTER TERUS BERJALAN */
+            /* Sembunyikan SEMUA elemen UI selain area cetak */
+            body > div:not(#print-kwitansi-area):not(#print-area) {
+                display: none !important;
+            }
+            
+            /* MATIKAN sistem layangan layar penuh, ubah jadi dokumen statis biasa */
             html, body {
+                display: block !important;
                 height: auto !important;
                 min-height: 0 !important;
                 overflow: visible !important;
                 background-color: white !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                display: block !important;
             }
-            
-            /* MENGHILANGKAN SELURUH UI WEB SECARA FISIK DARI AREA PRINT */
-            #gas-loading, #portal-container, #app-container, 
-            #kwitansi-workspace, #almaqua-workspace, .modal-overlay {
-                display: none !important;
-            }
-            
-            #print-kwitansi-area { 
-                display: block !important; width: 210mm !important; height: auto !important; padding: 10mm 15mm !important; margin: 0 auto !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; 
-            }
-            
-            /* SETTING STRUK POS 58MM (TERKUNCI DI 47MM AGAR TIDAK TERPOTONG) */
+
+            /* PRINT STRUK POS 58MM - Menempel rata 100% mengikuti batas printer */
             #print-area { 
-                display: block !important;
-                width: 47mm !important; 
-                max-width: 47mm !important; 
+                position: static !important; /* MEMATIKAN POSISI ABSOLUTE YANG BIKIN TEKS DI BAWAH */
+                width: 100% !important; 
+                max-width: 100% !important; 
                 margin: 0 !important; 
-                padding: 2mm 0 0 2mm !important; 
+                padding: 2mm 3mm !important; 
+                box-sizing: border-box !important;
                 color: #000 !important; 
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important; 
-                page-break-after: auto !important;
+            }
+            
+            /* PASTIKAN TABEL DI DALAM STRUK MELEBAR 100% */
+            #print-area table {
+                width: 100% !important;
+            }
+            
+            /* PRINT KWITANSI A4 */
+            #print-kwitansi-area { 
+                position: static !important;
+                width: 210mm !important; 
+                height: auto !important; 
+                padding: 10mm 15mm !important; 
+                margin: 0 auto !important; 
+                box-sizing: border-box !important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
             }
         }
     </style>
@@ -467,18 +476,15 @@
     <!-- ========================================== -->
     <!-- WADAH CETAK POS RETAIL (THERMAL KASIR)     -->
     <!-- ========================================== -->
-    <!-- Layout 47mm Paten + Tanda Tangan Dihapus Persis seperti Foto -->
-    <div id="print-area" class="hidden text-black bg-white" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; width: 47mm; margin: 0 auto; padding: 0;">
+    <div id="print-area" class="hidden text-black bg-white" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; line-height: 1.2;">
         
-        <div style="text-align: center; margin-bottom: 6px;">
-            <div style="font-weight: bold; font-size: 13px; margin-bottom: 2px;" id="receipt-store-name">NAMA TOKO</div>
-            <div style="font-size: 9px; font-weight: normal; line-height: 1.2;" id="receipt-store-address">Alamat Toko</div>
-            <div style="font-weight: bold; font-size: 11px; margin-top: 5px;">***PENJUALAN***</div>
+        <div style="text-align: center; margin-bottom: 5px;">
+            <h2 style="font-weight: 900; font-size: 14px; margin: 0;" id="receipt-store-name">NAMA TOKO</h2>
+            <p style="font-size: 10px; margin: 0; word-wrap: break-word;" id="receipt-store-address">Alamat Toko</p>
+            <div style="font-weight: bold; font-size: 11px; margin-top: 5px; border-bottom: 1px dashed black; padding-bottom: 3px;">***PENJUALAN***</div>
         </div>
         
-        <div style="border-top: 1px dashed black; margin: 4px 0;"></div>
-        
-        <table style="width: 100%; font-size: 10px; margin-bottom: 4px; table-layout: fixed;">
+        <table style="width: 100%; font-size: 10px; margin-bottom: 4px;">
             <tr><td style="width: 35%; padding-bottom: 2px;">Salesman</td><td style="width: 5%; padding-bottom: 2px;">:</td><td style="width: 60%; padding-bottom: 2px; word-wrap: break-word;" id="print-salesman">OFFICE</td></tr>
             <tr><td style="padding-bottom: 2px;">Pelanggan</td><td style="padding-bottom: 2px;">:</td><td style="padding-bottom: 2px; word-wrap: break-word;" id="print-pelanggan">RETAIL (UMUM)</td></tr>
             <tr><td style="padding-bottom: 2px;">Tanggal</td><td style="padding-bottom: 2px;">:</td><td style="padding-bottom: 2px;" id="print-date"></td></tr>
@@ -487,19 +493,14 @@
         
         <div style="border-top: 1px dashed black; margin: 4px 0;"></div>
         
-        <table style="width: 100%; font-size: 10px; table-layout: fixed;">
+        <table style="width: 100%; font-size: 10px;">
             <thead>
                 <tr>
                     <th style="text-align: left; font-weight: bold; padding-bottom: 4px; width: 45%;">Item</th>
-                    <th style="text-align: center; font-weight: bold; padding-bottom: 4px; width: 20%;">Qty</th>
-                    <th style="text-align: right; font-weight: bold; padding-bottom: 4px; width: 35%;">Total</th>
+                    <th style="text-align: center; font-weight: bold; padding-bottom: 4px; width: 15%;">Qty</th>
+                    <th style="text-align: right; font-weight: bold; padding-bottom: 4px; width: 40%;">Total</th>
                 </tr>
             </thead>
-        </table>
-        
-        <div style="border-top: 1px dashed black; margin: 2px 0 4px 0;"></div>
-        
-        <table style="width: 100%; font-size: 10px; table-layout: fixed; margin-bottom: 2px;">
             <tbody id="print-items">
                 <!-- Produk diisi Javascript -->
             </tbody>
@@ -507,7 +508,7 @@
         
         <div style="border-top: 1px dashed black; margin: 4px 0;"></div>
         
-        <table style="width: 100%; font-size: 10px; font-weight: bold; margin-bottom: 6px; table-layout: fixed;">
+        <table style="width: 100%; font-size: 10px; font-weight: bold; margin-bottom: 6px;">
             <tr>
                 <td style="width: 35%;"></td>
                 <td style="width: 30%; text-align: right; padding: 2px 4px 2px 0;">TOTAL:</td>
@@ -527,7 +528,7 @@
         
         <div style="border-top: 1px dashed black; margin: 4px 0 6px 0;"></div>
         
-        <div style="text-align: center; font-size: 9px; font-weight: normal; margin-bottom: 15px; line-height: 1.3;">
+        <div style="text-align: center; font-size: 9px; font-weight: normal; margin-bottom: 8px; line-height: 1.3;">
             Mohon untuk memastikan jumlah barang yang<br>
             diterima dengan pesanan dan nilai uang yang di<br>
             bayarkan
@@ -1100,7 +1101,7 @@
         }
 
         // ===============================================
-        // FUNGSI PRINT STRUK POS THERMAL PRESISI TINGGI
+        // FUNGSI PRINT STRUK POS THERMAL 
         // ===============================================
         function executePrintReceipt(trxData, isPdf = false) { 
             const d = new Date(trxData.date); 
@@ -1116,11 +1117,11 @@
             
             trxData.items.forEach(item => { 
                 const tr = document.createElement('tr'); 
-                // Format diperbarui dengan spacing bawah yang lega seperti di foto
+                // Lebar diset persentase statis
                 tr.innerHTML = `
-                    <td style="text-align: left; width: 45%; vertical-align: top; padding-bottom: 8px; word-wrap: break-word;">${item.name}</td>
-                    <td style="text-align: center; width: 20%; vertical-align: top; padding-bottom: 8px;">${item.qty}</td>
-                    <td style="text-align: right; width: 35%; vertical-align: top; padding-bottom: 8px;">${formatNumber(item.qty * item.price)}</td>
+                    <td style="padding: 2px 0; text-align: left; vertical-align: top; word-break: break-word; width: 45%;">${item.name}</td>
+                    <td style="padding: 2px 0; text-align: center; vertical-align: top; width: 20%;">${item.qty}</td>
+                    <td style="padding: 2px 0; text-align: right; vertical-align: top; width: 35%;">${formatNumber(item.qty * item.price)}</td>
                 `; 
                 printTbody.appendChild(tr); 
             }); 
