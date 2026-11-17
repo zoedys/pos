@@ -36,10 +36,6 @@
         #print-kwitansi-area { width: 210mm !important; min-height: 297mm !important; background: white !important; color: black !important; font-family: Arial, sans-serif !important; padding: 10mm 15mm !important; box-sizing: border-box !important; margin: 0 auto; position: relative; }
         #modal-preview-render-area > div { width: 210mm; min-height: 297mm; background: white; padding: 10mm 15mm; box-sizing: border-box; margin: 0 auto; position: relative; }
 
-        /* Kertas Thermal POS */
-        .paper-80mm { width: 80mm; padding: 2mm 5mm; }
-        .paper-58mm { width: 58mm; padding: 2mm 3mm; font-size: 11px; }
-
         @media print {
             @page { margin: 0; }
             body * { visibility: hidden !important; }
@@ -48,9 +44,20 @@
             #print-kwitansi-area, #print-kwitansi-area * { visibility: visible !important; }
             #print-kwitansi-area { position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important; padding: 10mm 15mm !important; margin: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             
-            /* Print POS Struk */
+            /* Print POS Struk Thermal (Anti Terpotong) */
             #print-area, #print-area * { visibility: visible !important; }
-            #print-area { position: absolute; left: 0; top: 0; margin: 0; width: 100%; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            #print-area { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                margin: 0 !important; 
+                padding: 2mm !important; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+                color: #000 !important; 
+            }
         }
     </style>
 </head>
@@ -260,7 +267,6 @@
                 </div>
             </div>
 
-            <!-- Preview AJS/Almadina -->
             <div class="flex-1 bg-[#8c9196] flex justify-center overflow-y-auto relative p-8 print:p-0 print:bg-white">
                 <div style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20 no-print">
                     <div id="display-kwitansi-area" class="bg-white shadow-2xl relative text-[13px] mx-auto overflow-hidden" style="width: 210mm; min-height: 297mm; padding: 10mm 15mm; box-sizing: border-box;">
@@ -301,9 +307,7 @@
                             </div>
                         </div>
 
-                        <div id="kwt-salinan" class="relative opacity-90 pt-1 z-10 bg-white">
-                            <!-- Clone salinan AJS -->
-                        </div>
+                        <div id="kwt-salinan" class="relative opacity-90 pt-1 z-10 bg-white"></div>
                     </div>
                 </div>
             </div>
@@ -327,7 +331,6 @@
         </div>
 
         <div class="flex-1 flex overflow-hidden">
-            <!-- PANEL KIRI: FORM MULTI-ITEM ALMAQUA -->
             <div class="w-1/3 min-w-[320px] max-w-[400px] bg-blue-50 border-r border-blue-200 p-5 overflow-y-auto flex flex-col gap-4 shadow-inner z-10 no-print">
                 <h3 class="font-bold text-sm border-b-2 border-blue-200 pb-1 text-blue-800 uppercase">Buat Kwitansi Almaqua</h3>
                 
@@ -377,7 +380,6 @@
                 </div>
             </div>
 
-            <!-- PANEL KANAN: PREVIEW INVOICE ALMAQUA -->
             <div class="flex-1 bg-[#8c9196] flex justify-center overflow-y-auto relative p-8 print:p-0 print:bg-white">
                 <div style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20 no-print">
                     
@@ -436,9 +438,7 @@
                         </div>
 
                         <!-- SALINAN ALMAQUA -->
-                        <div id="alm-salinan" class="relative opacity-90 pt-1 z-10 bg-white">
-                            <!-- Clone -->
-                        </div>
+                        <div id="alm-salinan" class="relative opacity-90 pt-1 z-10 bg-white"></div>
                     </div>
                 </div>
             </div>
@@ -452,72 +452,61 @@
     <div id="print-kwitansi-area" class="hidden text-[13px] bg-white"></div>
     
     <!-- ========================================== -->
-    <!-- WADAH CETAK POS RETAIL (KASIR MINI)        -->
+    <!-- WADAH CETAK POS RETAIL (THERMAL KASIR)     -->
     <!-- ========================================== -->
-    <div id="print-area" class="hidden font-mono text-black mx-auto bg-white" style="line-height: 1.2;">
+    <div id="print-area" class="hidden text-black mx-auto bg-white" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; line-height: 1.2;">
         <div class="text-center mb-2">
-            <h2 class="font-bold text-[14px]" id="receipt-store-name">NAMA TOKO</h2>
-            <p class="text-[10px]" id="receipt-store-address">Alamat Toko</p>
-            <div class="font-bold text-[11px] mt-1">***PENJUALAN***</div>
+            <h2 class="font-extrabold text-[16px]" id="receipt-store-name">NAMA TOKO</h2>
+            <p class="text-[12px]" id="receipt-store-address">Alamat Toko</p>
+            <div class="font-bold text-[12px] mt-1 border-b border-dashed border-black pb-1">*** PENJUALAN ***</div>
         </div>
-        <table class="w-full text-[10px] mb-1">
-            <tr><td class="w-20 pb-0.5">Salesman</td><td class="w-2 pb-0.5">:</td><td class="pb-0.5" id="print-salesman">OFFICE</td></tr>
-            <tr><td class="pb-0.5">Pelanggan</td><td class="pb-0.5">:</td><td class="pb-0.5" id="print-pelanggan">RETAIL (UMUM)</td></tr>
-            <tr><td class="pb-0.5">Tanggal</td><td class="pb-0.5">:</td><td class="pb-0.5" id="print-date"></td></tr>
-            <tr><td class="pb-0.5">Nota Penjualan</td><td class="pb-0.5">:</td><td class="font-bold pb-0.5" id="print-trx"></td></tr>
+        
+        <table class="w-full text-[12px] mb-1">
+            <tr><td class="w-16 pb-0.5">Kasir</td><td class="w-2 pb-0.5">:</td><td class="pb-0.5" id="print-salesman">OFFICE</td></tr>
+            <tr><td class="pb-0.5">Plg</td><td class="pb-0.5">:</td><td class="pb-0.5" id="print-pelanggan">RETAIL (UMUM)</td></tr>
+            <tr><td class="pb-0.5">Tgl</td><td class="pb-0.5">:</td><td class="pb-0.5" id="print-date"></td></tr>
+            <tr><td class="pb-0.5">Nota</td><td class="pb-0.5">:</td><td class="font-bold pb-0.5" id="print-trx"></td></tr>
         </table>
+        
         <div class="border-t border-dashed border-black mt-1 mb-1"></div>
-        <table class="w-full text-[10px]">
+        
+        <table class="w-full text-[12px]">
             <thead>
                 <tr>
-                    <th class="text-left font-bold w-1/2">Item</th>
-                    <th class="text-center font-bold">Qty</th>
-                    <th class="text-right font-bold w-1/3">Total</th>
+                    <th class="text-left font-bold pb-1">Item</th>
+                    <th class="text-right font-bold pb-1">Total</th>
                 </tr>
             </thead>
+            <tbody id="print-items">
+                <!-- Produk diisi Javascript -->
+            </tbody>
         </table>
+        
         <div class="border-t border-dashed border-black mt-1 mb-1"></div>
-        <table class="w-full text-[10px] mb-2">
-            <tbody id="print-items"></tbody>
-        </table>
-        <div class="border-t border-dashed border-black mt-1 mb-1"></div>
-        <table class="w-full text-[11px] mb-2">
+        
+        <table class="w-full text-[12px] mb-2 font-bold">
             <tr>
-                <td class="w-1/2"></td>
-                <td class="text-right font-bold pr-2">TOTAL:</td>
-                <td class="text-right font-bold" id="print-grand-total"></td>
+                <td class="text-left py-0.5">TOTAL</td>
+                <td class="text-right py-0.5" id="print-grand-total"></td>
             </tr>
             <tr>
-                <td></td>
-                <td class="text-right pr-2">TUNAI:</td>
-                <td class="text-right" id="print-cash"></td>
+                <td class="text-left py-0.5">TUNAI</td>
+                <td class="text-right py-0.5" id="print-cash"></td>
             </tr>
             <tr>
-                <td></td>
-                <td class="text-right pr-2">KEMBALI:</td>
-                <td class="text-right" id="print-change"></td>
+                <td class="text-left py-0.5">KEMBALI</td>
+                <td class="text-right py-0.5" id="print-change"></td>
             </tr>
         </table>
+        
         <div class="border-t border-dashed border-black mt-1 mb-2"></div>
-        <div class="text-center text-[10px] mb-3">
-            Mohon untuk memastikan jumlah barang yang<br>
-            diterima dengan pesanan dan nilai uang yang di<br>
-            bayarkan
+        
+        <div class="text-center text-[10px] font-bold mb-2">
+            Mohon pastikan jumlah barang<br>dan uang pas.<br>
+            *** TERIMA KASIH ***
         </div>
-        <div class="text-center text-[10px] font-bold mb-2">Tanda Tangan</div>
-        <table class="w-full text-[10px] text-center mb-8">
-            <tr>
-                <td class="w-1/2">Penerima</td>
-                <td class="w-1/2">Penjual</td>
-            </tr>
-        </table>
-        <table class="w-full text-[10px] text-center">
-            <tr>
-                <td class="w-1/2">(.....................)</td>
-                <td class="w-1/2">(.....................)</td>
-            </tr>
-        </table>
     </div>
+
 
     <!-- ========================================== -->
     <!-- MODAL KHUSUS HISTORI & PREVIEW             -->
@@ -899,37 +888,36 @@
         }
 
         function saveAndPrintAlmaqua() {
-    const terima = document.getElementById('alm-terima').value.trim();
-    const guna = document.getElementById('alm-guna').value.trim();
-    if(!terima || !guna || almaquaCart.length === 0) return alert("Harap isi Telah Diterima Dari, Guna Membayar, dan minimal 1 produk di keranjang!");
-    
-    let finalTotal = 0; 
-    almaquaCart.forEach(i => finalTotal += i.total);
-    
-    const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
-    const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('alm-rek').value : 'Tunai';
+            const terima = document.getElementById('alm-terima').value.trim();
+            const guna = document.getElementById('alm-guna').value.trim();
+            if(!terima || !guna || almaquaCart.length === 0) return alert("Harap isi Telah Diterima Dari, Guna Membayar, dan minimal 1 produk di keranjang!");
+            
+            let finalTotal = 0; 
+            almaquaCart.forEach(i => finalTotal += i.total);
+            
+            const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
+            const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('alm-rek').value : 'Tunai';
 
-    const kData = { 
-        id: currentAlmaquaId, 
-        date: new Date().toISOString(), 
-        terimaDari: terima, 
-        gunaMembayar: guna, 
-        nominal: finalTotal, 
-        metode: metodeText, 
-        items: almaquaCart, 
-        operator: appUser.user || 'admin' 
-    };
-    
-    // PERBAIKAN: Langsung kirim tanpa syarat (IF dihapus)
-    apiPost('saveKwitansiAlmaqua', kData);
-    
-    const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML; 
-    const printAreaContainer = document.getElementById('print-kwitansi-area');
-    printAreaContainer.innerHTML = htmlToPrint; 
-    printAreaContainer.classList.remove('hidden'); 
-    window.print(); 
-    printAreaContainer.classList.add('hidden');
-}
+            const kData = { 
+                id: currentAlmaquaId, 
+                date: new Date().toISOString(), 
+                terimaDari: terima, 
+                gunaMembayar: guna, 
+                nominal: finalTotal, 
+                metode: metodeText, 
+                items: almaquaCart, 
+                operator: appUser.user || 'admin' 
+            };
+            
+            apiPost('saveKwitansiAlmaqua', kData);
+            
+            const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML; 
+            const printAreaContainer = document.getElementById('print-kwitansi-area');
+            printAreaContainer.innerHTML = htmlToPrint; 
+            printAreaContainer.classList.remove('hidden'); 
+            window.print(); 
+            printAreaContainer.classList.add('hidden');
+        }
 
 
         // ===============================================
@@ -1315,24 +1303,34 @@
             }
         }
 
+        // PELINDUNG ANTI-CRASH TOMBOL PENCARIAN PRODUK
         function filterProductSearch() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            const results = productsDb.filter(p => p.name.toLowerCase().includes(term) || p.code.includes(term));
-            const tbody = document.getElementById('search-results');
-            tbody.innerHTML = '';
-            
-            results.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-blue-100 cursor-pointer";
-                tr.onclick = () => {
-                    const currentQty = parseInt(document.getElementById('qty-input').value) || 1;
-                    processBarcode(p.code, currentQty);
-                    document.getElementById('qty-input').value = '1';
-                    closeModal('search-modal');
-                };
-                tr.innerHTML = `<td>${p.code}</td><td>${p.name}</td><td class="text-center">${p.unit}</td><td class="text-right">${formatNumber(p.price)}</td>`;
-                tbody.appendChild(tr);
-            });
+            try {
+                const term = document.getElementById('search-input').value.toLowerCase();
+                // Tambahan proteksi jika ada row kosong di Google Sheets
+                const results = productsDb.filter(p => 
+                    (p.name || "").toLowerCase().includes(term) || 
+                    (p.code || "").toLowerCase().includes(term)
+                );
+                
+                const tbody = document.getElementById('search-results');
+                tbody.innerHTML = '';
+                
+                results.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-blue-100 cursor-pointer";
+                    tr.onclick = () => {
+                        const currentQty = parseInt(document.getElementById('qty-input').value) || 1;
+                        processBarcode(p.code, currentQty);
+                        document.getElementById('qty-input').value = '1';
+                        closeModal('search-modal');
+                    };
+                    tr.innerHTML = `<td>${p.code}</td><td>${p.name}</td><td class="text-center">${p.unit}</td><td class="text-right">${formatNumber(p.price)}</td>`;
+                    tbody.appendChild(tr);
+                });
+            } catch(e) {
+                console.error("Gagal melakukan filter pencarian: ", e);
+            }
         }
 
         function openPaymentModal() { 
@@ -1419,9 +1417,12 @@
             
             trxData.items.forEach(item => { 
                 const tr = document.createElement('tr'); 
+                // Format struk minimarket asli (Tanpa terpotong ke kanan)
                 tr.innerHTML = `
-                    <td style="padding: 2px 0;">${item.name}<br><span style="font-size: 10px; color: #555; font-weight: normal;">${item.qty} x ${formatNumber(item.price)}</span></td>
-                    <td style="text-align: center; vertical-align: top; padding: 2px 0;">${item.qty}</td>
+                    <td style="padding: 2px 0; text-align: left;">
+                        ${item.name}<br>
+                        <span style="font-size: 11px; font-weight: normal;">${item.qty} x ${formatNumber(item.price)}</span>
+                    </td>
                     <td style="text-align: right; vertical-align: top; padding: 2px 0;">${formatNumber(item.qty * item.price)}</td>
                 `; 
                 printTbody.appendChild(tr); 
@@ -1438,8 +1439,9 @@
         }
 
         // ===============================================
-        // FUNGSI INTI RETAIL & KASIR LAINNYA 
+        // FUNGSI PENDUKUNG LAINNYA 
         // ===============================================
+        function openProductSearch() { document.getElementById('search-modal').classList.remove('hidden'); document.getElementById('search-input').value = ''; document.getElementById('search-input').focus(); filterProductSearch(); }
         function closeModal(modalId) { document.getElementById(modalId).classList.add('hidden'); if(modalId === 'kwt-preview-modal') return; if(modalId !== 'pengaturan-modal' && modalId !== 'administrasi-modal' && modalId !== 'kwt-history-modal') { const b = document.getElementById('barcode-input'); if(b) b.focus(); } }
         function openEditQtyModal() { if (selectedRowIndex === -1 || cart.length === 0) return; document.getElementById('edit-qty-modal').classList.remove('hidden'); document.getElementById('qty-modal-product-name').textContent = cart[selectedRowIndex].name; const inputEl = document.getElementById('edit-qty-input'); inputEl.value = cart[selectedRowIndex].qty; inputEl.focus(); inputEl.select(); }
         function saveEditQty() { const newQty = parseInt(document.getElementById('edit-qty-input').value); if (newQty > 0 && selectedRowIndex > -1) { cart[selectedRowIndex].qty = newQty; renderCartTable(); closeModal('edit-qty-modal'); } else if (newQty === 0) { deleteSelectedItem(); closeModal('edit-qty-modal'); } }
