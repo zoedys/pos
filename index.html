@@ -44,15 +44,15 @@
             #print-kwitansi-area, #print-kwitansi-area * { visibility: visible !important; }
             #print-kwitansi-area { position: absolute; left: 0; top: 0; width: 100% !important; height: auto !important; padding: 10mm 15mm !important; margin: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             
-            /* Print POS Struk Thermal 58mm (Format minimarket asli) */
+            /* Print POS Struk Thermal 58mm (Margin Presisi) */
             #print-area, #print-area * { visibility: visible !important; }
             #print-area { 
                 position: absolute; 
                 left: 0; 
                 top: 0; 
                 margin: 0 !important; 
-                padding: 1mm 3mm !important; 
-                width: 58mm !important; /* Terkunci 58mm */
+                padding: 0 2mm !important; /* Margin kanan kiri disempitkan agar tidak terpotong & melebar */
+                width: 100% !important; 
                 max-width: 58mm !important; 
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important; 
@@ -154,7 +154,6 @@
             </div>
             <div class="flex gap-1">
                 <div class="menu-btn" onclick="openAdministrasi()"><i class="fas fa-wrench text-red-500"></i> ADMINISTRASI</div>
-                <!-- PENGATURAN DIHILANGKAN SESUAI INSTRUKSI -->
                 <div class="menu-btn text-red-700" onclick="handleLogout()"><i class="fas fa-door-open text-red-700"></i> KELUAR KE PORTAL</div>
             </div>
         </div>
@@ -331,7 +330,6 @@
         </div>
 
         <div class="flex-1 flex overflow-hidden">
-            <!-- PANEL KIRI: FORM MULTI-ITEM ALMAQUA -->
             <div class="w-1/3 min-w-[320px] max-w-[400px] bg-blue-50 border-r border-blue-200 p-5 overflow-y-auto flex flex-col gap-4 shadow-inner z-10 no-print">
                 <h3 class="font-bold text-sm border-b-2 border-blue-200 pb-1 text-blue-800 uppercase">Buat Kwitansi Almaqua</h3>
                 
@@ -348,7 +346,6 @@
                 
                 <div><label class="block text-xs font-bold mb-1">Guna Membayar</label><input type="text" id="alm-guna" class="classic-input w-full uppercase" oninput="updateLivePreviewAlmaqua()" placeholder="Keterangan pembayaran..."></div>
                 
-                <!-- BLOK KERANJANG ITEM -->
                 <div class="border border-blue-200 p-3 bg-white mt-2 shadow-sm rounded">
                     <label class="block text-xs font-bold mb-2 border-b border-gray-100 pb-1 text-gray-700">Keranjang Produk</label>
                     <div class="flex flex-col gap-2 text-xs">
@@ -359,7 +356,6 @@
                             <button onclick="tambahItemAlmaqua()" class="bg-blue-600 text-white px-3 font-bold rounded shadow hover:bg-blue-500">+</button>
                         </div>
                     </div>
-                    <!-- Tabel Mini Keranjang -->
                     <div class="mt-3 max-h-32 overflow-y-auto border-t pt-2">
                         <table class="w-full text-[10px] border-collapse text-left">
                             <tbody id="alm-cart-body">
@@ -381,7 +377,6 @@
                 </div>
             </div>
 
-            <!-- PANEL KANAN: PREVIEW INVOICE ALMAQUA -->
             <div class="flex-1 bg-[#8c9196] flex justify-center overflow-y-auto relative p-8 print:p-0 print:bg-white">
                 <div style="transform: scale(0.85); transform-origin: top center; transition: transform 0.3s;" class="pb-20 no-print">
                     
@@ -439,7 +434,6 @@
                             </div>
                         </div>
 
-                        <!-- SALINAN ALMAQUA -->
                         <div id="alm-salinan" class="relative opacity-90 pt-1 z-10 bg-white"></div>
                     </div>
                 </div>
@@ -456,7 +450,6 @@
     <!-- ========================================== -->
     <!-- WADAH CETAK POS RETAIL (THERMAL KASIR)     -->
     <!-- ========================================== -->
-    <!-- Desain telah dirombak mengikuti referensi struk minimarket 58mm -->
     <div id="print-area" class="hidden text-black mx-auto bg-white" style="font-family: 'Courier New', Courier, monospace; font-weight: bold; line-height: 1.2;">
         <div class="text-center mb-2">
             <h2 class="font-extrabold text-[16px]" id="receipt-store-name">NAMA TOKO</h2>
@@ -473,19 +466,15 @@
         
         <div class="border-t border-dashed border-black mt-1 mb-1"></div>
         
-        <table class="w-full text-[12px]">
+        <!-- HEADER DAN BODY DIGABUNG DALAM SATU TABEL AGAR SEJAJAR & MAKSIMAL -->
+        <table class="w-full text-[12px] mb-2" style="table-layout: fixed;">
             <thead>
                 <tr>
-                    <th class="text-left font-bold pb-1">Item</th>
-                    <th class="text-center font-bold pb-1 w-8">Qty</th>
-                    <th class="text-right font-bold pb-1 w-20">Total</th>
+                    <th class="text-left font-bold pb-1" style="width: auto;">Item</th>
+                    <th class="text-center font-bold pb-1" style="width: 30px;">Qty</th>
+                    <th class="text-right font-bold pb-1" style="width: 60px;">Total</th>
                 </tr>
             </thead>
-        </table>
-        
-        <div class="border-t border-dashed border-black mt-1 mb-1"></div>
-        
-        <table class="w-full text-[12px] mb-2">
             <tbody id="print-items">
                 <!-- Produk diisi Javascript -->
             </tbody>
@@ -533,7 +522,6 @@
             </tr>
         </table>
     </div>
-
 
     <!-- ========================================== -->
     <!-- MODAL KHUSUS HISTORI & PREVIEW             -->
@@ -651,6 +639,8 @@
         </div>
     </div>
 
+    <!-- PENGATURAN DIHILANGKAN KARENA KERTAS SUDAH DIKUNCI 58mm -->
+
     <div id="payment-modal" class="fixed inset-0 modal-overlay hidden z-[55] flex items-center justify-center">
         <div class="bg-gray-100 border-2 border-white border-r-gray-600 border-b-gray-600 w-80 shadow-lg flex flex-col">
             <div class="bg-blue-800 text-white font-bold px-2 py-1 text-sm flex justify-between items-center"><span>Pembayaran</span><button onclick="closeModal('payment-modal')" class="bg-gray-300 border w-5 h-5 text-black font-bold">X</button></div>
@@ -670,31 +660,13 @@
         // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxb26f_sGBEI_aoV4m7qh5SQ0J6nEiOT7mpezUOv-_ru99CibG7PvaZwJN6fPeQ44c/exec"; 
 
-        function apiGet(action, param = "") { 
-            return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json()); 
-        }
-        function apiPost(action, data, type = null) { 
-            let payload = { action: action, data: data }; 
-            if (type) payload.type = type; 
-            return fetch(GAS_URL, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }).then(res => res.json()).catch(err => console.error(err)); 
-        }
+        function apiGet(action, param = "") { return fetch(`${GAS_URL}?action=${action}${param}`).then(res => res.json()); }
+        function apiPost(action, data, type = null) { let payload = { action: action, data: data }; if (type) payload.type = type; return fetch(GAS_URL, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }).then(res => res.json()).catch(err => console.error(err)); }
 
-        let productsDb = []; 
-        let customersDb = []; 
-        let storeInfo = {}; 
-        let appUser = {};
-        let cart = []; 
-        let totalAmount = 0; 
-        let totalQty = 0; 
-        let selectedRowIndex = -1;
-        let fetchedTransactions = []; 
-        let fetchedKwitansi = []; 
-        let selectedModule = ''; 
-
-        let currentKwitansiId = ''; 
-        let currentAlmaquaId = ''; 
-        let tempPrintDataForHistory = null; 
-        let almaquaCart = [];
+        let productsDb = []; let customersDb = []; let storeInfo = {}; let appUser = {};
+        let cart = []; let totalAmount = 0; let totalQty = 0; let selectedRowIndex = -1;
+        let fetchedTransactions = []; let fetchedKwitansi = []; let selectedModule = ''; 
+        let currentKwitansiId = ''; let currentAlmaquaId = ''; let tempPrintDataForHistory = null; let almaquaCart = [];
 
         const formatNumber = (num) => num.toLocaleString('id-ID');
         
@@ -723,60 +695,39 @@
                 document.getElementById('portal-container').classList.remove('hidden'); 
                 document.getElementById('portal-container').classList.add('flex');
                 
-                updateStoreUI(); 
-                loadSelectPelanggan();
-            }).catch(err => { 
-                document.querySelector('#gas-loading > div').innerHTML = `<div class="text-red-600 font-bold">Koneksi Error</div><p class="text-xs text-gray-800">${err}</p>`; 
-            });
+                updateStoreUI(); loadSelectPelanggan();
+            }).catch(err => { document.querySelector('#gas-loading > div').innerHTML = `<div class="text-red-600 font-bold">Koneksi Error</div><p class="text-xs text-gray-800">${err}</p>`; });
             setInterval(updateClock, 1000); updateClock();
         };
 
         function openLogin(moduleTarget) {
-            selectedModule = moduleTarget; 
-            const modal = document.getElementById('login-container'); 
-            const title = document.getElementById('login-module-name'); 
-            const icon = document.getElementById('login-icon');
-            
+            selectedModule = moduleTarget; const modal = document.getElementById('login-container'); const title = document.getElementById('login-module-name'); const icon = document.getElementById('login-icon');
             if (moduleTarget === 'pos') { title.textContent = "MODUL POS RETAIL"; icon.className = "fas fa-shopping-cart text-2xl text-blue-600 mr-3"; }
             if (moduleTarget === 'ajs') { title.textContent = "MODUL A.J.S SYSTEM"; icon.className = "fas fa-bus text-2xl text-emerald-600 mr-3"; }
             if (moduleTarget === 'almadina') { title.textContent = "MODUL ALMADINA TRANS"; icon.className = "fas fa-shuttle-van text-2xl text-purple-600 mr-3"; }
             if (moduleTarget === 'almaqua') { title.textContent = "MODUL ALMAQUA MINERAL"; icon.className = "fas fa-tint text-2xl text-cyan-600 mr-3"; }
-            
             modal.classList.remove('hidden'); modal.classList.add('flex'); document.getElementById('username').focus();
         }
 
-        function closeLogin() { 
-            document.getElementById('login-container').classList.add('hidden'); 
-            document.getElementById('login-container').classList.remove('flex'); 
-            document.getElementById('login-error').classList.add('hidden'); 
-            document.getElementById('username').value = ''; 
-            document.getElementById('password').value = ''; 
-        }
+        function closeLogin() { document.getElementById('login-container').classList.add('hidden'); document.getElementById('login-container').classList.remove('flex'); document.getElementById('login-error').classList.add('hidden'); document.getElementById('username').value = ''; document.getElementById('password').value = ''; }
 
         function handleLogin(e) {
             e.preventDefault();
             if (document.getElementById('username').value === appUser.user && document.getElementById('password').value === appUser.pass) {
-                closeLogin(); 
-                document.getElementById('portal-container').classList.add('hidden'); 
-                document.getElementById('portal-container').classList.remove('flex');
+                closeLogin(); document.getElementById('portal-container').classList.add('hidden'); document.getElementById('portal-container').classList.remove('flex');
                 
                 if (selectedModule === 'pos') {
                     document.getElementById('app-container').classList.remove('hidden'); document.getElementById('app-container').classList.add('flex');
                     document.getElementById('op-name').textContent = "OPERATOR : " + appUser.user; setTimeout(() => document.getElementById('barcode-input').focus(), 100); renderCartTable();
                 } else if (selectedModule === 'ajs' || selectedModule === 'almadina') {
                     const ws = document.getElementById('kwitansi-workspace'); const hdr = document.getElementById('kw-header'); const title = document.getElementById('kw-title'); const icon = document.getElementById('kw-icon'); const logoImg = document.getElementById('kw-logo-img');
-                    if (selectedModule === 'ajs') { 
-                        hdr.className = "flex items-center px-2 py-1 bg-emerald-700 text-white border-b border-gray-300 text-xs select-none"; icon.className = "fas fa-bus"; title.textContent = "SISTEM ANTAR JEMPUT SEKOLAH (AJS)"; logoImg.src = "logo AJS.png"; 
-                    } else { 
-                        hdr.className = "flex items-center px-2 py-1 bg-purple-800 text-white border-b border-gray-300 text-xs select-none"; icon.className = "fas fa-shuttle-van"; title.textContent = "ALMADINA TRANS MANAGEMENT"; logoImg.src = "logo ALMADINA.png"; 
-                    }
+                    if (selectedModule === 'ajs') { hdr.className = "flex items-center px-2 py-1 bg-emerald-700 text-white border-b border-gray-300 text-xs select-none"; icon.className = "fas fa-bus"; title.textContent = "SISTEM ANTAR JEMPUT SEKOLAH (AJS)"; logoImg.src = "logo AJS.png"; } 
+                    else { hdr.className = "flex items-center px-2 py-1 bg-purple-800 text-white border-b border-gray-300 text-xs select-none"; icon.className = "fas fa-shuttle-van"; title.textContent = "ALMADINA TRANS MANAGEMENT"; logoImg.src = "logo ALMADINA.png"; }
                     ws.classList.remove('hidden'); ws.classList.add('flex'); resetFormKwitansi(); 
                 } else if (selectedModule === 'almaqua') {
                     const wsAlm = document.getElementById('almaqua-workspace'); wsAlm.classList.remove('hidden'); wsAlm.classList.add('flex'); resetFormAlmaqua();
                 }
-            } else { 
-                document.getElementById('login-error').classList.remove('hidden'); 
-            }
+            } else { document.getElementById('login-error').classList.remove('hidden'); }
         }
 
         function handleLogout() {
@@ -790,81 +741,41 @@
         }
 
         // ===============================================
-        // FUNGSI ALMAQUA MINERAL (INVOICE KERANJANG)
+        // FUNGSI ALMAQUA MINERAL
         // ===============================================
         function resetFormAlmaqua() {
-            document.getElementById('alm-terima').value = ''; 
-            document.getElementById('alm-guna').value = '';
-            document.querySelector('input[name="alm-metode"][value="Tunai"]').checked = true; 
-            toggleTransferAlmaqua();
-            
-            almaquaCart = []; 
-            document.getElementById('alm-item-nama').value = ''; 
-            document.getElementById('alm-item-vol').value = ''; 
-            document.getElementById('alm-item-harga').value = '';
-            
-            const now = new Date(); 
-            currentAlmaquaId = "ALM-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0');
-            
+            document.getElementById('alm-terima').value = ''; document.getElementById('alm-guna').value = '';
+            document.querySelector('input[name="alm-metode"][value="Tunai"]').checked = true; toggleTransferAlmaqua();
+            almaquaCart = []; document.getElementById('alm-item-nama').value = ''; document.getElementById('alm-item-vol').value = ''; document.getElementById('alm-item-harga').value = '';
+            const now = new Date(); currentAlmaquaId = "ALM-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0');
             updateLivePreviewAlmaqua();
         }
 
         function toggleTransferAlmaqua() {
             const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
             const rekInput = document.getElementById('alm-rek');
-            if(isTransfer) { rekInput.classList.remove('hidden'); rekInput.focus(); } else { rekInput.classList.add('hidden'); }
-            updateLivePreviewAlmaqua();
+            if(isTransfer) { rekInput.classList.remove('hidden'); rekInput.focus(); } else { rekInput.classList.add('hidden'); } updateLivePreviewAlmaqua();
         }
 
         function tambahItemAlmaqua() {
-            const nama = document.getElementById('alm-item-nama').value.trim(); 
-            const vol = parseInt(document.getElementById('alm-item-vol').value) || 0; 
-            const harga = parseInt(document.getElementById('alm-item-harga').value) || 0;
-            
+            const nama = document.getElementById('alm-item-nama').value.trim(); const vol = parseInt(document.getElementById('alm-item-vol').value) || 0; const harga = parseInt(document.getElementById('alm-item-harga').value) || 0;
             if(!nama || vol <= 0) return alert("Harap isi Nama Produk dan Volume!");
-            
             almaquaCart.push({ nama: nama, vol: vol, harga: harga, total: vol * harga });
-            
-            document.getElementById('alm-item-nama').value = ''; 
-            document.getElementById('alm-item-vol').value = ''; 
-            document.getElementById('alm-item-harga').value = ''; 
-            document.getElementById('alm-item-nama').focus();
-            
+            document.getElementById('alm-item-nama').value = ''; document.getElementById('alm-item-vol').value = ''; document.getElementById('alm-item-harga').value = ''; document.getElementById('alm-item-nama').focus();
             updateLivePreviewAlmaqua();
         }
 
-        function hapusItemAlmaqua(index) { 
-            almaquaCart.splice(index, 1); 
-            updateLivePreviewAlmaqua(); 
-        }
+        function hapusItemAlmaqua(index) { almaquaCart.splice(index, 1); updateLivePreviewAlmaqua(); }
         
         function updateLivePreviewAlmaqua() {
             if (selectedModule !== 'almaqua') return;
             try {
-                const terima = document.getElementById('alm-terima').value.toUpperCase();
-                const guna = document.getElementById('alm-guna').value.toUpperCase();
-                const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
-                
+                const terima = document.getElementById('alm-terima').value.toUpperCase(); const guna = document.getElementById('alm-guna').value.toUpperCase(); const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
                 let grandTotal = 0; let tbodyPreviewHtml = ''; let tbodyCartHtml = '';
                 almaquaCart.forEach((item, idx) => {
                     grandTotal += item.total;
-                    tbodyPreviewHtml += `
-                        <tr>
-                            <td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${idx+1}</td>
-                            <td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-left">${item.nama}</td>
-                            <td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${item.vol}</td>
-                            <td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.harga)}</td>
-                            <td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.total)}</td>
-                        </tr>
-                    `;
-                    tbodyCartHtml += `
-                        <tr class="border-b border-gray-200">
-                            <td class="py-1">${item.nama}</td>
-                            <td class="py-1 text-center font-bold">${item.vol}</td>
-                            <td class="py-1 text-right text-blue-700 font-bold">${formatNumber(item.total)}</td>
-                            <td class="text-right py-1"><button onclick="hapusItemAlmaqua(${idx})" class="text-red-500 font-bold hover:bg-red-100 px-1.5 rounded">X</button></td>
-                        </tr>
-                    `;
+                    tbodyPreviewHtml += `<tr><td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${idx+1}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-left">${item.nama}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${item.vol}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.harga)}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.total)}</td></tr>`;
+                    tbodyCartHtml += `<tr class="border-b border-gray-200"><td class="py-1">${item.nama}</td><td class="py-1 text-center font-bold">${item.vol}</td><td class="py-1 text-right text-blue-700 font-bold">${formatNumber(item.total)}</td><td class="text-right py-1"><button onclick="hapusItemAlmaqua(${idx})" class="text-red-500 font-bold hover:bg-red-100 px-1.5 rounded">X</button></td></tr>`;
                 });
 
                 if(almaquaCart.length === 0) {
@@ -873,145 +784,58 @@
                 }
 
                 const nominalStr = grandTotal > 0 ? terbilang(grandTotal).replace(/\s+/g, ' ').trim() + " Rupiah" : "";
-                
-                document.getElementById('alm-pk-no').textContent = currentAlmaquaId;
-                document.getElementById('alm-pk-terima').textContent = terima || '....................................................................';
-                document.getElementById('alm-pk-terbilang').textContent = nominalStr || '-';
-                document.getElementById('alm-pk-nominal').textContent = grandTotal ? formatNumber(grandTotal) : '0';
-                document.getElementById('alm-pk-guna').textContent = guna || '....................................................................';
+                document.getElementById('alm-pk-no').textContent = currentAlmaquaId; document.getElementById('alm-pk-terima').textContent = terima || '....................................................................'; document.getElementById('alm-pk-terbilang').textContent = nominalStr || '-'; document.getElementById('alm-pk-nominal').textContent = grandTotal ? formatNumber(grandTotal) : '0'; document.getElementById('alm-pk-guna').textContent = guna || '....................................................................';
 
-                if (isTransfer) { 
-                    const rekStr = document.getElementById('alm-rek').value; 
-                    document.getElementById('alm-pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> <span class="flex items-center gap-1">Transfer ke Rek :</span> <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>`;
-                } else { 
-                    document.getElementById('alm-pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`; 
-                }
+                if (isTransfer) { const rekStr = document.getElementById('alm-rek').value; document.getElementById('alm-pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> <span class="flex items-center gap-1">Transfer ke Rek :</span> <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>`; } 
+                else { document.getElementById('alm-pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`; }
 
-                const now = new Date(); 
-                const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                const tglStr = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
-                
-                document.getElementById('alm-pk-tanggal').textContent = tglStr;
-                document.getElementById('alm-pk-op').textContent = (appUser.user || 'ADMIN').toUpperCase();
-
-                document.getElementById('alm-preview-tbody').innerHTML = tbodyPreviewHtml;
-                document.getElementById('alm-preview-table-total').textContent = formatNumber(grandTotal);
-                document.getElementById('alm-cart-body').innerHTML = tbodyCartHtml;
-                document.getElementById('alm-total-info').textContent = formatNumber(grandTotal);
+                const now = new Date(); const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]; const tglStr = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
+                document.getElementById('alm-pk-tanggal').textContent = tglStr; document.getElementById('alm-pk-op').textContent = (appUser.user || 'ADMIN').toUpperCase();
+                document.getElementById('alm-preview-tbody').innerHTML = tbodyPreviewHtml; document.getElementById('alm-preview-table-total').textContent = formatNumber(grandTotal); document.getElementById('alm-cart-body').innerHTML = tbodyCartHtml; document.getElementById('alm-total-info').textContent = formatNumber(grandTotal);
 
                 const originalContent = document.getElementById('alm-original').innerHTML;
                 const modifiedForSalinan = originalContent.replace('<span class="border-2 border-blue-500 text-blue-600 px-2 py-0.5 rounded text-[11px] font-bold">ASLI</span>', '<span class="border-2 border-red-500 text-red-500 px-2 py-0.5 rounded text-[11px] font-bold">SALINAN</span>');
                 document.getElementById('alm-salinan').innerHTML = modifiedForSalinan + `<div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.06; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>`;
-            } catch(e) { 
-                console.error("Error preview Almaqua", e); 
-            }
+            } catch(e) { console.error("Error preview Almaqua", e); }
         }
 
         function saveAndPrintAlmaqua() {
-            const terima = document.getElementById('alm-terima').value.trim();
-            const guna = document.getElementById('alm-guna').value.trim();
+            const terima = document.getElementById('alm-terima').value.trim(); const guna = document.getElementById('alm-guna').value.trim();
             if(!terima || !guna || almaquaCart.length === 0) return alert("Harap isi Telah Diterima Dari, Guna Membayar, dan minimal 1 produk di keranjang!");
-            
-            let finalTotal = 0; 
-            almaquaCart.forEach(i => finalTotal += i.total);
-            
-            const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer';
-            const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('alm-rek').value : 'Tunai';
-
-            const kData = { 
-                id: currentAlmaquaId, 
-                date: new Date().toISOString(), 
-                terimaDari: terima, 
-                gunaMembayar: guna, 
-                nominal: finalTotal, 
-                metode: metodeText, 
-                items: almaquaCart, 
-                operator: appUser.user || 'admin' 
-            };
-            
+            let finalTotal = 0; almaquaCart.forEach(i => finalTotal += i.total);
+            const isTransfer = document.querySelector('input[name="alm-metode"]:checked').value === 'Transfer'; const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('alm-rek').value : 'Tunai';
+            const kData = { id: currentAlmaquaId, date: new Date().toISOString(), terimaDari: terima, gunaMembayar: guna, nominal: finalTotal, metode: metodeText, items: almaquaCart, operator: appUser.user || 'admin' };
             apiPost('saveKwitansiAlmaqua', kData);
-            
-            const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML; 
-            const printAreaContainer = document.getElementById('print-kwitansi-area');
-            printAreaContainer.innerHTML = htmlToPrint; 
-            printAreaContainer.classList.remove('hidden'); 
-            window.print(); 
-            printAreaContainer.classList.add('hidden');
+            const htmlToPrint = document.getElementById('display-almaqua-area').innerHTML; const printAreaContainer = document.getElementById('print-kwitansi-area');
+            printAreaContainer.innerHTML = htmlToPrint; printAreaContainer.classList.remove('hidden'); window.print(); printAreaContainer.classList.add('hidden');
         }
-
 
         // ===============================================
         // FUNGSI KWITANSI AJS & ALMADINA
         // ===============================================
         function resetFormKwitansi() {
-            document.getElementById('kwt-terima').value = ''; 
-            document.getElementById('kwt-nominal').value = ''; 
-            document.getElementById('kwt-guna').value = ''; 
-            document.getElementById('kwt-rek').value = ''; 
-            document.getElementById('kwt-rin-tujuan').value = ''; 
-            document.getElementById('kwt-rin-jml').value = ''; 
-            document.getElementById('kwt-rin-jenis-select').value = 'ANTAR & JEMPUT'; 
-            document.getElementById('kwt-rin-jenis').value = ''; 
-            document.querySelector('input[name="kwt-metode"][value="Tunai"]').checked = true;
-            
-            toggleTransfer(); 
-            handleJenisLayanan(); 
-            document.getElementById('kwt-rin-tgl').valueAsDate = new Date(); 
-            currentKwitansiId = generateIdKwitansi(); 
-            updateLivePreview(); 
+            document.getElementById('kwt-terima').value = ''; document.getElementById('kwt-nominal').value = ''; document.getElementById('kwt-guna').value = ''; document.getElementById('kwt-rek').value = ''; document.getElementById('kwt-rin-tujuan').value = ''; document.getElementById('kwt-rin-jml').value = ''; document.getElementById('kwt-rin-jenis-select').value = 'ANTAR & JEMPUT'; document.getElementById('kwt-rin-jenis').value = ''; document.querySelector('input[name="kwt-metode"][value="Tunai"]').checked = true;
+            toggleTransfer(); handleJenisLayanan(); document.getElementById('kwt-rin-tgl').valueAsDate = new Date(); currentKwitansiId = generateIdKwitansi(); updateLivePreview(); 
         }
 
-        function generateIdKwitansi() { 
-            const prefix = selectedModule === 'ajs' ? 'AJS' : 'AT'; 
-            const now = new Date(); 
-            return prefix + "-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0'); 
-        }
-
-        function toggleTransfer() { 
-            const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer'; 
-            const rekInput = document.getElementById('kwt-rek'); 
-            if(isTransfer) { rekInput.classList.remove('hidden'); rekInput.focus(); } else { rekInput.classList.add('hidden'); } 
-            updateLivePreview(); 
-        }
-
-        function handleJenisLayanan() { 
-            const sel = document.getElementById('kwt-rin-jenis-select').value; 
-            const txt = document.getElementById('kwt-rin-jenis'); 
-            if(sel === 'LAINNYA') { txt.classList.remove('hidden'); txt.focus(); } else { txt.classList.add('hidden'); } 
-            updateLivePreview(); 
-        }
+        function generateIdKwitansi() { const prefix = selectedModule === 'ajs' ? 'AJS' : 'AT'; const now = new Date(); return prefix + "-" + String(now.getFullYear()).substring(2) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + "-" + Math.floor(Math.random() * 1000).toString().padStart(3,'0'); }
+        function toggleTransfer() { const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer'; const rekInput = document.getElementById('kwt-rek'); if(isTransfer) { rekInput.classList.remove('hidden'); rekInput.focus(); } else { rekInput.classList.add('hidden'); } updateLivePreview(); }
+        function handleJenisLayanan() { const sel = document.getElementById('kwt-rin-jenis-select').value; const txt = document.getElementById('kwt-rin-jenis'); if(sel === 'LAINNYA') { txt.classList.remove('hidden'); txt.focus(); } else { txt.classList.add('hidden'); } updateLivePreview(); }
         
         function updateLivePreview() {
             if(selectedModule !== 'ajs' && selectedModule !== 'almadina') return;
             try {
-                const terima = document.getElementById('kwt-terima').value.toUpperCase(); 
-                const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0; 
-                const guna = document.getElementById('kwt-guna').value.toUpperCase();
+                const terima = document.getElementById('kwt-terima').value.toUpperCase(); const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0; const guna = document.getElementById('kwt-guna').value.toUpperCase();
                 const nominalStr = nominal > 0 ? terbilang(nominal).replace(/\s+/g, ' ').trim() + " Rupiah" : "";
-                
-                const elTerbilangKiri = document.getElementById('kwt-terbilang');
-                if(elTerbilangKiri) elTerbilangKiri.textContent = nominalStr || '-';
-                
-                document.getElementById('pk-no').textContent = currentKwitansiId;
-                document.getElementById('pk-terima').textContent = terima || '....................................................................';
-                document.getElementById('pk-terbilang').textContent = nominalStr || '-';
-                document.getElementById('pk-nominal').textContent = nominal ? formatNumber(nominal) : '0';
-                document.getElementById('pk-guna').textContent = guna || '....................................................................';
+                const elTerbilangKiri = document.getElementById('kwt-terbilang'); if(elTerbilangKiri) elTerbilangKiri.textContent = nominalStr || '-';
+                document.getElementById('pk-no').textContent = currentKwitansiId; document.getElementById('pk-terima').textContent = terima || '....................................................................'; document.getElementById('pk-terbilang').textContent = nominalStr || '-'; document.getElementById('pk-nominal').textContent = nominal ? formatNumber(nominal) : '0'; document.getElementById('pk-guna').textContent = guna || '....................................................................';
 
                 const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer';
-                if (isTransfer) { 
-                    const rekStr = document.getElementById('kwt-rek').value; 
-                    document.getElementById('pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> <span class="flex items-center gap-1">Transfer ke Rek :</span> <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>`;
-                } else { 
-                    document.getElementById('pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`; 
-                }
+                if (isTransfer) { const rekStr = document.getElementById('kwt-rek').value; document.getElementById('pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> <span class="flex items-center gap-1">Transfer ke Rek :</span> <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>`; } 
+                else { document.getElementById('pk-metode').innerHTML = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`; }
 
                 let tglVal = document.getElementById('kwt-rin-tgl').value;
-                if(tglVal) { 
-                    let td = new Date(tglVal); 
-                    const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]; 
-                    tglVal = namaHari[td.getDay()] + ", " + String(td.getDate()).padStart(2, '0') + "/" + String(td.getMonth()+1).padStart(2, '0') + "/" + String(td.getFullYear()).substring(2); 
-                }
+                if(tglVal) { let td = new Date(tglVal); const namaHari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]; tglVal = namaHari[td.getDay()] + ", " + String(td.getDate()).padStart(2, '0') + "/" + String(td.getMonth()+1).padStart(2, '0') + "/" + String(td.getFullYear()).substring(2); }
                 document.getElementById('pk-rin-tgl').textContent = tglVal || '................';
                 
                 const jenisSel = document.getElementById('kwt-rin-jenis-select').value;
@@ -1019,43 +843,23 @@
                 document.getElementById('pk-rin-tujuan').textContent = document.getElementById('kwt-rin-tujuan').value.toUpperCase() || '................';
                 document.getElementById('pk-rin-jml').textContent = document.getElementById('kwt-rin-jml').value || '......';
 
-                const now = new Date(); 
-                const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-                document.getElementById('pk-tanggal').textContent = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
-                document.getElementById('pk-op').textContent = (appUser.user || 'ADMIN').toUpperCase();
-
+                const now = new Date(); const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                document.getElementById('pk-tanggal').textContent = now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear(); document.getElementById('pk-op').textContent = (appUser.user || 'ADMIN').toUpperCase();
                 const originalContent = document.getElementById('kwt-original').innerHTML;
                 document.getElementById('kwt-salinan').innerHTML = originalContent + `<div style="position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-25deg); font-size: 140px; font-weight: 900; color: #000; opacity: 0.08; pointer-events: none; letter-spacing: 25px; z-index: 50; white-space: nowrap;">SALINAN</div>`;
-            } catch(e) { 
-                console.error("Live preview error: ", e); 
-            }
+            } catch(e) { console.error("Live preview error: ", e); }
         }
 
         function saveAndPrintKwitansi() {
-            const terima = document.getElementById('kwt-terima').value.trim(); 
-            const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0; 
-            const guna = document.getElementById('kwt-guna').value.trim();
-            
+            const terima = document.getElementById('kwt-terima').value.trim(); const nominal = parseInt(document.getElementById('kwt-nominal').value) || 0; const guna = document.getElementById('kwt-guna').value.trim();
             if(!terima || !nominal || !guna) return alert("Harap lengkapi form (Terima Dari, Nominal, Guna Membayar)!");
-            
-            const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer'; 
-            const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('kwt-rek').value : 'Tunai';
-            
-            const tglValStr = document.getElementById('kwt-rin-tgl').value; 
-            const jenisSel = document.getElementById('kwt-rin-jenis-select').value; 
-            const jenisVal = jenisSel === 'LAINNYA' ? document.getElementById('kwt-rin-jenis').value.trim() : jenisSel;
-            
+            const isTransfer = document.querySelector('input[name="kwt-metode"]:checked').value === 'Transfer'; const metodeText = isTransfer ? 'Transfer ke Rek: ' + document.getElementById('kwt-rek').value : 'Tunai';
+            const tglValStr = document.getElementById('kwt-rin-tgl').value; const jenisSel = document.getElementById('kwt-rin-jenis-select').value; const jenisVal = jenisSel === 'LAINNYA' ? document.getElementById('kwt-rin-jenis').value.trim() : jenisSel;
             const rincian = { tgl: tglValStr, jenis: jenisVal, tujuan: document.getElementById('kwt-rin-tujuan').value.trim(), jml: document.getElementById('kwt-rin-jml').value.trim() };
             const kData = { id: currentKwitansiId, date: new Date().toISOString(), terimaDari: terima, gunaMembayar: guna, nominal: nominal, metode: metodeText, rincian: rincian, operator: appUser.user || 'admin' };
-            
             apiPost(selectedModule === 'ajs' ? 'saveKwitansiAJS' : 'saveKwitansiAlmadina', kData);
-            
-            const htmlToPrint = document.getElementById('display-kwitansi-area').innerHTML; 
-            const printAreaContainer = document.getElementById('print-kwitansi-area');
-            printAreaContainer.innerHTML = htmlToPrint; 
-            printAreaContainer.classList.remove('hidden'); 
-            window.print(); 
-            printAreaContainer.classList.add('hidden'); 
+            const htmlToPrint = document.getElementById('display-kwitansi-area').innerHTML; const printAreaContainer = document.getElementById('print-kwitansi-area');
+            printAreaContainer.innerHTML = htmlToPrint; printAreaContainer.classList.remove('hidden'); window.print(); printAreaContainer.classList.add('hidden'); 
         }
 
         // ===============================================
@@ -1063,110 +867,37 @@
         // ===============================================
         function openKwitansiHistory() {
             let titleText = "Histori Kwitansi"; let theadHtml = "";
-            if (selectedModule === 'ajs') titleText = "Histori Kwitansi - AJS"; 
-            else if (selectedModule === 'almadina') titleText = "Histori Kwitansi - ALMADINA TRANS"; 
-            else if (selectedModule === 'almaqua') titleText = "Histori Kwitansi - ALMAQUA";
-            
+            if (selectedModule === 'ajs') titleText = "Histori Kwitansi - AJS"; else if (selectedModule === 'almadina') titleText = "Histori Kwitansi - ALMADINA TRANS"; else if (selectedModule === 'almaqua') titleText = "Histori Kwitansi - ALMAQUA";
             document.getElementById('kwt-hist-title').textContent = titleText;
             theadHtml = `<tr><th class="w-10">NO</th><th class="w-32">TANGGAL</th><th class="w-32">NO KWITANSI</th><th>DITERIMA DARI</th><th class="w-32 text-right">NOMINAL (RP)</th><th class="w-32 text-center">AKSI</th></tr>`;
-            document.getElementById('hist-thead').innerHTML = theadHtml; 
-            
-            document.getElementById('kwt-history-modal').classList.remove('hidden');
-            const today = new Date(); 
-            document.getElementById('kwt-hist-start').valueAsDate = today; 
-            document.getElementById('kwt-hist-end').valueAsDate = today; 
-            loadKwitansiHistory();
+            document.getElementById('hist-thead').innerHTML = theadHtml; document.getElementById('kwt-history-modal').classList.remove('hidden');
+            const today = new Date(); document.getElementById('kwt-hist-start').valueAsDate = today; document.getElementById('kwt-hist-end').valueAsDate = today; loadKwitansiHistory();
         }
 
         function loadKwitansiHistory() {
-            const startDate = document.getElementById('kwt-hist-start').value; 
-            const endDate = document.getElementById('kwt-hist-end').value; 
-            const tbody = document.getElementById('kwt-history-body');
-            
+            const startDate = document.getElementById('kwt-hist-start').value; const endDate = document.getElementById('kwt-hist-end').value; const tbody = document.getElementById('kwt-history-body');
             tbody.innerHTML = '<tr><td colspan="6" class="text-center font-bold text-blue-600 py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Mengambil data dari server...</td></tr>';
-            
-            let actionName = ''; 
-            if (selectedModule === 'ajs') actionName = 'getKwitansiAJS'; 
-            else if (selectedModule === 'almadina') actionName = 'getKwitansiAlmadina'; 
-            else if (selectedModule === 'almaqua') actionName = 'getKwitansiAlmaqua';
-            
+            let actionName = ''; if (selectedModule === 'ajs') actionName = 'getKwitansiAJS'; else if (selectedModule === 'almadina') actionName = 'getKwitansiAlmadina'; else if (selectedModule === 'almaqua') actionName = 'getKwitansiAlmaqua';
             apiGet(actionName, `&startDate=${startDate}&endDate=${endDate}`).then(data => {
-                fetchedKwitansi = data; 
-                tbody.innerHTML = ''; 
-                let counter = 1;
+                fetchedKwitansi = data; tbody.innerHTML = ''; let counter = 1;
                 data.forEach((k, index) => {
-                    const d = new Date(k.date); 
-                    const dateStr = d.toLocaleDateString('id-ID') + ' <br><span class="text-gray-500 font-normal">' + d.toLocaleTimeString('id-ID').substring(0,5) + '</span>'; 
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${k.id}</td><td class="uppercase">${k.terimaDari}</td><td class="text-right font-bold text-blue-800">${formatNumber(k.nominal)}</td><td class="text-center"><div class="flex justify-center gap-2"><button onclick="lihatStrukTertentuKwitansi(${index})" class="bg-yellow-200 border border-gray-500 px-3 py-1 text-xs hover:bg-yellow-300 font-bold shadow-sm rounded-sm"><i class="fas fa-eye text-yellow-700"></i></button><button onclick="cetakStrukTertentuKwitansi(${index})" class="bg-blue-200 border border-gray-500 px-3 py-1 text-xs hover:bg-blue-300 font-bold shadow-sm rounded-sm"><i class="fas fa-print text-blue-700"></i></button></div></td>`;
-                    tbody.appendChild(tr);
+                    const d = new Date(k.date); const dateStr = d.toLocaleDateString('id-ID') + ' <br><span class="text-gray-500 font-normal">' + d.toLocaleTimeString('id-ID').substring(0,5) + '</span>'; const tr = document.createElement('tr');
+                    tr.innerHTML = `<td class="text-center">${counter++}</td><td class="text-center">${dateStr}</td><td class="text-center font-bold">${k.id}</td><td class="uppercase">${k.terimaDari}</td><td class="text-right font-bold text-blue-800">${formatNumber(k.nominal)}</td><td class="text-center"><div class="flex justify-center gap-2"><button onclick="lihatStrukTertentuKwitansi(${index})" class="bg-yellow-200 border border-gray-500 px-3 py-1 text-xs hover:bg-yellow-300 font-bold shadow-sm rounded-sm"><i class="fas fa-eye text-yellow-700"></i></button><button onclick="cetakStrukTertentuKwitansi(${index})" class="bg-blue-200 border border-gray-500 px-3 py-1 text-xs hover:bg-blue-300 font-bold shadow-sm rounded-sm"><i class="fas fa-print text-blue-700"></i></button></div></td>`; tbody.appendChild(tr);
                 });
                 if(data.length === 0) tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4">Tidak ada data di rentang tanggal ini.</td></tr>';
             });
         }
 
-        function lihatStrukTertentuKwitansi(index) { 
-            let kData = fetchedKwitansi[index]; 
-            tempPrintDataForHistory = kData; 
-            let htmlToRender = ""; 
-            if (selectedModule === 'almaqua') htmlToRender = generateHTMLAlmaquaDinamis(kData); 
-            else htmlToRender = generateHTMLKwitansiDinamis(kData); 
-            document.getElementById('modal-preview-render-area').innerHTML = `<div>${htmlToRender}</div>`; 
-            document.getElementById('kwt-preview-modal').classList.remove('hidden'); 
-        }
-
-        function cetakDariPreview() { 
-            if(tempPrintDataForHistory) { 
-                const printAreaContainer = document.getElementById('print-kwitansi-area'); 
-                if (selectedModule === 'almaqua') printAreaContainer.innerHTML = generateHTMLAlmaquaDinamis(tempPrintDataForHistory); 
-                else printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(tempPrintDataForHistory); 
-                printAreaContainer.classList.remove('hidden'); 
-                window.print(); 
-                printAreaContainer.classList.add('hidden'); 
-            } 
-        }
-
-        function cetakStrukTertentuKwitansi(index) { 
-            let kData = fetchedKwitansi[index]; 
-            const printAreaContainer = document.getElementById('print-kwitansi-area'); 
-            if (selectedModule === 'almaqua') printAreaContainer.innerHTML = generateHTMLAlmaquaDinamis(kData); 
-            else printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(kData); 
-            printAreaContainer.classList.remove('hidden'); 
-            window.print(); 
-            printAreaContainer.classList.add('hidden'); 
-        }
+        function lihatStrukTertentuKwitansi(index) { let kData = fetchedKwitansi[index]; tempPrintDataForHistory = kData; let htmlToRender = ""; if (selectedModule === 'almaqua') htmlToRender = generateHTMLAlmaquaDinamis(kData); else htmlToRender = generateHTMLKwitansiDinamis(kData); document.getElementById('modal-preview-render-area').innerHTML = `<div>${htmlToRender}</div>`; document.getElementById('kwt-preview-modal').classList.remove('hidden'); }
+        function cetakDariPreview() { if(tempPrintDataForHistory) { const printAreaContainer = document.getElementById('print-kwitansi-area'); if (selectedModule === 'almaqua') printAreaContainer.innerHTML = generateHTMLAlmaquaDinamis(tempPrintDataForHistory); else printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(tempPrintDataForHistory); printAreaContainer.classList.remove('hidden'); window.print(); printAreaContainer.classList.add('hidden'); } }
+        function cetakStrukTertentuKwitansi(index) { let kData = fetchedKwitansi[index]; const printAreaContainer = document.getElementById('print-kwitansi-area'); if (selectedModule === 'almaqua') printAreaContainer.innerHTML = generateHTMLAlmaquaDinamis(kData); else printAreaContainer.innerHTML = generateHTMLKwitansiDinamis(kData); printAreaContainer.classList.remove('hidden'); window.print(); printAreaContainer.classList.add('hidden'); }
         
         function generateHTMLAlmaquaDinamis(kData) {
-            kData.date = new Date(kData.date); 
-            const d = kData.date; 
-            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]; 
-            const tglBawahStr = d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
-            
+            kData.date = new Date(kData.date); const d = kData.date; const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]; const tglBawahStr = d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
             const nominalStr = kData.nominal > 0 ? terbilang(kData.nominal).replace(/\s+/g, ' ').trim() + " Rupiah" : "";
-            
-            let htmlMetode = ''; 
-            if (kData.metode.startsWith('Transfer')) { 
-                const rekStr = kData.metode.replace('Transfer ke Rek:', '').trim(); 
-                htmlMetode = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> <span class="flex items-center gap-1">Transfer ke Rek :</span> <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>`; 
-            } else { 
-                htmlMetode = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`; 
-            }
-            
-            let itemsArr = []; 
-            try { 
-                itemsArr = typeof kData.items === 'string' ? JSON.parse(kData.items) : kData.items; 
-            } catch (e) { 
-                itemsArr = [{ nama: 'Data Tidak Terbaca', vol: 0, harga: 0, total: 0 }]; 
-            }
-            
-            let tbodyHtml = ''; 
-            if (itemsArr && itemsArr.length > 0) { 
-                itemsArr.forEach((item, idx) => { 
-                    tbodyHtml += `<tr><td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${idx+1}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-left">${item.nama}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${item.vol}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.harga)}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.total)}</td></tr>`; 
-                }); 
-            } else { 
-                tbodyHtml = `<tr><td colspan="5" class="py-1.5 border-b border-dotted border-gray-500 font-medium italic text-gray-400">Tidak ada detail produk.</td></tr>`; 
-            }
+            let htmlMetode = ''; if (kData.metode.startsWith('Transfer')) { const rekStr = kData.metode.replace('Transfer ke Rek:', '').trim(); htmlMetode = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> <span class="flex items-center gap-1">Transfer ke Rek :</span> <span class="border-b border-dotted border-gray-500 px-4 font-bold italic">${rekStr}</span>`; } else { htmlMetode = `<div class="w-4 h-4 border border-black flex items-center justify-center text-xs font-bold pt-0.5 bg-black text-white">V</div> Tunai`; }
+            let itemsArr = []; try { itemsArr = typeof kData.items === 'string' ? JSON.parse(kData.items) : kData.items; } catch (e) { itemsArr = [{ nama: 'Data Tidak Terbaca', vol: 0, harga: 0, total: 0 }]; }
+            let tbodyHtml = ''; if (itemsArr && itemsArr.length > 0) { itemsArr.forEach((item, idx) => { tbodyHtml += `<tr><td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${idx+1}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-left">${item.nama}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium">${item.vol}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.harga)}</td><td class="py-1.5 border-b border-dotted border-gray-500 font-medium text-right"><span class="text-xs text-gray-500 mr-1">Rp</span>${formatNumber(item.total)}</td></tr>`; }); } else { tbodyHtml = `<tr><td colspan="5" class="py-1.5 border-b border-dotted border-gray-500 font-medium italic text-gray-400">Tidak ada detail produk.</td></tr>`; }
 
             const htmlOriginal = `
                 <div class="relative pb-4 mb-4 border-b-2 border-dashed border-gray-600 z-20 bg-white">
@@ -1244,13 +975,10 @@
                 else cart.push({ code: product.code, name: product.name, price: product.price, unit: product.unit, qty: qty });
                 
                 renderCartTable();
-                
                 document.getElementById('info-harga-satuan').value = formatNumber(product.price);
                 document.getElementById('info-sub-total').value = formatNumber(product.price * (existingItem ? existingItem.qty : qty));
                 document.getElementById('info-total-harga').value = formatNumber(totalAmount);
-            } else { 
-                alert('Produk tidak ditemukan!'); 
-            }
+            } else { alert('Produk tidak ditemukan!'); }
             document.getElementById('barcode-input').value = '';
             document.getElementById('qty-input').value = '1';
         }
@@ -1266,21 +994,15 @@
 
         function renderCartTable() {
             const tbody = document.getElementById('cart-body');
-            tbody.innerHTML = ''; 
-            totalAmount = 0; 
-            totalQty = 0;
+            tbody.innerHTML = ''; totalAmount = 0; totalQty = 0;
             
             cart.forEach((item, index) => {
-                const subtotal = item.price * item.qty; 
-                totalAmount += subtotal; 
-                totalQty += item.qty;
-                
+                const subtotal = item.price * item.qty; totalAmount += subtotal; totalQty += item.qty;
                 const tr = document.createElement('tr');
                 if (index === selectedRowIndex) tr.classList.add('active-row');
                 
                 tr.onclick = () => { selectedRowIndex = index; renderCartTable(); };
                 tr.ondblclick = () => { selectedRowIndex = index; openEditQtyModal(); };
-                
                 tr.innerHTML = `<td class="text-center">${index + 1}</td><td>${item.code}</td><td>${item.name}</td><td class="text-right">${formatNumber(item.price)}</td><td class="text-center">${item.qty}</td><td class="text-center">${item.unit}</td><td class="text-right">${formatNumber(subtotal)}</td><td class="text-right">0</td><td class="text-right">${formatNumber(subtotal)}</td>`;
                 tbody.appendChild(tr);
             });
@@ -1302,123 +1024,67 @@
 
         function deleteSelectedItem() {
             if (selectedRowIndex > -1 && selectedRowIndex < cart.length) {
-                cart.splice(selectedRowIndex, 1); 
-                selectedRowIndex = -1; 
-                renderCartTable(); 
-                document.getElementById('barcode-input').focus();
-            } else { 
-                alert('Pilih baris yang ingin dihapus terlebih dahulu!'); 
-            }
+                cart.splice(selectedRowIndex, 1); selectedRowIndex = -1; renderCartTable(); document.getElementById('barcode-input').focus();
+            } else { alert('Pilih baris yang ingin dihapus terlebih dahulu!'); }
         }
 
         function clearCart() {
             if (cart.length > 0 && confirm('Apakah Anda yakin ingin membatalkan transaksi ini?')) {
-                cart = []; 
-                selectedRowIndex = -1; 
-                renderCartTable();
-                document.getElementById('info-harga-satuan').value = "0";
-                document.getElementById('info-sub-total').value = "0";
-                document.getElementById('info-total-harga').value = "0";
+                cart = []; selectedRowIndex = -1; renderCartTable();
+                document.getElementById('info-harga-satuan').value = "0"; document.getElementById('info-sub-total').value = "0"; document.getElementById('info-total-harga').value = "0";
                 document.getElementById('barcode-input').focus();
             }
         }
 
-        // PELINDUNG ANTI-CRASH TOMBOL PENCARIAN PRODUK
         function filterProductSearch() {
             try {
                 const term = document.getElementById('search-input').value.toLowerCase();
-                // Tambahan proteksi jika ada row kosong di Google Sheets
-                const results = productsDb.filter(p => 
-                    (p.name || "").toLowerCase().includes(term) || 
-                    (p.code || "").toLowerCase().includes(term)
-                );
-                
+                const results = productsDb.filter(p => (p.name || "").toLowerCase().includes(term) || (p.code || "").toLowerCase().includes(term));
                 const tbody = document.getElementById('search-results');
                 tbody.innerHTML = '';
-                
                 results.forEach(p => {
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-blue-100 cursor-pointer";
                     tr.onclick = () => {
                         const currentQty = parseInt(document.getElementById('qty-input').value) || 1;
-                        processBarcode(p.code, currentQty);
-                        document.getElementById('qty-input').value = '1';
-                        closeModal('search-modal');
+                        processBarcode(p.code, currentQty); document.getElementById('qty-input').value = '1'; closeModal('search-modal');
                     };
                     tr.innerHTML = `<td>${p.code}</td><td>${p.name}</td><td class="text-center">${p.unit}</td><td class="text-right">${formatNumber(p.price)}</td>`;
                     tbody.appendChild(tr);
                 });
-            } catch(e) {
-                console.error("Gagal melakukan filter pencarian: ", e);
-            }
+            } catch(e) { console.error("Gagal melakukan filter pencarian: ", e); }
         }
 
         function openPaymentModal() { 
             if (cart.length === 0) return alert("Belum ada transaksi."); 
             document.getElementById('payment-modal').classList.remove('hidden'); 
             document.getElementById('pay-total').value = formatNumber(totalAmount);
-            document.getElementById('pay-cash').value = ''; 
-            document.getElementById('pay-change').value = ''; 
-            document.getElementById('pay-cash').focus(); 
+            document.getElementById('pay-cash').value = ''; document.getElementById('pay-change').value = ''; document.getElementById('pay-cash').focus(); 
         }
 
         function calculateChange() { 
             const cash = parseFloat(document.getElementById('pay-cash').value) || 0; 
-            const change = cash - totalAmount; 
-            const el = document.getElementById('pay-change'); 
-            if (change >= 0) { 
-                el.value = formatNumber(change); 
-                el.className = 'classic-input w-full text-right text-xl font-bold text-blue-600'; 
-            } else { 
-                el.value = "Kurang " + formatNumber(Math.abs(change)); 
-                el.className = 'classic-input w-full text-right text-xl font-bold text-red-600'; 
-            } 
+            const change = cash - totalAmount; const el = document.getElementById('pay-change'); 
+            if (change >= 0) { el.value = formatNumber(change); el.className = 'classic-input w-full text-right text-xl font-bold text-blue-600'; } 
+            else { el.value = "Kurang " + formatNumber(Math.abs(change)); el.className = 'classic-input w-full text-right text-xl font-bold text-red-600'; } 
         }
         
         function processPaymentAndPrint() { 
             const cash = parseFloat(document.getElementById('pay-cash').value) || 0; 
-            if (cash < totalAmount) { 
-                const el = document.getElementById('pay-change'); 
-                el.value = "UANG KURANG!"; 
-                el.className = 'classic-input w-full text-right text-xl font-bold text-red-600'; 
-                return; 
-            } 
-            const change = cash - totalAmount; 
-            const now = new Date(); 
-            const trxIdStr = "TRX-" + Math.floor(Math.random() * 100000).toString().padStart(5, '0'); 
-            const pelSelect = document.getElementById('pelanggan-select'); 
-            const pelangganName = pelSelect.options.length > 0 ? pelSelect.options[pelSelect.selectedIndex].text : "RETAIL (UMUM)"; 
-            const salSelect = document.getElementById('salesman-select'); 
-            const salesmanName = salSelect ? salSelect.options[salSelect.selectedIndex].text : "OFFICE"; 
+            if (cash < totalAmount) { const el = document.getElementById('pay-change'); el.value = "UANG KURANG!"; el.className = 'classic-input w-full text-right text-xl font-bold text-red-600'; return; } 
+            const change = cash - totalAmount; const now = new Date(); const trxIdStr = "TRX-" + Math.floor(Math.random() * 100000).toString().padStart(5, '0'); 
+            const pelSelect = document.getElementById('pelanggan-select'); const pelangganName = pelSelect.options.length > 0 ? pelSelect.options[pelSelect.selectedIndex].text : "RETAIL (UMUM)"; 
+            const salSelect = document.getElementById('salesman-select'); const salesmanName = salSelect ? salSelect.options[salSelect.selectedIndex].text : "OFFICE"; 
             
-            pendingTransaction = { 
-                id: trxIdStr, 
-                date: now.toISOString(), 
-                items: JSON.parse(JSON.stringify(cart)), 
-                total: totalAmount, 
-                cash: cash, 
-                change: change, 
-                pelanggan: pelangganName, 
-                salesman: salesmanName 
-            }; 
-            document.getElementById('payment-modal').classList.add('hidden'); 
-            document.getElementById('pdf-confirm-modal').classList.remove('hidden'); 
+            pendingTransaction = { id: trxIdStr, date: now.toISOString(), items: JSON.parse(JSON.stringify(cart)), total: totalAmount, cash: cash, change: change, pelanggan: pelangganName, salesman: salesmanName }; 
+            document.getElementById('payment-modal').classList.add('hidden'); document.getElementById('pdf-confirm-modal').classList.remove('hidden'); 
         }
 
         function handlePrintChoice(isPdf) { 
             document.getElementById('pdf-confirm-modal').classList.add('hidden'); 
             if(pendingTransaction) { 
-                apiPost('saveTransaction', pendingTransaction); 
-                executePrintReceipt(pendingTransaction, isPdf); 
-                setTimeout(() => { 
-                    cart = []; 
-                    selectedRowIndex = -1; 
-                    renderCartTable(); 
-                    document.getElementById('info-harga-satuan').value = "0"; 
-                    document.getElementById('info-sub-total').value = "0"; 
-                    document.getElementById('info-total-harga').value = "0"; 
-                    document.getElementById('barcode-input').focus(); 
-                }, 500); 
+                apiPost('saveTransaction', pendingTransaction); executePrintReceipt(pendingTransaction, isPdf); 
+                setTimeout(() => { cart = []; selectedRowIndex = -1; renderCartTable(); document.getElementById('info-harga-satuan').value = "0"; document.getElementById('info-sub-total').value = "0"; document.getElementById('info-total-harga').value = "0"; document.getElementById('barcode-input').focus(); }, 500); 
                 pendingTransaction = null; 
             } 
         }
@@ -1440,13 +1106,11 @@
             
             trxData.items.forEach(item => { 
                 const tr = document.createElement('tr'); 
-                // Format struk minimarket asli (Tanpa terpotong ke kanan)
+                // Format struk presisi: Item Name saja, Qty sejajar, Total Harga Sejajar
                 tr.innerHTML = `
-                    <td style="padding: 2px 0; text-align: left;">
-                        ${item.name}<br>
-                        <span style="font-size: 11px; font-weight: normal;">${item.qty} x ${formatNumber(item.price)}</span>
-                    </td>
-                    <td style="text-align: right; vertical-align: top; padding: 2px 0;">${formatNumber(item.qty * item.price)}</td>
+                    <td style="padding: 2px 0; text-align: left; vertical-align: top; word-wrap: break-word;">${item.name}</td>
+                    <td style="padding: 2px 0; text-align: center; vertical-align: top;">${item.qty}</td>
+                    <td style="padding: 2px 0; text-align: right; vertical-align: top;">${formatNumber(item.qty * item.price)}</td>
                 `; 
                 printTbody.appendChild(tr); 
             }); 
